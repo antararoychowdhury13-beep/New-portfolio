@@ -1,0 +1,16 @@
+{
+  "name": "new-portfolio",
+  "private": true,
+  "description": "Agentic portfolio for Anupam Sarkar — static site plus a Cloudflare Worker that powers the live AI agent.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.115.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

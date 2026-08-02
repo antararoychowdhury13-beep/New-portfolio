@@ -6,7 +6,10 @@ with a breathing orb and topic chips, and a chat workspace where the agent
 files, framework cards, an about timeline, and follow-up chips. Free-text
 questions are routed by intent to the right answer.
 
-Built as a fully static site: no build step, no dependencies, plain HTML/CSS/JS.
+The site itself is plain HTML/CSS/JS with no build step. Free-text questions
+are answered by a **live AI agent** — a small Cloudflare Worker
+(`worker.js`) that calls the Anthropic API with a server-side key — with a
+built-in local knowledge base as the offline fallback.
 
 ## Pages
 
@@ -27,15 +30,38 @@ Built as a fully static site: no build step, no dependencies, plain HTML/CSS/JS.
   0→1 Projects, Connect) rendered as rich cards in the chat thread.
 - **Project cards** expand into in-thread case-study cards (challenge, role,
   what I did, impact) with a link to the full case file page.
-- **Free text** is routed by keyword to topics or cases; everything else hits a
-  small local knowledge base (hardest decision, impact numbers, leadership,
-  career arc, education, location…), with a graceful fallback.
+- **Free text** is routed by keyword to topics or cases; everything else goes
+  to the **live AI agent** (`POST /api/agent`, served by `worker.js`). If the
+  backend is missing or unconfigured, the page falls back to a small local
+  knowledge base (hardest decision, impact numbers, leadership, career arc,
+  education, location…), then to a graceful "try one of these" answer.
 - **Password gate** — each entry in `CASE_LINKS` (top of the script in
   `index.html`) takes a `url` and optional `pw`; set a password to gate a case
   study behind the modal. All are open by default.
-- To make free text a **live LLM agent**, point `askAgent()` at a small backend
-  endpoint that proxies the Anthropic API with your key (never ship an API key
-  client-side).
+
+## The live AI agent (Cloudflare Worker)
+
+`worker.js` serves the static site and exposes `POST /api/agent`. It calls the
+Anthropic API (`claude-opus-5`) with a system prompt containing Anupam's
+portfolio facts — the same content as the case files, so answers stay
+grounded. The API key lives in a Worker secret and never reaches the browser.
+The endpoint only accepts same-origin requests, caps history at 10 turns /
+2,000 chars per message, and prompt-caches the system prompt to keep costs
+down.
+
+Deploy:
+
+```bash
+npm install
+npx wrangler login
+npx wrangler secret put ANTHROPIC_API_KEY   # paste your key (console.anthropic.com)
+npx wrangler deploy
+```
+
+Without the secret, `/api/agent` returns 503 and the site quietly uses the
+local knowledge base instead — so the same code also works as a plain static
+site. To change the model or the agent's persona/facts, edit `AGENT_SYSTEM`
+and the `model` field in `worker.js`.
 
 ## Run locally
 
@@ -48,7 +74,7 @@ python3 -m http.server 8000
 
 Or simply open `index.html` in a browser.
 
-## Deploy with GitHub Pages
+## Deploy with GitHub Pages (static only)
 
 1. Merge this branch into the default branch.
 2. In the repository, go to **Settings → Pages**.
@@ -58,3 +84,5 @@ Or simply open `index.html` in a browser.
    couple of minutes.
 
 The `.nojekyll` file is included so GitHub Pages serves the files as-is.
+GitHub Pages can't run the Worker, so free-text answers use the local
+knowledge base there; deploy to Cloudflare (above) for the live agent.

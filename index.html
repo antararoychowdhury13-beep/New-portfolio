@@ -740,8 +740,8 @@ async function respondCase(id){
 }
 
 /* Local knowledge — pattern-matched answers for common free-text questions.
-   To make this a live LLM agent, point askAgent at a small backend endpoint
-   that proxies the Anthropic API with your key (never ship a key client-side). */
+   Used as the fallback when the live agent backend (/api/agent, see worker.js)
+   is unavailable — e.g. on GitHub Pages or before the API key is configured. */
 const KNOWLEDGE = [
   {re:/hardest|tough|difficult|trade.?off|decision|kill|pivot/, html:()=>`
     <div class="agent-text"><p>Two decisions cost the most — and paid the most.</p>
@@ -786,20 +786,48 @@ const KNOWLEDGE = [
     ${followups(["Tell me about yourself","Show me your work","What design frameworks have you created?"])}`}
 ];
 
+/* Live agent — POSTs to the Cloudflare Worker (worker.js), which calls the
+   Anthropic API with a server-side key. Falls back to KNOWLEDGE if the
+   endpoint is missing, unconfigured, or errors. */
+let history=[];
+async function askLiveAgent(question){
+  history.push({role:"user", content:question.slice(0,2000)});
+  try{
+    const res=await fetch("/api/agent",{
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({messages:history.slice(-10)})
+    });
+    if(!res.ok) throw new Error("agent_unavailable");
+    const data=await res.json();
+    const answer=(data.answer||"").trim();
+    if(!answer) throw new Error("empty");
+    history.push({role:"assistant", content:answer});
+    return answer;
+  }catch(err){
+    history.pop();
+    return null;
+  }
+}
+
 async function askAgent(question){
   const body=addAgentShell();
   await runStateRail(body, RAILS.answer);
   const t=document.createElement('div'); t.className='typing'; t.innerHTML='<span></span><span></span><span></span>';
   body.appendChild(t); scrollThread();
-  await sleep(650);
+  const answer=await askLiveAgent(question);
   t.remove();
-  const q=question.toLowerCase();
-  const hit=KNOWLEDGE.find(k=>k.re.test(q));
   const d=document.createElement('div');
-  if(hit){ d.innerHTML=hit.html(); }
-  else{
-    d.innerHTML=`<div class="agent-text"><p>I can speak to Anupam's story best through what's indexed — his background, the enterprise case files, the IFU and GRAVITY frameworks, and 0→1 projects like KhetMitra and Farm Pioneers. Try one of those, or rephrase your question.</p></div>
+  if(answer){
+    d.innerHTML=`<div class="agent-text">${answer.split(/\n{2,}/).map(p=>`<p>${escapeHtml(p).replace(/\n/g,'<br>')}</p>`).join('')}</div>
       ${followups(["Show me your work","What design frameworks have you created?","How can we connect?"])}`;
+  }else{
+    const q=question.toLowerCase();
+    const hit=KNOWLEDGE.find(k=>k.re.test(q));
+    if(hit){ d.innerHTML=hit.html(); }
+    else{
+      d.innerHTML=`<div class="agent-text"><p>I can speak to Anupam's story best through what's indexed — his background, the enterprise case files, the IFU and GRAVITY frameworks, and 0→1 projects like KhetMitra and Farm Pioneers. Try one of those, or rephrase your question.</p></div>
+        ${followups(["Show me your work","What design frameworks have you created?","How can we connect?"])}`;
+    }
   }
   while(d.firstChild) body.appendChild(d.firstChild);
   scrollThread();

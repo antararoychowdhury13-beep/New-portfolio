@@ -1,8 +1,12 @@
 {
-  // Cloudflare Workers config — serves the portfolio as a static-assets site.
+  // Cloudflare Workers config — static portfolio plus the /api/agent endpoint.
+  // Set the agent's API key once with: npx wrangler secret put ANTHROPIC_API_KEY
   "name": "new-portfolio",
+  "main": "worker.js",
   "compatibility_date": "2026-08-02",
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "directory": "./"
+    "directory": "./",
+    "binding": "ASSETS"
   }
 }
