@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anupam Sarkar — Design Systems Agent</title>
+<meta name="description" content="An intent-first portfolio. Express what you want to know; it resolves.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#07070A; --ink-2:#0E0E13; --ink-3:#16161D; --ink-4:#1E1E27;
+  --cream:#FAF9F5; --muted:#82828C; --muted-2:#5A5A63;
+  --accent:#C4F542; --cool:#7CA3FF; --warm:#FF7A5C; --green:#9DD46A;
+  --line:rgba(255,255,255,0.07); --line-2:rgba(255,255,255,0.12);
+  --serif:'Instrument Serif',Georgia,serif; --sans:'Inter',-apple-system,sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--accent);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+canvas#field{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;opacity:.55;pointer-events:none}
+.scrim{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 80% at 50% 0%,rgba(196,245,66,0.05),transparent 60%),linear-gradient(180deg,transparent,rgba(7,7,10,0.6) 80%,var(--ink))}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;position:relative;z-index:2}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono .hl{color:var(--accent)}
+.mono .cl{color:var(--cool)}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:40;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(7,7,10,.6);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1180px;margin:0 auto;padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:15px}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.nav-links{display:flex;gap:24px}
+.nav-links a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+.nav-status{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--cool)}
+
+/* hero / console */
+.hero{padding:128px 0 70px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.sysbar{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:26px}
+.sysbar .chip-sys{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:6px 12px}
+.sysbar .chip-sys b{color:var(--cream);font-weight:500}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6.6vw,86px);line-height:1.02;letter-spacing:-.015em;max-width:980px}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero .sub{margin-top:22px;max-width:600px;font-size:17px;color:var(--muted)}
+.hero .sub b{color:var(--cream);font-weight:600}
+
+/* console — highlighted chat box */
+.console-wrap{margin-top:42px;max-width:860px;position:relative}
+.console-label{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:13px}
+.console-label .live{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:pulse 1.8s infinite}
+.console-label .dim{color:var(--muted);letter-spacing:.06em;text-transform:none}
+.console{position:relative;background:linear-gradient(180deg,rgba(25,28,20,.92),rgba(15,16,13,.94));border:1.5px solid rgba(196,245,66,.55);border-radius:18px;padding:9px;box-shadow:0 0 0 1px rgba(196,245,66,.12),0 0 48px -6px rgba(196,245,66,.4),0 40px 120px -40px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);animation:consoleGlow 3.4s ease-in-out infinite}
+@keyframes consoleGlow{0%,100%{box-shadow:0 0 0 1px rgba(196,245,66,.12),0 0 40px -10px rgba(196,245,66,.30),0 40px 120px -40px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05)}50%{box-shadow:0 0 0 1px rgba(196,245,66,.24),0 0 64px -4px rgba(196,245,66,.52),0 40px 120px -40px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.06)}}
+.console-bar{display:flex;align-items:center;gap:12px;padding:17px 18px;background:rgba(7,7,10,.82);border-radius:12px;border:1px solid rgba(196,245,66,.22);transition:border-color .2s}
+.console:focus-within .console-bar{border-color:rgba(196,245,66,.6)}
+.console-bar .pr{font-family:var(--mono);color:var(--accent);font-size:19px;font-weight:600;animation:blink 1.1s steps(2) infinite}
+.console-bar input{flex:1;background:none;border:none;outline:none;color:var(--cream);font-family:var(--mono);font-size:14.5px;letter-spacing:.01em;caret-color:var(--accent)}
+.console-bar input::placeholder{color:#7d8a55;opacity:1}
+.console-bar .send{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--ink);background:var(--accent);border:none;border-radius:9px;padding:11px 18px;cursor:pointer;font-weight:700;transition:transform .15s,box-shadow .2s;box-shadow:0 0 22px -4px rgba(196,245,66,.65)}
+.console-bar .send:hover{transform:translateY(-1px);box-shadow:0 0 30px -2px rgba(196,245,66,.85)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:6px 8px 8px}
+.chips-lead{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:16px 8px 4px}
+.nudge{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--accent);padding:14px 12px 2px;display:flex;align-items:flex-start;gap:8px;animation:rise .5s ease}
+.nudge[hidden]{display:none}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);background:var(--ink-3);border:1px solid var(--line);border-radius:99px;padding:9px 15px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:8px}
+.chip::before{content:"→";color:var(--accent);opacity:.6}
+.chip:hover{color:var(--cream);border-color:var(--accent);background:rgba(196,245,66,.06)}
+
+/* answer panel */
+.answer{margin:14px 8px 6px;min-height:0;overflow:hidden}
+.answer.empty{display:none}
+.a-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.a-head .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cool);border:1px solid rgba(124,163,255,.3);border-radius:99px;padding:5px 11px}
+.a-line{font-family:var(--mono);font-size:13px;color:var(--cool);min-height:20px}
+.a-line .cursor{display:inline-block;width:7px;height:14px;background:var(--cool);margin-left:2px;vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.a-body{margin-top:18px;animation:rise .5s ease}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.a-statement{font-family:var(--serif);font-size:clamp(22px,3vw,32px);line-height:1.18;max-width:720px;margin-bottom:8px}
+.a-statement em{font-style:italic;color:var(--accent)}
+.a-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:18px}
+.a-cell{background:var(--ink-3);border:1px solid var(--line);border-radius:12px;padding:16px}
+.a-cell .n{font-family:var(--serif);font-size:26px;line-height:1;color:var(--accent)}
+.a-cell .l{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.4}
+.a-cell.cool .n{color:var(--cool)} .a-cell.warm .n{color:var(--warm)} .a-cell.green .n{color:var(--green)}
+.decision{background:var(--ink-3);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;padding:18px 20px;margin-top:12px}
+.decision h4{font-size:15px;font-weight:600;margin-bottom:10px}
+.decision .row{display:flex;gap:10px;font-size:13.5px;color:var(--muted);margin-top:6px}
+.decision .row b{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);min-width:78px;flex-shrink:0;padding-top:3px}
+.decision .row.res b{color:var(--green)}
+.a-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.a-actions a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--cream);border:1px solid var(--line-2);border-radius:8px;padding:10px 16px;transition:all .18s;display:flex;align-items:center;gap:8px}
+.a-actions a::after{content:"↗";color:var(--accent)}
+.a-actions a:hover{border-color:var(--accent);background:rgba(196,245,66,.05)}
+.a-note{font-size:13px;color:var(--muted);margin-top:14px;max-width:640px}
+.a-prin{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+.a-prin .p{display:flex;gap:14px;align-items:baseline}
+.a-prin .p .nm{font-family:var(--mono);color:var(--accent);font-size:12px}
+.a-prin .p .tx{font-size:15px}
+
+/* sections */
+section{padding:100px 0;position:relative;z-index:2}
+.sec-head{margin-bottom:44px}
+.sec-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(32px,4.4vw,52px);line-height:1.06;letter-spacing:-.01em;max-width:680px;margin-top:14px}
+.sec-head h2 em{font-style:italic;color:var(--accent)}
+.sec-head .lead{margin-top:14px;max-width:600px;color:var(--muted);font-size:15.5px}
+
+/* gravity field */
+.field-stage{position:relative;background:linear-gradient(180deg,rgba(14,14,19,.7),rgba(10,10,14,.7));border:1px solid var(--line);border-radius:18px;overflow:hidden;display:grid;grid-template-columns:288px 1fr}
+.field-stage svg{display:block;width:100%;height:auto}
+.field-readout{padding:32px;border-right:1px solid var(--line);align-self:start}
+.field-readout .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.field-readout h3{font-family:var(--serif);font-size:25px;font-weight:400;margin:8px 0 10px;line-height:1.1}
+.field-readout p{font-size:13px;color:var(--muted);line-height:1.55}
+.field-hint{position:absolute;bottom:18px;right:22px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted-2)}
+
+/* work */
+.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.wcard{background:linear-gradient(180deg,rgba(20,20,27,.6),rgba(14,14,19,.6));border:1px solid var(--line);border-radius:14px;padding:26px;display:block;position:relative;transition:all .25s;overflow:hidden}
+.wcard::before{content:"";position:absolute;inset:0;background:radial-gradient(140% 100% at 0% 0%,rgba(196,245,66,.06),transparent 50%);opacity:0;transition:opacity .25s}
+.wcard:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.wcard:hover::before{opacity:1}
+.wcard .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.wcard .cli{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.wcard .open{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--accent);opacity:0;transition:opacity .25s}
+.wcard:hover .open{opacity:1}
+.wcard h3{font-family:var(--serif);font-weight:400;font-size:23px;line-height:1.16;margin-bottom:16px}
+.wcard .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;padding-top:16px;border-top:1px solid var(--line)}
+.wcard .role{font-size:12px;color:var(--muted)}
+.wcard .m{font-family:var(--serif);font-size:24px;color:var(--accent);white-space:nowrap}
+
+/* footer */
+footer{padding:110px 0 60px;border-top:1px solid var(--line);position:relative;z-index:2;margin-top:40px}
+footer h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,5vw,66px);line-height:1.05;max-width:920px}
+footer h2 em{font-style:italic;color:var(--accent)}
+.foot-links{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap}
+.foot-links a{font-family:var(--mono);font-size:12px;letter-spacing:.04em;border:1px solid var(--line-2);border-radius:10px;padding:13px 22px;transition:all .2s;display:flex;align-items:center;gap:9px}
+.foot-links a.primary{background:var(--accent);color:var(--ink);border-color:var(--accent);font-weight:600}
+.foot-links a:hover{transform:translateY(-2px)}
+.foot-links a:not(.primary):hover{border-color:var(--accent)}
+.colophon{margin-top:60px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted-2);flex-wrap:wrap;gap:10px}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.reveal{opacity:1;transform:none}canvas#field{opacity:.3}}
+@media (max-width:860px){
+  .work-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .hero{padding:104px 0 60px;min-height:auto}
+  section{padding:72px 0}
+  .field-readout{position:static;max-width:none;padding:24px;border-right:none;border-bottom:1px solid var(--line)}
+  .field-stage{grid-template-columns:1fr}
+  .field-hint{display:none}
+  .a-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<canvas id="field"></canvas>
+<div class="scrim"></div>
+
+<nav><div class="nav-in">
+  <div class="brand"><span class="dot"></span>Anupam Sarkar</div>
+  <div class="nav-links">
+    <a href="#top">Console</a><a href="#gravity">Field</a><a href="#work">Work</a><a href="#contact">Contact</a>
+  </div>
+  <div class="nav-status">● AVAILABLE · Q1 2026</div>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+  <div class="sysbar reveal">
+    <span class="mono"><span class="hl">◆</span> Design-Systems Agent · v1.0</span>
+    <span class="chip-sys"><b>12</b> yrs indexed</span>
+    <span class="chip-sys"><b>5</b> industries</span>
+    <span class="chip-sys"><b>6</b> cases</span>
+    <span class="chip-sys"><b>4</b> reports led</span>
+  </div>
+  <h1 class="reveal">I turn ambiguous problems into <em>design systems leaders can act on.</em></h1>
+  <p class="sub reveal"><b>Product Design Manager, IBM.</b> Don't browse — ask. This portfolio runs on Intent-First UX, a framework I built: express what you want to know, and it resolves to the evidence.</p>
+
+  <div class="console-wrap reveal">
+    <div class="console-label"><span class="live"></span>Ask the agent about my work<span class="dim">— it answers with real evidence, not a menu</span></div>
+    <div class="console" id="console">
+      <div class="console-bar">
+        <span class="pr">›</span>
+        <input id="cinput" type="text" autocomplete="off" spellcheck="false" placeholder="Ask: 'prove leadership'">
+        <button class="send" id="csend">RESOLVE</button>
+      </div>
+      <div class="nudge" id="nudge" hidden></div>
+      <div class="chips-lead">New here? Tap a question to begin →</div>
+      <div class="chips" id="chips"></div>
+      <div class="answer empty" id="answer">
+        <div class="a-head"><span class="tag" id="atag">RESOLVED</span></div>
+        <div class="a-line" id="aline"></div>
+        <div class="a-body" id="abody"></div>
+      </div>
+    </div>
+  </div>
+</div></header>
+
+<section id="gravity"><div class="wrap">
+  <div class="sec-head reveal">
+    <p class="mono"><span class="hl">01</span> · Capability field</p>
+    <h2>Twelve years as <em>a gravitational field.</em></h2>
+    <p class="lead">A nod to GRAVITY — a spatial UI paradigm I'm prototyping. Tap a capability mass: the projects it pulled into being gravitate toward it, and the connections light up. The work isn't a list — it's a field with centres of mass.</p>
+  </div>
+  <div class="field-stage reveal">
+    <div class="field-readout" id="readout">
+      <span class="tag">SELECT A MASS</span>
+      <h3>Four centres of gravity</h3>
+      <p>Each capability has pulled specific projects into orbit. Tap a mass to feel the pull — or tap a project marked with a lime core (◆) to open its full case study.</p>
+    </div>
+    <svg id="gsvg" viewBox="0 0 1000 560" role="img" aria-label="Interactive gravitational capability field"></svg>
+    <div class="field-hint">◆ = OPENABLE CASE · TAP A MASS TO GRAVITATE</div>
+  </div>
+</div></section>
+
+<section id="work"><div class="wrap">
+  <div class="sec-head reveal">
+    <p class="mono"><span class="hl">02</span> · Indexed cases</p>
+    <h2>Six decisions the agent can <em>open in full.</em></h2>
+    <p class="lead">Each links to a manager-altitude case study — causal chain, org map, timeline, artifacts.</p>
+  </div>
+  <div class="work-grid" id="workgrid"></div>
+</div></section>
+
+<footer id="contact"><div class="wrap">
+  <h2 class="reveal">Hiring for a design leader who works at the <em>system level?</em> The agent's ready when you are.</h2>
+  <div class="foot-links reveal">
+    <a class="primary" href="mailto:ar.anupamsarkar@gmail.com">ar.anupamsarkar@gmail.com</a>
+    <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="career-journey.html">Career journey</a>
+  </div>
+  <div class="colophon"><span>© 2026 ANUPAM SARKAR · BANGALORE</span><span>BUILT ON INTENT-FIRST UX · YOU JUST USED IT</span></div>
+</div></footer>
+
+<script>
+/* ===== Ambient gravity-field background ===== */
+(function(){
+  const c=document.getElementById('field'), x=c.getContext('2d');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W,H,pts;
+  function size(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;}
+  size();
+  const N=Math.min(46,Math.floor(innerWidth/34));
+  pts=Array.from({length:N},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.18*devicePixelRatio,vy:(Math.random()-.5)*.18*devicePixelRatio}));
+  function frame(){
+    x.clearRect(0,0,W,H);
+    for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;}
+    for(let i=0;i<N;i++){
+      for(let j=i+1;j<N;j++){
+        const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy),max=130*devicePixelRatio;
+        if(d<max){x.strokeStyle='rgba(196,245,66,'+(0.14*(1-d/max))+')';x.lineWidth=devicePixelRatio;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}
+      }
+    }
+    for(const p of pts){x.fillStyle='rgba(130,200,255,0.5)';x.beginPath();x.arc(p.x,p.y,1.3*devicePixelRatio,0,7);x.fill();}
+    if(!reduce)requestAnimationFrame(frame);
+  }
+  frame();
+  addEventListener('resize',()=>{size();});
+})();
+
+/* ===== Agent console ===== */
+const INTENTS={
+  leadership:{label:'Prove leadership altitude',tag:'LEADERSHIP ALTITUDE',
+    line:'resolving → organizational reach + decision ownership…',
+    body:()=>`<div class="a-statement">Reach <em>two layers up and one down</em> — and own the calls in between.</div>
+      <div class="a-grid">
+        <div class="a-cell"><div class="n">4 / 4</div><div class="l">designers mentored across squads · IBM</div></div>
+        <div class="a-cell"><div class="n">+35%</div><div class="l">first-pass approvals via 3-in-a-box governance</div></div>
+        <div class="a-cell cool"><div class="n">95%</div><div class="l">cross-functional workshop alignment · BT</div></div>
+        <div class="a-cell green"><div class="n">3 layers</div><div class="l">Ministry leadership → mine floor · Siemens</div></div>
+      </div>
+      <div class="a-actions"><a href="case-smart-mining.html">Open Smart Mining org map</a><a href="case-nextwork.html">Open #NextWork reach</a></div>`},
+  impact:{label:'Show measurable impact',tag:'QUANTIFIED OUTCOMES',
+    line:'resolving → quantified outcomes across 5 industries…',
+    body:()=>`<div class="a-grid">
+        <div class="a-cell"><div class="n">−20%</div><div class="l">UI drift · IBM Power Systems</div></div>
+        <div class="a-cell cool"><div class="n">60→85%</div><div class="l">prototype validation · Siemens</div></div>
+        <div class="a-cell warm"><div class="n">500K+</div><div class="l">business users · BT billing</div></div>
+        <div class="a-cell green"><div class="n">+17.3%</div><div class="l">crop yield · KhetMitra pilot</div></div>
+        <div class="a-cell"><div class="n">67%</div><div class="l">faster safety decisions · Smart Mining</div></div>
+        <div class="a-cell cool"><div class="n">−40%</div><div class="l">demo dependency · John Deere</div></div>
+        <div class="a-cell warm"><div class="n">30+</div><div class="l">MVPs shipped · TCS</div></div>
+        <div class="a-cell green"><div class="n">+40%</div><div class="l">GTM acceleration · John Deere</div></div>
+      </div>
+      <p class="a-note">Numbers are role-real and reshaped, never invented. Tier-2 figures are walked through live under NDA.</p>`},
+  decision:{label:'Show the hardest decision',tag:'HIGHEST-COST TRADE-OFF',
+    line:'resolving → highest-cost trade-offs in the archive…',
+    body:()=>`<div class="decision"><h4>Killed a concept that tested well — Siemens Smart Mining</h4>
+        <div class="row"><b>Why</b><span>The alert-centric concept (Concept C) amplified the exact alert fatigue it was meant to cure.</span></div>
+        <div class="row"><b>Trade-off</b><span>Threw away a fast-validating concept and absorbed a week-7 timeline hit to pivot to a spatial canvas.</span></div>
+        <div class="row res"><b>Result</b><span>67% faster decisions · 240→18 daily alerts · SUS 92.</span></div></div>
+      <div class="decision"><h4>Overrode the brief — KhetMitra / John Deere India</h4>
+        <div class="row"><b>Why</b><span>Field truth: not one farmer opened more than two data sources before deciding. A dashboard would add load.</span></div>
+        <div class="row"><b>Trade-off</b><span>Contradicted the stakeholder ask for a dashboard; had to re-sell leadership on a decision assistant.</span></div>
+        <div class="row res"><b>Result</b><span>41→87% task completion · +17.3% yield · funded to phase 2.</span></div></div>
+      <div class="a-actions"><a href="case-smart-mining.html">Open the pivot</a><a href="case-khetmitra.html">Open the override</a></div>`},
+  arc:{label:'Walk the 12-year arc',tag:'CAREER TRAJECTORY',
+    line:'resolving → trajectory, Faraka → IBM…',
+    body:()=>`<div class="a-statement">A drawing class in Faraka → architecture → IIT gold → TCS → Deere → Siemens → BT → <em>IBM.</em></div>
+      <p class="a-note">No year of the twelve dead-ends — each industry switch fed a durable capability the next role compounded. The line only rises.</p>
+      <div class="a-actions"><a href="career-journey.html">Walk the interactive journey</a></div>`},
+  vp:{label:'Why VP-ready?',tag:'READINESS SYNTHESIS',
+    line:'resolving → readiness synthesis…',
+    body:()=>`<div class="a-statement">Thinks in <em>decisions, not deliverables.</em> Designs how teams operate, not just what they ship.</div>
+      <div class="a-prin">
+        <div class="p"><span class="nm">01</span><span class="tx">Cluster problems, don't enumerate them — fund four bets, not forty tickets.</span></div>
+        <div class="p"><span class="nm">02</span><span class="tx">Design the operating system — governance, critique, decision rights — not only the screens.</span></div>
+        <div class="p"><span class="nm">03</span><span class="tx">Reach two layers up and one down — exec framing, cross-functional alignment, frontline evidence.</span></div>
+      </div>
+      <p class="a-note">Available Q1 2026 for VP of Design / Head of Product Design / Director-level mandates.</p>`},
+  ifu:{label:'What is Intent-First UX?',tag:'ORIGINAL FRAMEWORK',
+    line:'resolving → original framework you are currently inside…',
+    body:()=>`<div class="a-statement">Every UI framework starts <em>after</em> intent. Intent-First UX starts before it.</div>
+      <p class="a-note">IFU structurally pre-resolves the interface to the most probable user outcome before conscious action — four stages: <b style="color:var(--cream)">Sense → Morph → Confirm → Escape.</b> This portfolio is a working demonstration: you expressed an intent, and it resolved. That's the framework, running.</p>
+      <div class="a-actions"><a href="#gravity">See GRAVITY, its spatial sibling</a></div>`}
+};
+const ORDER=['leadership','impact','decision','arc','vp','ifu'];
+const KW={leadership:['lead','leader','manage','team','mentor','altitude','senior','director'],impact:['impact','metric','number','result','outcome','roi','data','measure','proof'],decision:['decision','hard','trade','tough','difficult','kill','pivot','choice','call'],arc:['arc','journey','career','story','12','twelve','years','history','path','timeline'],vp:['vp','ready','head','hire','fit','why','leadership role','strategy'],ifu:['intent','ifu','framework','gravity','invent','original','philosophy','first']};
+
+const chipsEl=document.getElementById('chips'), ansEl=document.getElementById('answer'),
+      tagEl=document.getElementById('atag'), lineEl=document.getElementById('aline'),
+      bodyEl=document.getElementById('abody'), input=document.getElementById('cinput');
+ORDER.forEach(k=>{const b=document.createElement('button');b.className='chip';b.textContent=INTENTS[k].label;b.onclick=()=>{markActed();resolve(k);};chipsEl.appendChild(b);});
+
+function route(q){
+  q=q.toLowerCase().trim();
+  if(!q)return 'vp';
+  for(const k of ORDER){if(KW[k].some(w=>q.includes(w)))return k;}
+  return 'vp';
+}
+const reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let typing=null;
+function resolve(k,opts){
+  opts=opts||{};
+  const it=INTENTS[k];
+  ansEl.classList.remove('empty');
+  tagEl.textContent=it.tag;
+  bodyEl.innerHTML='';
+  if(typing)clearInterval(typing);
+  const txt='› '+it.line;
+  if(reduceM){lineEl.textContent=txt;show(it);}
+  else{
+    lineEl.innerHTML='<span class="cursor"></span>'; let i=0;
+    typing=setInterval(()=>{
+      i++; lineEl.innerHTML=txt.slice(0,i)+'<span class="cursor"></span>';
+      if(i>=txt.length){clearInterval(typing);lineEl.innerHTML=txt;setTimeout(()=>show(it),140);}
+    },14);
+  }
+  if(opts.scroll!==false) ansEl.scrollIntoView({behavior:reduceM?'auto':'smooth',block:'nearest'});
+}
+function show(it){bodyEl.innerHTML=it.body();}
+
+/* interaction guard + self-running demo so visitors SEE what the agent does */
+let userActed=false, demoStarted=false, demoOwnsInput=false; const demoTimers=[];
+function markActed(){ if(userActed)return; userActed=true; demoTimers.forEach(clearTimeout); if(demoOwnsInput){input.value='';demoOwnsInput=false;} const n=document.getElementById('nudge'); if(n)n.hidden=true; }
+document.getElementById('csend').onclick=()=>{markActed();resolve(route(input.value));};
+input.addEventListener('keydown',e=>{if(e.key==='Enter'){markActed();resolve(route(input.value));}});
+input.addEventListener('focus',markActed);
+input.addEventListener('pointerdown',markActed);
+
+function runDemo(){
+  if(demoStarted||userActed)return; demoStarted=true;
+  const nudge=document.getElementById('nudge');
+  if(reduceM){ resolve('vp',{scroll:false}); nudge.hidden=false; nudge.textContent='↑ Example answer. Ask your own question above, or tap one below.'; return; }
+  const q='why are you VP-ready?'; let i=0; demoOwnsInput=true;
+  (function type(){
+    if(userActed)return;
+    input.value=q.slice(0,++i);
+    if(i<q.length){demoTimers.push(setTimeout(type,52));}
+    else{demoTimers.push(setTimeout(()=>{
+      if(userActed)return;
+      resolve('vp',{scroll:false});
+      demoTimers.push(setTimeout(()=>{
+        if(userActed)return;
+        input.value=''; demoOwnsInput=false;
+        nudge.hidden=false;
+        nudge.innerHTML='<span>↑ That was the agent answering itself. Now ask your own question — or tap one below.</span>';
+      },1150));
+    },430));}
+  })();
+}
+const cwrap=document.querySelector('.console-wrap');
+const dio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){dio.disconnect();setTimeout(runDemo,850);}}),{threshold:.5});
+dio.observe(cwrap);
+
+/* typewriter placeholder — signals the box is a live agent input */
+(function(){
+  const ex=['prove leadership altitude','why are you VP-ready?','show measurable impact','the hardest decision you made','what is Intent-First UX?','walk the 12-year arc'];
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){input.placeholder="Ask a question, or tap a prompt below…";return;}
+  let e=0,ch=0,del=false;
+  function step(){
+    if(document.activeElement===input||input.value){input.placeholder='Ask anything…';return setTimeout(step,600);}
+    const full='Ask: '+ex[e];
+    if(!del){ch++;if(ch>full.length){del=true;input.placeholder=full+'│';return setTimeout(step,1500);}}
+    else{ch--;if(ch<=5){del=false;e=(e+1)%ex.length;ch=5;}}
+    input.placeholder=full.slice(0,ch)+'│';
+    setTimeout(step,del?32:60);
+  }
+  step();
+})();
+
+/* ===== Gravity capability field ===== */
+(function(){
+  const svg=document.getElementById('gsvg'), readout=document.getElementById('readout');
+  const NS='http://www.w3.org/2000/svg';
+  // capability masses
+  const masses=[
+    {id:'sys',label:'Systems & Governance',x:300,y:170,ev:'Carbon design governance, pattern libraries and tokens that cut UI drift −20% and standardised three enterprise platforms.'},
+    {id:'strat',label:'Strategy & Decision Design',x:700,y:175,ev:'Research-to-strategy playbooks and decision-first workflows — 60→85% validation at Siemens, +30% decision efficiency.'},
+    {id:'team',label:'Team Building & Ops',x:300,y:400,ev:'3-in-a-box operating model, mentorship and hiring — 4 designers across 4 squads, +35% first-pass approvals.'},
+    {id:'zero',label:'Zero-to-One Delivery',x:700,y:400,ev:'30+ MVPs and immersive 0→1 bets — game onboarding, virtual showroom, KhetMitra’s +17.3% yield.'}
+  ];
+  // project satellites: each linked to one+ mass
+  const proj=[
+    {id:'ibm',label:'IBM',links:['sys','team']},
+    {id:'bt',label:'BT',links:['strat','sys']},
+    {id:'sie',label:'Siemens',links:['strat','sys']},
+    {id:'jd',label:'John Deere',links:['zero','strat']},
+    {id:'tcs',label:'TCS',links:['zero','team']},
+    {id:'sm',label:'Smart Mining',links:['strat','sys'],case:'case-smart-mining.html'},
+    {id:'km',label:'KhetMitra',links:['zero','strat'],case:'case-khetmitra.html'},
+    {id:'bart',label:'BART',links:['sys'],case:'case-incident-bart.html'},
+    {id:'nw',label:'#NextWork',links:['strat','team'],case:'case-nextwork.html'},
+    {id:'fp',label:'Farm Pioneers',links:['zero'],case:'case-deere-pioneers.html'}
+  ];
+  // home positions for satellites (scatter)
+  const homes={ibm:[150,90],bt:[500,70],sie:[850,90],jd:[880,300],tcs:[140,520],sm:[560,300],km:[840,500],bart:[150,300],nw:[470,485],fp:[640,505]};
+  proj.forEach(p=>{p.hx=homes[p.id][0];p.hy=homes[p.id][1];p.x=p.hx;p.y=p.hy;p.tx=p.hx;p.ty=p.hy;});
+  let active=null;
+  // build link layer
+  const linkG=document.createElementNS(NS,'g'); svg.appendChild(linkG);
+  const lines={};
+  proj.forEach(p=>p.links.forEach(m=>{
+    const ln=document.createElementNS(NS,'line');ln.setAttribute('stroke','rgba(255,255,255,0.06)');ln.setAttribute('stroke-width','1');linkG.appendChild(ln);lines[p.id+'-'+m]=ln;
+  }));
+  // mass nodes
+  masses.forEach(m=>{
+    const g=document.createElementNS(NS,'g');g.style.cursor='pointer';
+    const halo=document.createElementNS(NS,'circle');halo.setAttribute('r',46);halo.setAttribute('fill','rgba(196,245,66,0.05)');halo.setAttribute('stroke','rgba(196,245,66,0.4)');
+    const core=document.createElementNS(NS,'circle');core.setAttribute('r',9);core.setAttribute('fill','#C4F542');
+    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-58);t.setAttribute('fill','#FAF9F5');t.setAttribute('font-family',"'Inter'");t.setAttribute('font-size','13');t.setAttribute('font-weight','600');t.textContent=m.label;
+    g.appendChild(halo);g.appendChild(core);g.appendChild(t);g.setAttribute('transform',`translate(${m.x},${m.y})`);
+    m.halo=halo;m.coreEl=core;
+    g.onclick=()=>setActive(m.id);
+    svg.appendChild(g);
+  });
+  // satellite nodes
+  proj.forEach(p=>{
+    const g=document.createElementNS(NS,'g');
+    const c=document.createElementNS(NS,'circle');c.setAttribute('r',5);c.setAttribute('fill','#0E0E13');c.setAttribute('stroke','#7CA3FF');c.setAttribute('stroke-width','1.5');
+    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-12);t.setAttribute('fill','#82828C');t.setAttribute('font-family',"'IBM Plex Mono'");t.setAttribute('font-size','10');t.textContent=p.label;
+    g.appendChild(c);g.appendChild(t);
+    if(p.case){
+      // openable case node: lime core dot + pointer + hover affordance + navigate
+      const core=document.createElementNS(NS,'circle');core.setAttribute('r',1.8);core.setAttribute('fill','#C4F542');g.appendChild(core);
+      const arr=document.createElementNS(NS,'text');arr.setAttribute('text-anchor','middle');arr.setAttribute('y',-12);arr.setAttribute('x',0);arr.setAttribute('fill','#C4F542');arr.setAttribute('font-family',"'IBM Plex Mono'");arr.setAttribute('font-size','10');arr.setAttribute('dx',(p.label.length*5.4)+'');arr.textContent='↗';arr.style.opacity='0';g.appendChild(arr);
+      g.style.cursor='pointer';
+      g.addEventListener('mouseenter',()=>{c.setAttribute('r',7);c.setAttribute('stroke','#C4F542');arr.style.opacity='1';t.setAttribute('fill','#FAF9F5');});
+      g.addEventListener('mouseleave',()=>{c.setAttribute('r',5);if(!(active&&p.links.includes(active)))c.setAttribute('stroke','#7CA3FF');arr.style.opacity='0';if(!active||p.links.includes(active)){}});
+      g.addEventListener('click',()=>{window.location.href=p.case;});
+    }
+    p.g=g;p.c=c;p.t=t;svg.appendChild(g);
+  });
+  function setActive(id){
+    active=(active===id)?null:id;
+    const m=masses.find(x=>x.id===id);
+    masses.forEach(x=>{x.halo.setAttribute('stroke','rgba(196,245,66,'+(x.id===active?0.9:0.4)+')');x.halo.setAttribute('r',x.id===active?54:46);});
+    const linked=active?proj.filter(pp=>pp.links.includes(active)):[];
+    proj.forEach(p=>{
+      const on=active&&p.links.includes(active);
+      if(active){
+        if(on){const idx=linked.indexOf(p);const ang=(idx/linked.length)*6.283 - 1.0;const r=96;p.tx=m.x+Math.cos(ang)*r;p.ty=m.y+Math.sin(ang)*r;p.c.setAttribute('stroke','#C4F542');p.t.setAttribute('fill','#FAF9F5');p.g.style.opacity=1;}
+        else{p.tx=p.hx;p.ty=p.hy;p.c.setAttribute('stroke','#3a3a44');p.t.setAttribute('fill','#3a3a44');p.g.style.opacity=.35;}
+      }else{p.tx=p.hx;p.ty=p.hy;p.c.setAttribute('stroke','#7CA3FF');p.t.setAttribute('fill','#82828C');p.g.style.opacity=1;}
+    });
+    if(active){readout.innerHTML=`<span class="tag">CENTRE OF MASS</span><h3>${m.label}</h3><p>${m.ev}</p>`;}
+    else{readout.innerHTML=`<span class="tag">SELECT A MASS</span><h3>Four centres of gravity</h3><p>Each capability has pulled specific projects into orbit. Tap a mass to feel the pull — or tap a project marked with a lime core (◆) to open its full case study.</p>`;}
+  }
+  const reduceG=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function tick(){
+    proj.forEach(p=>{p.x+=(p.tx-p.x)*0.12;p.y+=(p.ty-p.y)*0.12;p.g.setAttribute('transform',`translate(${p.x},${p.y})`);
+      p.links.forEach(mid=>{const m=masses.find(x=>x.id===mid);const ln=lines[p.id+'-'+mid];ln.setAttribute('x1',p.x);ln.setAttribute('y1',p.y);ln.setAttribute('x2',m.x);ln.setAttribute('y2',m.y);
+        const lit=active&&mid===active&&p.links.includes(active);ln.setAttribute('stroke',lit?'rgba(196,245,66,0.5)':'rgba(255,255,255,0.06)');});
+    });
+    if(!reduceG)requestAnimationFrame(tick);
+  }
+  tick(); if(reduceG){for(let i=0;i<30;i++)proj.forEach(p=>{p.x+=(p.tx-p.x)*0.3;p.y+=(p.ty-p.y)*0.3;});tick();}
+})();
+
+/* ===== Work cards ===== */
+const WORK=[
+  {cli:'Siemens · Smart Mining',h:'Clustered eight operational gaps into four interventions — instead of fixing them one by one.',role:'Design Lead',m:'+67%',href:'case-smart-mining.html'},
+  {cli:'Siemens · #NextWork',h:'Built the operating system around the methodology — without rebuilding the methodology.',role:'Lead Product Designer',m:'72%',href:'case-nextwork.html'},
+  {cli:'John Deere · 0→1',h:'A wordless interface a 7-year-old masters, wrapped in a layer a parent can audit.',role:'Lead Product / UX',m:'91%',href:'case-deere-pioneers.html'},
+  {cli:'Microsoft Teams · BART',h:'Compressed the first five minutes of incident response — five tools into one.',role:'Lead Product Designer',m:'5→1',href:'case-incident-bart.html'},
+  {cli:'John Deere · India',h:'Stopped showing data and showed the next move — an offline-first decision assistant.',role:'Design Lead',m:'+17.3%',href:'case-khetmitra.html'},
+  {cli:'IBM · Power Systems',h:'Aligned four squads on one design language — without slowing any of them down.',role:'Product Design Manager',m:'−20%',href:'#work'}
+];
+const wg=document.getElementById('workgrid');
+WORK.forEach(w=>{const a=document.createElement('a');a.className='wcard reveal';a.href=w.href;
+  a.innerHTML=`<div class="top"><span class="cli">${w.cli}</span><span class="open">OPEN ↗</span></div><h3>${w.h}</h3><div class="meta"><span class="role">${w.role}</span><span class="m">${w.m}</span></div>`;
+  wg.appendChild(a);});
+
+/* reveals */
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
