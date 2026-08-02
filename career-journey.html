@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Journey — Anupam Sarkar — Anupam Sarkar</title>
+<meta name="description" content="Twelve years, five industries: Faraka to IBM. The career arc of Anupam Sarkar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#07070A; --ink-2:#0E0E13; --ink-3:#16161D; --ink-4:#1E1E27;
+  --cream:#FAF9F5; --muted:#82828C; --muted-2:#5A5A63;
+  --accent:#C4F542; --cool:#7CA3FF; --warm:#FF7A5C; --green:#9DD46A;
+  --line:rgba(255,255,255,0.07); --line-2:rgba(255,255,255,0.12);
+  --serif:'Instrument Serif',Georgia,serif; --sans:'Inter',-apple-system,sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--accent);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:920px;margin:0 auto;padding:0 32px;position:relative}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono .hl{color:var(--accent)}
+nav{position:fixed;top:0;left:0;right:0;z-index:40;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(7,7,10,.6);border-bottom:1px solid var(--line)}
+.nav-in{max-width:920px;margin:0 auto;padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:15px}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.back{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.back:hover{color:var(--accent)}
+header{padding:150px 0 40px}
+header .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cool);border:1px solid rgba(124,163,255,.3);border-radius:99px;padding:5px 11px;display:inline-block;margin-bottom:20px}
+header h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,5.4vw,60px);line-height:1.06;letter-spacing:-.012em}
+header h1 em{font-style:italic;color:var(--accent)}
+header .sub{margin-top:18px;max-width:640px;font-size:16.5px;color:var(--muted)}
+header .sub b{color:var(--cream);font-weight:600}
+.rolebar{display:flex;gap:18px;flex-wrap:wrap;margin-top:26px}
+.rolebar .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:6px 12px}
+.rolebar .chip b{color:var(--cream);font-weight:500}
+section{padding:44px 0}
+.sec-label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.cell{background:var(--ink-3);border:1px solid var(--line);border-radius:12px;padding:18px}
+.cell .n{font-family:var(--serif);font-size:30px;line-height:1;color:var(--accent)}
+.cell .l{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.45}
+.cell.cool .n{color:var(--cool)} .cell.warm .n{color:var(--warm)} .cell.green .n{color:var(--green)}
+.decision{background:var(--ink-3);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;padding:20px 22px;margin-top:14px}
+.decision h4{font-size:15.5px;font-weight:600;margin-bottom:10px}
+.decision .row{display:flex;gap:12px;font-size:13.5px;color:var(--muted);margin-top:7px}
+.decision .row b{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);min-width:80px;flex-shrink:0;padding-top:3px}
+.decision .row.res b{color:var(--green)}
+.timeline{border-left:1px solid var(--line-2);margin-left:8px;padding-left:30px;display:flex;flex-direction:column;gap:30px}
+.tstop{position:relative}
+.tstop::before{content:"";position:absolute;left:-35px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--ink);border:2px solid var(--accent)}
+.tstop .yr{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--cool)}
+.tstop h3{font-family:var(--serif);font-weight:400;font-size:24px;margin:5px 0 6px}
+.tstop p{font-size:14px;color:var(--muted);max-width:560px}
+.note{background:linear-gradient(180deg,rgba(25,28,20,.9),rgba(15,16,13,.92));border:1.5px solid rgba(196,245,66,.4);border-radius:14px;padding:24px 26px;margin-top:10px}
+.note .nl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:9px}
+.note .nl .live{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 1.8s infinite}
+.note p{font-size:14px;color:var(--muted)}
+.note p b{color:var(--cream);font-weight:600}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.actions a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--cream);border:1px solid var(--line-2);border-radius:8px;padding:11px 17px;transition:all .18s;display:flex;align-items:center;gap:8px}
+.actions a::after{content:"\2197";color:var(--accent)}
+.actions a:hover{border-color:var(--accent);background:rgba(196,245,66,.05)}
+.actions a.primary{background:var(--accent);color:var(--ink);border-color:var(--accent);font-weight:600}
+.actions a.primary::after{color:var(--ink)}
+footer{padding:60px 0 50px;border-top:1px solid var(--line);margin-top:50px}
+.colophon{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted-2);flex-wrap:wrap;gap:10px}
+@media (max-width:640px){header{padding:120px 0 30px}}
+</style>
+</head>
+<body>
+<nav><div class="nav-in">
+  <div class="brand"><span class="dot"></span>Anupam Sarkar</div>
+  <a class="back" href="index.html">&larr; Back to the console</a>
+</div></nav>
+<header><div class="wrap">
+  <span class="tag">CAREER TRAJECTORY &middot; 12 YEARS</span>
+  <h1>A drawing class in Faraka &rarr; <em>the system level at IBM.</em></h1>
+  <p class="sub">No year of the twelve dead-ends &mdash; each industry switch fed a durable capability the next role compounded. <b>The line only rises.</b></p>
+  <div class="rolebar"><span class="chip"><b>12</b> yrs indexed</span><span class="chip"><b>5</b> industries</span><span class="chip"><b>8</b> stops</span></div>
+</div></header>
+<section><div class="wrap">
+  <p class="sec-label">The arc</p>
+  <div class="timeline"><div class="tstop"><span class="yr">Faraka</span><h3>Where it starts</h3><p>A drawing class in Faraka. The first evidence that making things legible to people is a craft worth a life.</p></div><div class="tstop"><span class="yr">Architecture</span><h3>Learning systems in concrete</h3><p>Trained as an architect &mdash; space, structure and constraint. The habit of designing systems, not artifacts, starts here.</p></div><div class="tstop"><span class="yr">IIT</span><h3>Gold medal</h3><p>Postgraduate design at IIT, finishing with the gold medal. The switch from buildings to interfaces is complete.</p></div><div class="tstop"><span class="yr">TCS</span><h3>Volume &middot; 30+ MVPs</h3><p>Thirty-plus MVPs shipped. Speed, breadth and the discipline of shipping under enterprise constraints.</p></div><div class="tstop"><span class="yr">John Deere</span><h3>Field truth</h3><p>KhetMitra and the 0&rarr;1 portfolio. Learned to override briefs with field evidence &mdash; +17.3% yield, &minus;40% demo dependency.</p></div><div class="tstop"><span class="yr">Siemens</span><h3>Decision design</h3><p>Smart Mining and #NextWork. Clustering problems into fundable bets; 60&rarr;85% validation; killing concepts that test well but harm.</p></div><div class="tstop"><span class="yr">BT</span><h3>Scale</h3><p>Billing experiences for 500K+ business users; 95% cross-functional workshop alignment.</p></div><div class="tstop"><span class="yr">IBM</span><h3>The system level</h3><p>Product Design Manager, Power Systems. Four squads, one design language, &minus;20% UI drift, +35% first-pass approvals, 4 designers mentored.</p></div></div>
+</div></section>
+<section><div class="wrap">
+  <div class="note">
+  <div class="nl"><span class="live"></span>Case file &middot; indexing in progress</div>
+  <p>This is the <b>indexed trajectory</b> the agent resolves to. The full interactive journey &mdash; causal chain, org map, timeline and artifacts &mdash; is walked through <b>live, under NDA</b>. Numbers here are role-real and reshaped, never invented.</p>
+</div>
+  <div class="actions">
+  <a class="primary" href="mailto:ar.anupamsarkar@gmail.com">Request the full walk-through</a>
+  <a href="index.html#work">All indexed cases</a>
+</div>
+</div></section>
+<footer><div class="wrap">
+  <div class="colophon"><span>&copy; 2026 ANUPAM SARKAR &middot; BANGALORE</span><span>BUILT ON INTENT-FIRST UX</span></div>
+</div></footer>
+</body>
+</html>
