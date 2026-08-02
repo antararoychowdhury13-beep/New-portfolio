@@ -3,514 +3,851 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anupam Sarkar — Design Systems Agent</title>
-<meta name="description" content="An intent-first portfolio. Express what you want to know; it resolves.">
+<title>Anupam Sarkar — AI Product Design Leader</title>
+<meta name="description" content="An agentic portfolio. Ask Anupam's agent about his work, frameworks, and the products he's shipped.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#07070A; --ink-2:#0E0E13; --ink-3:#16161D; --ink-4:#1E1E27;
-  --cream:#FAF9F5; --muted:#82828C; --muted-2:#5A5A63;
-  --accent:#C4F542; --cool:#7CA3FF; --warm:#FF7A5C; --green:#9DD46A;
-  --line:rgba(255,255,255,0.07); --line-2:rgba(255,255,255,0.12);
-  --serif:'Instrument Serif',Georgia,serif; --sans:'Inter',-apple-system,sans-serif; --mono:'IBM Plex Mono',monospace;
+  --ink:#0A0D14;            /* deep space background */
+  --panel:#10141D;          /* raised surface */
+  --panel-2:#151A26;        /* card surface */
+  --line:#232A3A;           /* hairline borders */
+  --paper:#E9E7E0;          /* warm off-white text */
+  --muted:#8B93A5;          /* secondary text */
+  --dim:#5A6275;            /* tertiary / mono labels */
+  --signal:#6B8CFF;         /* IBM-heritage signal blue */
+  --signal-soft:rgba(107,140,255,.14);
+  --violet:#9D7BFF;         /* orb violet */
+  --cyan:#5FD4E8;           /* orb cyan edge */
+  --ok:#6FD39B;
+  --display:'Fraunces', serif;
+  --body:'Instrument Sans', system-ui, sans-serif;
+  --mono:'JetBrains Mono', monospace;
+  --r-lg:20px; --r-md:14px; --r-sm:10px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:80px}
-body{background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-::selection{background:var(--accent);color:var(--ink)}
-a{color:inherit;text-decoration:none}
-canvas#field{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;opacity:.55;pointer-events:none}
-.scrim{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 80% at 50% 0%,rgba(196,245,66,0.05),transparent 60%),linear-gradient(180deg,transparent,rgba(7,7,10,0.6) 80%,var(--ink))}
-.wrap{max-width:1180px;margin:0 auto;padding:0 32px;position:relative;z-index:2}
-.mono{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.mono .hl{color:var(--accent)}
-.mono .cl{color:var(--cool)}
+html,body{height:100%}
+body{
+  background:var(--ink); color:var(--paper);
+  font-family:var(--body); font-size:15.5px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+::selection{background:var(--signal-soft); color:var(--paper)}
+button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit}
+input{font-family:inherit; color:inherit}
+a{color:var(--signal); text-decoration:none}
+:focus-visible{outline:2px solid var(--signal); outline-offset:2px; border-radius:6px}
 
-/* nav */
-nav{position:fixed;top:0;left:0;right:0;z-index:40;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(7,7,10,.6);border-bottom:1px solid var(--line)}
-.nav-in{max-width:1180px;margin:0 auto;padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:15px}
-.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2.4s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.nav-links{display:flex;gap:24px}
-.nav-links a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .2s}
-.nav-links a:hover{color:var(--accent)}
-.nav-status{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--cool)}
+/* ============ APP FRAME ============ */
+#app{height:100vh; display:flex; flex-direction:column}
+.hidden{display:none !important}
 
-/* hero / console */
-.hero{padding:128px 0 70px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
-.sysbar{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:26px}
-.sysbar .chip-sys{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:6px 12px}
-.sysbar .chip-sys b{color:var(--cream);font-weight:500}
-.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6.6vw,86px);line-height:1.02;letter-spacing:-.015em;max-width:980px}
-.hero h1 em{font-style:italic;color:var(--accent)}
-.hero .sub{margin-top:22px;max-width:600px;font-size:17px;color:var(--muted)}
-.hero .sub b{color:var(--cream);font-weight:600}
+/* ============ LANDING ============ */
+#landing{height:100vh; display:flex; flex-direction:column; position:relative; overflow:hidden}
+.land-top{display:flex; align-items:center; justify-content:space-between; padding:22px 32px; z-index:3}
+.identity{display:flex; align-items:center; gap:12px}
+.identity .mini-orb{width:36px;height:36px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%, var(--cyan), var(--violet) 45%, #1B1440 78%);
+  box-shadow:0 0 18px rgba(157,123,255,.45)}
+.identity .id-name{font-weight:600; font-size:15px; letter-spacing:.01em}
+.identity .id-role{font-size:12.5px; color:var(--muted)}
+.land-top .top-links{display:flex; align-items:center; gap:18px}
+.link-quiet{font-size:14px; color:var(--muted); transition:color .2s}
+.link-quiet:hover{color:var(--paper)}
 
-/* console — highlighted chat box */
-.console-wrap{margin-top:42px;max-width:860px;position:relative}
-.console-label{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:13px}
-.console-label .live{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:pulse 1.8s infinite}
-.console-label .dim{color:var(--muted);letter-spacing:.06em;text-transform:none}
-.console{position:relative;background:linear-gradient(180deg,rgba(25,28,20,.92),rgba(15,16,13,.94));border:1.5px solid rgba(196,245,66,.55);border-radius:18px;padding:9px;box-shadow:0 0 0 1px rgba(196,245,66,.12),0 0 48px -6px rgba(196,245,66,.4),0 40px 120px -40px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);animation:consoleGlow 3.4s ease-in-out infinite}
-@keyframes consoleGlow{0%,100%{box-shadow:0 0 0 1px rgba(196,245,66,.12),0 0 40px -10px rgba(196,245,66,.30),0 40px 120px -40px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05)}50%{box-shadow:0 0 0 1px rgba(196,245,66,.24),0 0 64px -4px rgba(196,245,66,.52),0 40px 120px -40px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.06)}}
-.console-bar{display:flex;align-items:center;gap:12px;padding:17px 18px;background:rgba(7,7,10,.82);border-radius:12px;border:1px solid rgba(196,245,66,.22);transition:border-color .2s}
-.console:focus-within .console-bar{border-color:rgba(196,245,66,.6)}
-.console-bar .pr{font-family:var(--mono);color:var(--accent);font-size:19px;font-weight:600;animation:blink 1.1s steps(2) infinite}
-.console-bar input{flex:1;background:none;border:none;outline:none;color:var(--cream);font-family:var(--mono);font-size:14.5px;letter-spacing:.01em;caret-color:var(--accent)}
-.console-bar input::placeholder{color:#7d8a55;opacity:1}
-.console-bar .send{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--ink);background:var(--accent);border:none;border-radius:9px;padding:11px 18px;cursor:pointer;font-weight:700;transition:transform .15s,box-shadow .2s;box-shadow:0 0 22px -4px rgba(196,245,66,.65)}
-.console-bar .send:hover{transform:translateY(-1px);box-shadow:0 0 30px -2px rgba(196,245,66,.85)}
-.chips{display:flex;flex-wrap:wrap;gap:8px;padding:6px 8px 8px}
-.chips-lead{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:16px 8px 4px}
-.nudge{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--accent);padding:14px 12px 2px;display:flex;align-items:flex-start;gap:8px;animation:rise .5s ease}
-.nudge[hidden]{display:none}
-.chip{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);background:var(--ink-3);border:1px solid var(--line);border-radius:99px;padding:9px 15px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:8px}
-.chip::before{content:"→";color:var(--accent);opacity:.6}
-.chip:hover{color:var(--cream);border-color:var(--accent);background:rgba(196,245,66,.06)}
+.land-center{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; z-index:2; padding:0 24px}
 
-/* answer panel */
-.answer{margin:14px 8px 6px;min-height:0;overflow:hidden}
-.answer.empty{display:none}
-.a-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.a-head .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cool);border:1px solid rgba(124,163,255,.3);border-radius:99px;padding:5px 11px}
-.a-line{font-family:var(--mono);font-size:13px;color:var(--cool);min-height:20px}
-.a-line .cursor{display:inline-block;width:7px;height:14px;background:var(--cool);margin-left:2px;vertical-align:-2px;animation:blink 1s steps(2) infinite}
-@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
-.a-body{margin-top:18px;animation:rise .5s ease}
-@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.a-statement{font-family:var(--serif);font-size:clamp(22px,3vw,32px);line-height:1.18;max-width:720px;margin-bottom:8px}
-.a-statement em{font-style:italic;color:var(--accent)}
-.a-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:18px}
-.a-cell{background:var(--ink-3);border:1px solid var(--line);border-radius:12px;padding:16px}
-.a-cell .n{font-family:var(--serif);font-size:26px;line-height:1;color:var(--accent)}
-.a-cell .l{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.4}
-.a-cell.cool .n{color:var(--cool)} .a-cell.warm .n{color:var(--warm)} .a-cell.green .n{color:var(--green)}
-.decision{background:var(--ink-3);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;padding:18px 20px;margin-top:12px}
-.decision h4{font-size:15px;font-weight:600;margin-bottom:10px}
-.decision .row{display:flex;gap:10px;font-size:13.5px;color:var(--muted);margin-top:6px}
-.decision .row b{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);min-width:78px;flex-shrink:0;padding-top:3px}
-.decision .row.res b{color:var(--green)}
-.a-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
-.a-actions a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--cream);border:1px solid var(--line-2);border-radius:8px;padding:10px 16px;transition:all .18s;display:flex;align-items:center;gap:8px}
-.a-actions a::after{content:"↗";color:var(--accent)}
-.a-actions a:hover{border-color:var(--accent);background:rgba(196,245,66,.05)}
-.a-note{font-size:13px;color:var(--muted);margin-top:14px;max-width:640px}
-.a-prin{display:flex;flex-direction:column;gap:14px;margin-top:8px}
-.a-prin .p{display:flex;gap:14px;align-items:baseline}
-.a-prin .p .nm{font-family:var(--mono);color:var(--accent);font-size:12px}
-.a-prin .p .tx{font-size:15px}
+/* orbit field behind the orb */
+.orbit-field{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:1; pointer-events:none}
+.orbit{position:absolute; border:1px solid rgba(139,147,165,.10); border-radius:50%}
+.orbit.o1{width:420px;height:420px}
+.orbit.o2{width:640px;height:640px; border-color:rgba(139,147,165,.06)}
+.orbit.o3{width:880px;height:880px; border-color:rgba(139,147,165,.04)}
+.orbit .dot{position:absolute; top:-3px; left:50%; width:6px;height:6px;border-radius:50%; background:var(--signal); opacity:.7}
+.orbit.o1{animation:spin 46s linear infinite}
+.orbit.o2{animation:spin 78s linear infinite reverse}
+.orbit.o3{animation:spin 120s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* sections */
-section{padding:100px 0;position:relative;z-index:2}
-.sec-head{margin-bottom:44px}
-.sec-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(32px,4.4vw,52px);line-height:1.06;letter-spacing:-.01em;max-width:680px;margin-top:14px}
-.sec-head h2 em{font-style:italic;color:var(--accent)}
-.sec-head .lead{margin-top:14px;max-width:600px;color:var(--muted);font-size:15.5px}
+.orb{width:148px;height:148px;border-radius:50%; position:relative; margin-bottom:36px;
+  background:radial-gradient(circle at 34% 28%, var(--cyan) 0%, var(--violet) 42%, #241A55 72%, #120C2E 100%);
+  box-shadow:0 0 60px rgba(157,123,255,.35), 0 0 120px rgba(107,140,255,.18), inset 0 -12px 30px rgba(0,0,0,.35);
+  animation:breathe 5.5s ease-in-out infinite}
+.orb::after{content:''; position:absolute; inset:0; border-radius:50%;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='24' viewBox='0 0 40 24'%3E%3Cg fill='%23fff'%3E%3Crect x='2' y='10' width='2.5' height='4' rx='1.2'/%3E%3Crect x='8' y='6' width='2.5' height='12' rx='1.2'/%3E%3Crect x='14' y='2' width='2.5' height='20' rx='1.2'/%3E%3Crect x='20' y='7' width='2.5' height='10' rx='1.2'/%3E%3Crect x='26' y='4' width='2.5' height='16' rx='1.2'/%3E%3Crect x='32' y='9' width='2.5' height='6' rx='1.2'/%3E%3C/g%3E%3C/svg%3E") center/38px no-repeat}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
 
-/* gravity field */
-.field-stage{position:relative;background:linear-gradient(180deg,rgba(14,14,19,.7),rgba(10,10,14,.7));border:1px solid var(--line);border-radius:18px;overflow:hidden;display:grid;grid-template-columns:288px 1fr}
-.field-stage svg{display:block;width:100%;height:auto}
-.field-readout{padding:32px;border-right:1px solid var(--line);align-self:start}
-.field-readout .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
-.field-readout h3{font-family:var(--serif);font-size:25px;font-weight:400;margin:8px 0 10px;line-height:1.1}
-.field-readout p{font-size:13px;color:var(--muted);line-height:1.55}
-.field-hint{position:absolute;bottom:18px;right:22px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted-2)}
+.greet{font-family:var(--display); font-weight:340; font-size:clamp(34px, 4.6vw, 54px); line-height:1.15; text-align:center; letter-spacing:-.01em}
+.greet .accent{font-style:italic; color:var(--signal)}
+.greet-sub{margin-top:18px; max-width:560px; text-align:center; color:var(--muted); font-size:16px}
 
-/* work */
-.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.wcard{background:linear-gradient(180deg,rgba(20,20,27,.6),rgba(14,14,19,.6));border:1px solid var(--line);border-radius:14px;padding:26px;display:block;position:relative;transition:all .25s;overflow:hidden}
-.wcard::before{content:"";position:absolute;inset:0;background:radial-gradient(140% 100% at 0% 0%,rgba(196,245,66,.06),transparent 50%);opacity:0;transition:opacity .25s}
-.wcard:hover{border-color:var(--line-2);transform:translateY(-3px)}
-.wcard:hover::before{opacity:1}
-.wcard .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.wcard .cli{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.wcard .open{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--accent);opacity:0;transition:opacity .25s}
-.wcard:hover .open{opacity:1}
-.wcard h3{font-family:var(--serif);font-weight:400;font-size:23px;line-height:1.16;margin-bottom:16px}
-.wcard .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;padding-top:16px;border-top:1px solid var(--line)}
-.wcard .role{font-size:12px;color:var(--muted)}
-.wcard .m{font-family:var(--serif);font-size:24px;color:var(--accent);white-space:nowrap}
+.chip-row{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:34px}
+.chip{display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:999px;
+  border:1px solid var(--line); background:rgba(16,20,29,.65); font-size:14px; color:var(--paper);
+  transition:border-color .2s, background .2s, transform .15s}
+.chip:hover{border-color:var(--signal); background:var(--signal-soft); transform:translateY(-1px)}
+.chip svg{width:15px;height:15px; stroke:var(--signal); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
 
-/* footer */
-footer{padding:110px 0 60px;border-top:1px solid var(--line);position:relative;z-index:2;margin-top:40px}
-footer h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,5vw,66px);line-height:1.05;max-width:920px}
-footer h2 em{font-style:italic;color:var(--accent)}
-.foot-links{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap}
-.foot-links a{font-family:var(--mono);font-size:12px;letter-spacing:.04em;border:1px solid var(--line-2);border-radius:10px;padding:13px 22px;transition:all .2s;display:flex;align-items:center;gap:9px}
-.foot-links a.primary{background:var(--accent);color:var(--ink);border-color:var(--accent);font-weight:600}
-.foot-links a:hover{transform:translateY(-2px)}
-.foot-links a:not(.primary):hover{border-color:var(--accent)}
-.colophon{margin-top:60px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted-2);flex-wrap:wrap;gap:10px}
+.land-input-wrap{z-index:2; padding:0 24px 20px; display:flex; flex-direction:column; align-items:center; gap:10px}
+.ask-bar{width:min(760px,100%); display:flex; align-items:center; gap:10px; padding:8px 8px 8px 22px;
+  background:var(--panel); border:1px solid var(--line); border-radius:999px;
+  box-shadow:0 12px 40px rgba(0,0,0,.35); transition:border-color .2s}
+.ask-bar:focus-within{border-color:var(--signal)}
+.ask-bar input{flex:1; background:none; border:none; outline:none; font-size:15.5px; color:var(--paper)}
+.ask-bar input::placeholder{color:var(--dim)}
+.send-btn{width:42px;height:42px; border-radius:50%; display:grid; place-items:center; flex-shrink:0;
+  background:linear-gradient(135deg, var(--signal), var(--violet)); transition:transform .15s, box-shadow .2s}
+.send-btn:hover{transform:scale(1.06); box-shadow:0 0 18px rgba(107,140,255,.5)}
+.send-btn svg{width:17px;height:17px; stroke:#0A0D14; stroke-width:2.4; fill:none; stroke-linecap:round; stroke-linejoin:round}
+.hint{font-family:var(--mono); font-size:11.5px; color:var(--dim); letter-spacing:.03em}
+.hint kbd{border:1px solid var(--line); border-radius:4px; padding:1px 6px; margin:0 2px}
 
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
-.reveal.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.reveal{opacity:1;transform:none}canvas#field{opacity:.3}}
+/* ============ WORKSPACE (chat) ============ */
+#workspace{height:100vh; display:flex}
+.sidebar{width:264px; flex-shrink:0; border-right:1px solid var(--line); background:var(--panel);
+  display:flex; flex-direction:column; padding:22px 16px}
+.sidebar .identity{padding:0 8px 22px}
+.nav{display:flex; flex-direction:column; gap:4px}
+.nav-item{display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:var(--r-sm);
+  font-size:14.5px; color:var(--muted); text-align:left; transition:background .15s,color .15s; position:relative}
+.nav-item svg{width:17px;height:17px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.nav-item:hover{color:var(--paper); background:rgba(139,147,165,.07)}
+.nav-item.active{color:var(--paper); background:var(--signal-soft)}
+.nav-item.active::before{content:''; position:absolute; left:-16px; top:8px; bottom:8px; width:3px; border-radius:3px; background:var(--signal)}
+.sidebar .side-foot{margin-top:auto; padding:16px 8px 0; border-top:1px solid var(--line)}
+.side-foot .tagline{font-size:13px; color:var(--muted); line-height:1.55}
+.side-foot .spark{color:var(--violet); margin-bottom:8px; font-size:15px}
+
+.main{flex:1; display:flex; flex-direction:column; min-width:0}
+.main-top{display:flex; align-items:center; gap:14px; padding:18px 28px; border-bottom:1px solid var(--line)}
+.back-btn{width:36px;height:36px;border-radius:50%; border:1px solid var(--line); display:grid; place-items:center; transition:border-color .2s}
+.back-btn:hover{border-color:var(--signal)}
+.back-btn svg{width:16px;height:16px; stroke:var(--paper); stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round}
+.thread-title{font-weight:600; font-size:15px; display:flex; align-items:center; gap:9px}
+.thread-title .live{width:7px;height:7px;border-radius:50%; background:var(--signal); box-shadow:0 0 8px var(--signal)}
+.main-top .top-links{margin-left:auto}
+
+.thread{flex:1; overflow-y:auto; padding:30px 28px 10px; scroll-behavior:smooth}
+.thread-inner{max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:26px}
+.thread::-webkit-scrollbar{width:8px}
+.thread::-webkit-scrollbar-thumb{background:var(--line); border-radius:8px}
+
+.msg-user{align-self:flex-end; max-width:70%; background:var(--signal-soft); border:1px solid rgba(107,140,255,.25);
+  padding:13px 18px; border-radius:18px 18px 4px 18px; font-size:15px}
+.msg-user .stamp{display:block; text-align:right; font-family:var(--mono); font-size:10.5px; color:var(--dim); margin-top:6px}
+
+.msg-agent{display:flex; gap:14px; max-width:100%}
+.agent-avatar{width:34px;height:34px;border-radius:50%; flex-shrink:0; margin-top:2px;
+  background:radial-gradient(circle at 32% 30%, var(--cyan), var(--violet) 45%, #1B1440 78%);
+  box-shadow:0 0 12px rgba(157,123,255,.4)}
+.agent-body{flex:1; min-width:0; display:flex; flex-direction:column; gap:14px}
+.agent-text{font-size:15.5px}
+.agent-text strong{color:var(--paper)}
+.agent-text p+p{margin-top:10px}
+
+/* signature: agent state rail */
+.state-rail{font-family:var(--mono); font-size:11.5px; color:var(--dim); letter-spacing:.02em;
+  display:flex; align-items:center; gap:10px; padding:9px 14px; border:1px dashed var(--line);
+  border-radius:var(--r-sm); background:rgba(16,20,29,.5); width:fit-content; max-width:100%; overflow:hidden}
+.state-rail .pulse{width:6px;height:6px;border-radius:50%; background:var(--signal); flex-shrink:0; animation:blink 1s ease-in-out infinite}
+.state-rail.done .pulse{background:var(--ok); animation:none}
+.state-rail .steps{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.state-rail .steps b{color:var(--muted); font-weight:500}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* rich cards */
+.card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px}
+.p-card{background:var(--panel-2); border:1px solid var(--line); border-radius:var(--r-md); overflow:hidden;
+  display:flex; flex-direction:column; transition:border-color .2s, transform .18s; cursor:pointer; text-align:left}
+.p-card:hover{border-color:var(--signal); transform:translateY(-3px)}
+.p-thumb{height:130px; position:relative; overflow:hidden}
+.p-thumb svg{width:100%;height:100%; display:block}
+.p-card .p-body{padding:16px 16px 14px; display:flex; flex-direction:column; gap:7px; flex:1}
+.p-card h4{font-family:var(--display); font-weight:500; font-size:16.5px; letter-spacing:.005em}
+.p-card .p-desc{font-size:13.5px; color:var(--muted); line-height:1.5; flex:1}
+.p-card .p-foot{display:flex; align-items:center; justify-content:space-between; margin-top:8px}
+.tag{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; padding:4px 10px; border-radius:999px; border:1px solid var(--line); color:var(--muted)}
+.tag.blue{color:var(--signal); border-color:rgba(107,140,255,.35)}
+.tag.violet{color:var(--violet); border-color:rgba(157,123,255,.35)}
+.tag.green{color:var(--ok); border-color:rgba(111,211,155,.35)}
+.arrow-cta{width:32px;height:32px;border-radius:50%; border:1px solid var(--line); display:grid; place-items:center}
+.arrow-cta svg{width:14px;height:14px; stroke:var(--paper); stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round}
+
+/* case study card */
+.case{background:var(--panel-2); border:1px solid var(--line); border-radius:var(--r-lg); padding:26px}
+.case .case-kicker{font-family:var(--mono); font-size:11px; letter-spacing:.12em; color:var(--signal); text-transform:uppercase; margin-bottom:10px}
+.case h3{font-family:var(--display); font-weight:420; font-size:27px; letter-spacing:-.01em; margin-bottom:8px}
+.case .case-sub{color:var(--muted); font-size:14.5px; max-width:640px}
+.case .tag-row{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 20px}
+.case-cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:0; border-top:1px solid var(--line)}
+.case-col{padding:18px 20px 4px 0}
+.case-col+.case-col{border-left:1px solid var(--line); padding-left:20px}
+.case-col h5{display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; margin-bottom:8px}
+.case-col h5 svg{width:15px;height:15px; stroke:var(--signal); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.case-col p, .case-col li{font-size:13.5px; color:var(--muted); line-height:1.55}
+.case-col ul{list-style:none}
+.case-col li{padding-left:16px; position:relative; margin-bottom:5px}
+.case-col li::before{content:'✓'; position:absolute; left:0; color:var(--ok); font-size:11px}
+.impact-line{display:flex; align-items:baseline; gap:10px; margin-bottom:7px}
+.impact-line .num{font-family:var(--display); font-size:22px; color:var(--signal); font-weight:500; min-width:64px}
+.impact-line .lbl{font-size:12.5px; color:var(--muted)}
+.placeholder-note{font-family:var(--mono); font-size:10.5px; color:var(--dim); margin-top:10px}
+
+/* follow-up chips inside thread */
+.followups{display:flex; flex-wrap:wrap; gap:9px}
+.followups .f-label{width:100%; font-size:13px; color:var(--dim)}
+.chip.small{padding:8px 15px; font-size:13.5px}
+
+/* composer */
+.composer{padding:14px 28px 10px}
+.composer .ask-bar{margin:0 auto; box-shadow:none}
+.disclaimer{text-align:center; font-size:11.5px; color:var(--dim); padding:8px 0 14px}
+
+/* typing dots */
+.typing{display:inline-flex; gap:5px; padding:4px 0}
+.typing span{width:7px;height:7px;border-radius:50%; background:var(--muted); animation:tp 1.2s ease-in-out infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes tp{0%,100%{opacity:.25; transform:translateY(0)}50%{opacity:1; transform:translateY(-3px)}}
+
+/* framework cards */
+.fw-card{background:var(--panel-2); border:1px solid var(--line); border-radius:var(--r-md); padding:20px}
+.fw-card .fw-code{font-family:var(--mono); font-size:11px; color:var(--violet); letter-spacing:.1em; margin-bottom:8px}
+.fw-card h4{font-family:var(--display); font-weight:480; font-size:19px; margin-bottom:8px}
+.fw-card p{font-size:13.5px; color:var(--muted)}
+
+/* about card */
+.about-card{background:var(--panel-2); border:1px solid var(--line); border-radius:var(--r-lg); padding:24px}
+.about-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin-top:16px}
+.stat{border:1px solid var(--line); border-radius:var(--r-sm); padding:14px}
+.stat .s-num{font-family:var(--display); font-size:24px; color:var(--signal)}
+.stat .s-lbl{font-size:12.5px; color:var(--muted); margin-top:2px}
+.timeline{margin-top:18px; border-top:1px solid var(--line); padding-top:14px}
+.tl-row{display:flex; gap:14px; padding:7px 0; font-size:13.5px}
+.tl-row .tl-when{font-family:var(--mono); font-size:11px; color:var(--dim); min-width:110px; padding-top:3px}
+.tl-row .tl-what b{color:var(--paper); font-weight:600}
+.tl-row .tl-what span{color:var(--muted)}
+
+/* connect card */
+.connect-card{background:var(--panel-2); border:1px solid var(--line); border-radius:var(--r-lg); padding:24px; display:flex; flex-direction:column; gap:12px}
+.connect-row{display:flex; align-items:center; gap:14px; padding:12px 16px; border:1px solid var(--line); border-radius:var(--r-sm); transition:border-color .2s}
+.connect-row:hover{border-color:var(--signal)}
+.connect-row svg{width:18px;height:18px; stroke:var(--signal); fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.connect-row .c-label{font-size:14px; font-weight:600}
+.connect-row .c-val{font-family:var(--mono); font-size:12px; color:var(--muted); margin-left:auto}
+
+/* detailed case study link */
+.cs-link{display:inline-flex; align-items:center; gap:8px; margin-top:6px; font-size:13.5px; font-weight:600;
+  color:var(--signal); border-bottom:1px dashed rgba(107,140,255,.4); padding-bottom:2px; width:fit-content; cursor:pointer; transition:color .2s, border-color .2s}
+.cs-link:hover{color:var(--cyan); border-color:var(--cyan)}
+.cs-link svg{width:13px;height:13px; stroke:currentColor; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round}
+.cs-link .lock{width:12px;height:12px; opacity:.8}
+.p-card .cs-link{font-size:12.5px; margin-top:2px}
+
+/* password gate modal */
+.gate-overlay{position:fixed; inset:0; z-index:80; display:flex; align-items:center; justify-content:center;
+  background:rgba(6,8,13,.72); backdrop-filter:blur(6px); opacity:0; pointer-events:none; transition:opacity .2s}
+.gate-overlay.show{opacity:1; pointer-events:auto}
+.gate{width:min(400px, calc(100% - 40px)); background:var(--panel); border:1px solid var(--line);
+  border-radius:var(--r-lg); padding:28px; text-align:center; transform:translateY(8px); transition:transform .2s}
+.gate-overlay.show .gate{transform:translateY(0)}
+.gate .gate-orb{width:52px;height:52px;border-radius:50%; margin:0 auto 16px;
+  background:radial-gradient(circle at 32% 30%, var(--cyan), var(--violet) 45%, #1B1440 78%);
+  box-shadow:0 0 24px rgba(157,123,255,.4); display:grid; place-items:center}
+.gate .gate-orb svg{width:20px;height:20px; stroke:#fff; stroke-width:1.8; fill:none; stroke-linecap:round; stroke-linejoin:round}
+.gate h4{font-family:var(--display); font-weight:460; font-size:21px; margin-bottom:6px}
+.gate .gate-sub{font-size:13.5px; color:var(--muted); margin-bottom:18px}
+.gate .gate-sub b{color:var(--paper); font-weight:600}
+.gate form{display:flex; gap:8px}
+.gate input{flex:1; background:var(--ink); border:1px solid var(--line); border-radius:var(--r-sm);
+  padding:11px 14px; font-size:14.5px; outline:none; transition:border-color .2s; font-family:var(--mono); letter-spacing:.06em}
+.gate input:focus{border-color:var(--signal)}
+.gate .unlock-btn{padding:11px 18px; border-radius:var(--r-sm); font-weight:600; font-size:14px; color:#0A0D14;
+  background:linear-gradient(135deg, var(--signal), var(--violet)); transition:transform .15s}
+.gate .unlock-btn:hover{transform:scale(1.03)}
+.gate .gate-err{font-family:var(--mono); font-size:11.5px; color:#FF8A8A; margin-top:12px; min-height:16px}
+.gate .gate-cancel{margin-top:12px; font-size:12.5px; color:var(--dim)}
+.gate .gate-cancel:hover{color:var(--muted)}
+.gate.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+
+/* mobile */
+.menu-btn{display:none; width:38px;height:38px;border-radius:var(--r-sm); border:1px solid var(--line); place-items:center}
+.menu-btn svg{width:18px;height:18px; stroke:var(--paper); stroke-width:2; fill:none; stroke-linecap:round}
 @media (max-width:860px){
-  .work-grid{grid-template-columns:1fr}
-  .nav-links{display:none}
-  .hero{padding:104px 0 60px;min-height:auto}
-  section{padding:72px 0}
-  .field-readout{position:static;max-width:none;padding:24px;border-right:none;border-bottom:1px solid var(--line)}
-  .field-stage{grid-template-columns:1fr}
-  .field-hint{display:none}
-  .a-grid{grid-template-columns:1fr 1fr}
+  .sidebar{position:fixed; z-index:40; height:100vh; transform:translateX(-100%); transition:transform .25s ease}
+  .sidebar.open{transform:translateX(0); box-shadow:24px 0 60px rgba(0,0,0,.5)}
+  .menu-btn{display:grid}
+  .msg-user{max-width:88%}
+  .case-cols{grid-template-columns:1fr}
+  .case-col+.case-col{border-left:none; border-top:1px solid var(--line); padding-left:0; padding-top:16px}
+  .orbit.o2,.orbit.o3{display:none}
+  .land-top{padding:16px 18px}
+  .thread{padding:22px 16px 10px}
+  .composer{padding:10px 14px 6px}
+}
+@media (prefers-reduced-motion:reduce){
+  .orb,.orbit,.state-rail .pulse,.typing span{animation:none !important}
 }
 </style>
 </head>
 <body>
-<canvas id="field"></canvas>
-<div class="scrim"></div>
+<div id="app">
 
-<nav><div class="nav-in">
-  <div class="brand"><span class="dot"></span>Anupam Sarkar</div>
-  <div class="nav-links">
-    <a href="#top">Console</a><a href="#gravity">Field</a><a href="#work">Work</a><a href="#contact">Contact</a>
+<!-- ================= LANDING ================= -->
+<section id="landing">
+  <div class="orbit-field">
+    <div class="orbit o1"><span class="dot"></span></div>
+    <div class="orbit o2"><span class="dot"></span></div>
+    <div class="orbit o3"><span class="dot"></span></div>
   </div>
-  <div class="nav-status">● AVAILABLE · Q1 2026</div>
-</div></nav>
 
-<header class="hero" id="top"><div class="wrap">
-  <div class="sysbar reveal">
-    <span class="mono"><span class="hl">◆</span> Design-Systems Agent · v1.0</span>
-    <span class="chip-sys"><b>12</b> yrs indexed</span>
-    <span class="chip-sys"><b>5</b> industries</span>
-    <span class="chip-sys"><b>6</b> cases</span>
-    <span class="chip-sys"><b>4</b> reports led</span>
-  </div>
-  <h1 class="reveal">I turn ambiguous problems into <em>design systems leaders can act on.</em></h1>
-  <p class="sub reveal"><b>Product Design Manager, IBM.</b> Don't browse — ask. This portfolio runs on Intent-First UX, a framework I built: express what you want to know, and it resolves to the evidence.</p>
-
-  <div class="console-wrap reveal">
-    <div class="console-label"><span class="live"></span>Ask the agent about my work<span class="dim">— it answers with real evidence, not a menu</span></div>
-    <div class="console" id="console">
-      <div class="console-bar">
-        <span class="pr">›</span>
-        <input id="cinput" type="text" autocomplete="off" spellcheck="false" placeholder="Ask: 'prove leadership'">
-        <button class="send" id="csend">RESOLVE</button>
-      </div>
-      <div class="nudge" id="nudge" hidden></div>
-      <div class="chips-lead">New here? Tap a question to begin →</div>
-      <div class="chips" id="chips"></div>
-      <div class="answer empty" id="answer">
-        <div class="a-head"><span class="tag" id="atag">RESOLVED</span></div>
-        <div class="a-line" id="aline"></div>
-        <div class="a-body" id="abody"></div>
+  <header class="land-top">
+    <div class="identity">
+      <div class="mini-orb" aria-hidden="true"></div>
+      <div>
+        <div class="id-name">Anupam Sarkar</div>
+        <div class="id-role">AI Product Design Leader · IBM</div>
       </div>
     </div>
-  </div>
-</div></header>
+    <nav class="top-links">
+      <a class="link-quiet" href="career-journey.html">Career journey</a>
+      <a class="link-quiet" href="#" onclick="openTopic('connect');return false;">Resume</a>
+    </nav>
+  </header>
 
-<section id="gravity"><div class="wrap">
-  <div class="sec-head reveal">
-    <p class="mono"><span class="hl">01</span> · Capability field</p>
-    <h2>Twelve years as <em>a gravitational field.</em></h2>
-    <p class="lead">A nod to GRAVITY — a spatial UI paradigm I'm prototyping. Tap a capability mass: the projects it pulled into being gravitate toward it, and the connections light up. The work isn't a list — it's a field with centres of mass.</p>
-  </div>
-  <div class="field-stage reveal">
-    <div class="field-readout" id="readout">
-      <span class="tag">SELECT A MASS</span>
-      <h3>Four centres of gravity</h3>
-      <p>Each capability has pulled specific projects into orbit. Tap a mass to feel the pull — or tap a project marked with a lime core (◆) to open its full case study.</p>
+  <div class="land-center">
+    <div class="orb" role="img" aria-label="Anupam's portfolio agent"></div>
+    <h1 class="greet">Hi, I'm <span class="accent">Anupam</span>.<br>What would you like to explore?</h1>
+    <p class="greet-sub">I'm a Product Design Manager at IBM with 12 years across five industries. Ask my agent about my work, my frameworks, or the decisions behind the products I've shipped.</p>
+    <div class="chip-row">
+      <button class="chip" onclick="openTopic('about')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>About me</button>
+      <button class="chip" onclick="openTopic('work')"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>My work</button>
+      <button class="chip" onclick="openTopic('frameworks')"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>Design frameworks</button>
+      <button class="chip" onclick="openTopic('projects')"><svg viewBox="0 0 24 24"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7.6L12 12.5l8.7-4.9M12 22.1V12.5"/></svg>0→1 projects</button>
+      <button class="chip" onclick="openTopic('connect')"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Let's connect</button>
     </div>
-    <svg id="gsvg" viewBox="0 0 1000 560" role="img" aria-label="Interactive gravitational capability field"></svg>
-    <div class="field-hint">◆ = OPENABLE CASE · TAP A MASS TO GRAVITATE</div>
   </div>
-</div></section>
 
-<section id="work"><div class="wrap">
-  <div class="sec-head reveal">
-    <p class="mono"><span class="hl">02</span> · Indexed cases</p>
-    <h2>Six decisions the agent can <em>open in full.</em></h2>
-    <p class="lead">Each links to a manager-altitude case study — causal chain, org map, timeline, artifacts.</p>
+  <div class="land-input-wrap">
+    <form class="ask-bar" onsubmit="landingAsk(event)">
+      <input id="landingInput" type="text" placeholder="Ask me anything…" autocomplete="off" aria-label="Ask Anupam's agent anything">
+      <button class="send-btn" type="submit" aria-label="Send">
+        <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </form>
+    <div class="hint">press <kbd>/</kbd> to focus · answers resolve from indexed case files</div>
   </div>
-  <div class="work-grid" id="workgrid"></div>
-</div></section>
+</section>
 
-<footer id="contact"><div class="wrap">
-  <h2 class="reveal">Hiring for a design leader who works at the <em>system level?</em> The agent's ready when you are.</h2>
-  <div class="foot-links reveal">
-    <a class="primary" href="mailto:ar.anupamsarkar@gmail.com">ar.anupamsarkar@gmail.com</a>
-    <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="career-journey.html">Career journey</a>
+<!-- ================= WORKSPACE ================= -->
+<section id="workspace" class="hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="identity">
+      <div class="mini-orb" aria-hidden="true"></div>
+      <div>
+        <div class="id-name">Anupam Sarkar</div>
+        <div class="id-role">AI Product Design Leader</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-nav="chat" onclick="navClick('chat')"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z"/></svg>Chat</button>
+      <button class="nav-item" data-nav="about" onclick="navClick('about')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>About me</button>
+      <button class="nav-item" data-nav="work" onclick="navClick('work')"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>My work</button>
+      <button class="nav-item" data-nav="frameworks" onclick="navClick('frameworks')"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>Design frameworks</button>
+      <button class="nav-item" data-nav="projects" onclick="navClick('projects')"><svg viewBox="0 0 24 24"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7.6L12 12.5l8.7-4.9M12 22.1V12.5"/></svg>0→1 projects</button>
+      <button class="nav-item" data-nav="connect" onclick="navClick('connect')"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Let's connect</button>
+    </nav>
+    <div class="side-foot">
+      <div class="spark">✦</div>
+      <div class="tagline">Turning ambiguous problems into design systems leaders can act on.</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="main-top">
+      <button class="menu-btn" onclick="toggleSidebar()" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <button class="back-btn" onclick="goHome()" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <div class="thread-title"><span class="live"></span><span id="threadTitle">Chat with Anupam's agent</span></div>
+      <nav class="top-links"><a class="link-quiet" href="career-journey.html">Career journey</a></nav>
+    </header>
+
+    <div class="thread" id="thread"><div class="thread-inner" id="threadInner"></div></div>
+
+    <div class="composer">
+      <form class="ask-bar" onsubmit="composerAsk(event)">
+        <input id="composerInput" type="text" placeholder="Ask anything about my work, process, or impact…" autocomplete="off" aria-label="Message the agent">
+        <button class="send-btn" type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+      </form>
+      <div class="disclaimer">This agent speaks for Anupam's portfolio. Numbers are role-real and reshaped, never invented.</div>
+    </div>
   </div>
-  <div class="colophon"><span>© 2026 ANUPAM SARKAR · BANGALORE</span><span>BUILT ON INTENT-FIRST UX · YOU JUST USED IT</span></div>
-</div></footer>
+</section>
 
+</div>
+
+<!-- ================= PASSWORD GATE ================= -->
+<div class="gate-overlay" id="gateOverlay" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div class="gate" id="gateBox">
+    <div class="gate-orb"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div>
+    <h4 id="gateTitle">Protected case study</h4>
+    <div class="gate-sub">Enter the password to open <b id="gateProject"></b>.<br>Don't have it? Reach me via <a href="#" onclick="closeGate(); openTopic('connect'); return false;">Let's connect</a>.</div>
+    <form onsubmit="tryUnlock(event)">
+      <input id="gateInput" type="password" placeholder="Password" autocomplete="off" aria-label="Case study password">
+      <button class="unlock-btn" type="submit">Unlock</button>
+    </form>
+    <div class="gate-err" id="gateErr"></div>
+    <button class="gate-cancel" type="button" onclick="closeGate()">Cancel</button>
+  </div>
+</div>
 <script>
-/* ===== Ambient gravity-field background ===== */
-(function(){
-  const c=document.getElementById('field'), x=c.getContext('2d');
-  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let W,H,pts;
-  function size(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;}
-  size();
-  const N=Math.min(46,Math.floor(innerWidth/34));
-  pts=Array.from({length:N},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.18*devicePixelRatio,vy:(Math.random()-.5)*.18*devicePixelRatio}));
-  function frame(){
-    x.clearRect(0,0,W,H);
-    for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;}
-    for(let i=0;i<N;i++){
-      for(let j=i+1;j<N;j++){
-        const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy),max=130*devicePixelRatio;
-        if(d<max){x.strokeStyle='rgba(196,245,66,'+(0.14*(1-d/max))+')';x.lineWidth=devicePixelRatio;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}
-      }
-    }
-    for(const p of pts){x.fillStyle='rgba(130,200,255,0.5)';x.beginPath();x.arc(p.x,p.y,1.3*devicePixelRatio,0,7);x.fill();}
-    if(!reduce)requestAnimationFrame(frame);
-  }
-  frame();
-  addEventListener('resize',()=>{size();});
-})();
-
-/* ===== Agent console ===== */
-const INTENTS={
-  leadership:{label:'Prove leadership altitude',tag:'LEADERSHIP ALTITUDE',
-    line:'resolving → organizational reach + decision ownership…',
-    body:()=>`<div class="a-statement">Reach <em>two layers up and one down</em> — and own the calls in between.</div>
-      <div class="a-grid">
-        <div class="a-cell"><div class="n">4 / 4</div><div class="l">designers mentored across squads · IBM</div></div>
-        <div class="a-cell"><div class="n">+35%</div><div class="l">first-pass approvals via 3-in-a-box governance</div></div>
-        <div class="a-cell cool"><div class="n">95%</div><div class="l">cross-functional workshop alignment · BT</div></div>
-        <div class="a-cell green"><div class="n">3 layers</div><div class="l">Ministry leadership → mine floor · Siemens</div></div>
-      </div>
-      <div class="a-actions"><a href="case-smart-mining.html">Open Smart Mining org map</a><a href="case-nextwork.html">Open #NextWork reach</a></div>`},
-  impact:{label:'Show measurable impact',tag:'QUANTIFIED OUTCOMES',
-    line:'resolving → quantified outcomes across 5 industries…',
-    body:()=>`<div class="a-grid">
-        <div class="a-cell"><div class="n">−20%</div><div class="l">UI drift · IBM Power Systems</div></div>
-        <div class="a-cell cool"><div class="n">60→85%</div><div class="l">prototype validation · Siemens</div></div>
-        <div class="a-cell warm"><div class="n">500K+</div><div class="l">business users · BT billing</div></div>
-        <div class="a-cell green"><div class="n">+17.3%</div><div class="l">crop yield · KhetMitra pilot</div></div>
-        <div class="a-cell"><div class="n">67%</div><div class="l">faster safety decisions · Smart Mining</div></div>
-        <div class="a-cell cool"><div class="n">−40%</div><div class="l">demo dependency · John Deere</div></div>
-        <div class="a-cell warm"><div class="n">30+</div><div class="l">MVPs shipped · TCS</div></div>
-        <div class="a-cell green"><div class="n">+40%</div><div class="l">GTM acceleration · John Deere</div></div>
-      </div>
-      <p class="a-note">Numbers are role-real and reshaped, never invented. Tier-2 figures are walked through live under NDA.</p>`},
-  decision:{label:'Show the hardest decision',tag:'HIGHEST-COST TRADE-OFF',
-    line:'resolving → highest-cost trade-offs in the archive…',
-    body:()=>`<div class="decision"><h4>Killed a concept that tested well — Siemens Smart Mining</h4>
-        <div class="row"><b>Why</b><span>The alert-centric concept (Concept C) amplified the exact alert fatigue it was meant to cure.</span></div>
-        <div class="row"><b>Trade-off</b><span>Threw away a fast-validating concept and absorbed a week-7 timeline hit to pivot to a spatial canvas.</span></div>
-        <div class="row res"><b>Result</b><span>67% faster decisions · 240→18 daily alerts · SUS 92.</span></div></div>
-      <div class="decision"><h4>Overrode the brief — KhetMitra / John Deere India</h4>
-        <div class="row"><b>Why</b><span>Field truth: not one farmer opened more than two data sources before deciding. A dashboard would add load.</span></div>
-        <div class="row"><b>Trade-off</b><span>Contradicted the stakeholder ask for a dashboard; had to re-sell leadership on a decision assistant.</span></div>
-        <div class="row res"><b>Result</b><span>41→87% task completion · +17.3% yield · funded to phase 2.</span></div></div>
-      <div class="a-actions"><a href="case-smart-mining.html">Open the pivot</a><a href="case-khetmitra.html">Open the override</a></div>`},
-  arc:{label:'Walk the 12-year arc',tag:'CAREER TRAJECTORY',
-    line:'resolving → trajectory, Faraka → IBM…',
-    body:()=>`<div class="a-statement">A drawing class in Faraka → architecture → IIT gold → TCS → Deere → Siemens → BT → <em>IBM.</em></div>
-      <p class="a-note">No year of the twelve dead-ends — each industry switch fed a durable capability the next role compounded. The line only rises.</p>
-      <div class="a-actions"><a href="career-journey.html">Walk the interactive journey</a></div>`},
-  vp:{label:'Why VP-ready?',tag:'READINESS SYNTHESIS',
-    line:'resolving → readiness synthesis…',
-    body:()=>`<div class="a-statement">Thinks in <em>decisions, not deliverables.</em> Designs how teams operate, not just what they ship.</div>
-      <div class="a-prin">
-        <div class="p"><span class="nm">01</span><span class="tx">Cluster problems, don't enumerate them — fund four bets, not forty tickets.</span></div>
-        <div class="p"><span class="nm">02</span><span class="tx">Design the operating system — governance, critique, decision rights — not only the screens.</span></div>
-        <div class="p"><span class="nm">03</span><span class="tx">Reach two layers up and one down — exec framing, cross-functional alignment, frontline evidence.</span></div>
-      </div>
-      <p class="a-note">Available Q1 2026 for VP of Design / Head of Product Design / Director-level mandates.</p>`},
-  ifu:{label:'What is Intent-First UX?',tag:'ORIGINAL FRAMEWORK',
-    line:'resolving → original framework you are currently inside…',
-    body:()=>`<div class="a-statement">Every UI framework starts <em>after</em> intent. Intent-First UX starts before it.</div>
-      <p class="a-note">IFU structurally pre-resolves the interface to the most probable user outcome before conscious action — four stages: <b style="color:var(--cream)">Sense → Morph → Confirm → Escape.</b> This portfolio is a working demonstration: you expressed an intent, and it resolved. That's the framework, running.</p>
-      <div class="a-actions"><a href="#gravity">See GRAVITY, its spatial sibling</a></div>`}
+/* =========================================================
+   EDIT HERE — detailed case study links & passwords
+   ---------------------------------------------------------
+   For each project:
+     url : the full case study page (same-repo pages here)
+     pw  : password required to open it, or null for none.
+   ========================================================= */
+const CASE_LINKS = {
+  mining:    { url:"case-smart-mining.html",   pw:null },
+  nextwork:  { url:"case-nextwork.html",       pw:null },
+  bart:      { url:"case-incident-bart.html",  pw:null },
+  khetmitra: { url:"case-khetmitra.html",      pw:null },
+  pioneers:  { url:"case-deere-pioneers.html", pw:null }
 };
-const ORDER=['leadership','impact','decision','arc','vp','ifu'];
-const KW={leadership:['lead','leader','manage','team','mentor','altitude','senior','director'],impact:['impact','metric','number','result','outcome','roi','data','measure','proof'],decision:['decision','hard','trade','tough','difficult','kill','pivot','choice','call'],arc:['arc','journey','career','story','12','twelve','years','history','path','timeline'],vp:['vp','ready','head','hire','fit','why','leadership role','strategy'],ifu:['intent','ifu','framework','gravity','invent','original','philosophy','first']};
 
-const chipsEl=document.getElementById('chips'), ansEl=document.getElementById('answer'),
-      tagEl=document.getElementById('atag'), lineEl=document.getElementById('aline'),
-      bodyEl=document.getElementById('abody'), input=document.getElementById('cinput');
-ORDER.forEach(k=>{const b=document.createElement('button');b.className='chip';b.textContent=INTENTS[k].label;b.onclick=()=>{markActed();resolve(k);};chipsEl.appendChild(b);});
+/* ======================= DATA ======================= */
+const PROJECTS = {
+  ibm: {
+    title:"One Design Language, Four Squads",
+    kicker:"IBM · Power Systems",
+    desc:"Aligned four squads on a single design language — governance, tokens and critique cadence — without slowing any of them down.",
+    tag:{t:"Enterprise", c:"blue"},
+    thumb:"ibm",
+    challenge:"Four squads shipping into one platform, each drifting toward its own patterns. Every divergence became rework, inconsistency, and slower reviews.",
+    role:"Product Design Manager — design governance, pattern library and tokens, critique cadence, and mentorship across squads.",
+    did:["Installed a shared design language and pattern governance","Set up 3-in-a-box decision-making with PM and engineering","Mentored 4 designers across the 4 squads"],
+    impact:[["−20%","UI drift across the platform"],["+35%","First-pass design approvals"],["4 / 4","Designers mentored across squads"]],
+    note:"Full case walked through live, under NDA."
+  },
+  mining: {
+    title:"Smart Mining",
+    kicker:"Siemens · Industrial safety",
+    desc:"Clustered eight operational gaps into four fundable interventions — and killed a concept that tested well because it amplified alert fatigue.",
+    tag:{t:"Enterprise", c:"blue"},
+    thumb:"mining",
+    challenge:"A safety-critical control environment drowning in alerts — 240 a day. Fixing eight operational gaps one by one would never get funded or land.",
+    role:"Design Lead — reaching three organizational layers, from Ministry leadership to the mine floor.",
+    did:["Clustered eight gaps into four fundable interventions","Killed the alert-centric concept despite good test results","Pivoted to a spatial canvas, absorbing a week-7 timeline hit"],
+    impact:[["67%","Faster safety decisions"],["240→18","Daily alerts after redesign"],["SUS 92","System usability score"]],
+    note:""
+  },
+  nextwork: {
+    title:"#NextWork",
+    kicker:"Siemens · Future of work",
+    desc:"Built the operating system around a transformation methodology — governance, critique cadence and decision rights — without rebuilding the methodology.",
+    tag:{t:"Enterprise", c:"blue"},
+    thumb:"nextwork",
+    challenge:"A workplace-transformation methodology that worked in workshops but had no product operating system around it — unclear decision rights, no critique cadence.",
+    role:"Lead Product Designer — reaching two layers up and one down.",
+    did:["Designed governance and rituals instead of more screens","Installed the 3-in-a-box operating model","Made decision rights explicit across functions"],
+    impact:[["72%","Methodology adoption across pilots"],["95%","Cross-functional workshop alignment"],["2↑ 1↓","Layers of organizational reach"]],
+    note:""
+  },
+  bart: {
+    title:"BART — Incident Response",
+    kicker:"Microsoft Teams · Incident response",
+    desc:"Compressed the first five minutes of incident response — five tools collapsed into one surface inside Teams.",
+    tag:{t:"Enterprise", c:"blue"},
+    thumb:"bart",
+    challenge:"When an incident fires, responders lost their first five minutes stitching context across five separate tools. Every second re-establishing context is a second not responding.",
+    role:"Lead Product Designer — triage-speed-first interaction model inside Microsoft Teams.",
+    did:["Collapsed triage, comms and context into a single surface","Designed one shared context pane for all responders","Said no to feature parity with the five replaced tools"],
+    impact:[["5→1","Tools collapsed into one surface"],["First 5 min","Of response compressed"],["0","Context hand-off hops at triage"]],
+    note:""
+  },
+  khetmitra: {
+    title:"KhetMitra",
+    kicker:"John Deere India · AgTech",
+    desc:"The brief asked for a farm-data dashboard. Field research said otherwise — so I built an offline-first decision assistant that raised crop yield 17.3%.",
+    tag:{t:"Field product", c:"green"},
+    thumb:"khetmitra",
+    challenge:"Not one farmer opened more than two data sources before deciding. A dashboard would add cognitive load, not remove it — but the stakeholder ask was a dashboard.",
+    role:"Design Lead — field research, decision-assistant model, and re-selling leadership on the override.",
+    did:["Overrode the brief with field evidence","Designed an offline-first decision assistant: the next move, not the data","Validated with smallholder farmers in pilot"],
+    impact:[["+17.3%","Crop yield in pilot"],["41→87%","Task completion"],["Phase 2","Funded on pilot results"]],
+    note:""
+  },
+  pioneers: {
+    title:"Farm Pioneers",
+    kicker:"John Deere · 0→1",
+    desc:"A wordless interface a 7-year-old masters, wrapped in a layer a parent can audit. Part of a 0→1 portfolio that cut demo dependency 40%.",
+    tag:{t:"0→1 bet", c:"violet"},
+    thumb:"pioneers",
+    challenge:"Teach the next generation how food gets grown, through play. Reading level was the real barrier — simplified copy still excluded the youngest players.",
+    role:"Lead Product / UX — wordless interaction model plus a parallel audit layer for parents.",
+    did:["Removed the words instead of simplifying them","Built a parent-facing audit layer for full oversight","Shipped within a 0→1 portfolio of immersive bets"],
+    impact:[["91%","Unaided task success, first session"],["7 yrs","Age at which it's mastered"],["+40%","GTM acceleration across the portfolio"]],
+    note:""
+  }
+};
 
-function route(q){
-  q=q.toLowerCase().trim();
-  if(!q)return 'vp';
-  for(const k of ORDER){if(KW[k].some(w=>q.includes(w)))return k;}
-  return 'vp';
+/* ======================= THUMBNAILS (abstract SVG sketches) ======================= */
+function thumb(kind){
+  const base = (inner,bg)=>`<svg viewBox="0 0 300 130" preserveAspectRatio="xMidYMid slice"><rect width="300" height="130" fill="${bg}"/>${inner}</svg>`;
+  const line = (x1,y1,x2,y2,o=.5)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#6B8CFF" stroke-opacity="${o}" stroke-width="1.2"/>`;
+  const node = (x,y,r,c="#6B8CFF")=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" fill-opacity=".9"/><circle cx="${x}" cy="${y}" r="${r+5}" fill="none" stroke="${c}" stroke-opacity=".3"/>`;
+  if(kind==="ibm") return base(
+    [0,1].map(r=>[0,1].map(c=>`<rect x="${58+c*100}" y="${22+r*46}" width="84" height="38" rx="7" fill="none" stroke="#6B8CFF" stroke-opacity=".45"/>`).join("")).join("")+
+    line(150,41,150,89,.35)+line(100,65,200,65,.35)+node(150,65,6,"#9D7BFF"),"#131829");
+  if(kind==="mining") return base(
+    line(150,62,70,30)+line(150,62,230,34)+line(150,62,90,102)+line(150,62,214,100)+
+    node(150,62,7,"#9D7BFF")+node(70,30,4)+node(230,34,4)+node(90,102,4)+node(214,100,4,"#5FD4E8")+
+    `<rect x="240" y="94" width="34" height="12" rx="6" fill="#FF7A7A" fill-opacity=".35"/>`,"#131829");
+  if(kind==="nextwork") return base(
+    [0,1,2].map(i=>`<rect x="${58+i*14}" y="${24+i*30}" width="${184-i*28}" height="20" rx="10" fill="#6B8CFF" fill-opacity="${.12+i*.1}"/>`).join("")+
+    node(150,102,5,"#9D7BFF")+line(150,44,150,97,.4),"#121626");
+  if(kind==="bart") return base(
+    [0,1,2,3,4].map(i=>line(34,18+i*24,196,66,.45)).join("")+
+    node(196,66,7,"#9D7BFF")+[0,1,2,3,4].map(i=>node(34,18+i*24,3,"#5FD4E8")).join("")+
+    `<rect x="216" y="52" width="56" height="28" rx="8" fill="#6B8CFF" fill-opacity=".25"/>`,"#131829");
+  if(kind==="khetmitra") return base(
+    `<path d="M150 96 q-4 -26 0 -44 q22 -6 30 -28 q-30 2 -34 22 q-4 -20 -34 -22 q8 22 30 28" fill="#6FD39B" fill-opacity=".7"/>`+
+    line(60,108,240,108,.3)+node(150,108,4,"#F5C36B"),"#141d18");
+  if(kind==="pioneers") return base(
+    [0,1,2].map(i=>`<rect x="${70+i*56}" y="${84-i*22}" width="40" height="${22+i*22}" rx="6" fill="${["#6B8CFF","#9D7BFF","#6FD39B"][i]}" fill-opacity=".6"/>`).join("")+
+    `<circle cx="228" cy="40" r="14" fill="#F5C36B" fill-opacity=".7"/>`,"#141428");
+  return base("","#131829");
 }
-const reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let typing=null;
-function resolve(k,opts){
-  opts=opts||{};
-  const it=INTENTS[k];
-  ansEl.classList.remove('empty');
-  tagEl.textContent=it.tag;
-  bodyEl.innerHTML='';
-  if(typing)clearInterval(typing);
-  const txt='› '+it.line;
-  if(reduceM){lineEl.textContent=txt;show(it);}
-  else{
-    lineEl.innerHTML='<span class="cursor"></span>'; let i=0;
-    typing=setInterval(()=>{
-      i++; lineEl.innerHTML=txt.slice(0,i)+'<span class="cursor"></span>';
-      if(i>=txt.length){clearInterval(typing);lineEl.innerHTML=txt;setTimeout(()=>show(it),140);}
-    },14);
-  }
-  if(opts.scroll!==false) ansEl.scrollIntoView({behavior:reduceM?'auto':'smooth',block:'nearest'});
+
+/* ======================= APP STATE ======================= */
+const el = id => document.getElementById(id);
+
+function goHome(){ el('workspace').classList.add('hidden'); el('landing').classList.remove('hidden'); }
+function toggleSidebar(){ el('sidebar').classList.toggle('open'); }
+function enterWorkspace(){
+  el('landing').classList.add('hidden'); el('workspace').classList.remove('hidden');
+  el('sidebar').classList.remove('open');
 }
-function show(it){bodyEl.innerHTML=it.body();}
-
-/* interaction guard + self-running demo so visitors SEE what the agent does */
-let userActed=false, demoStarted=false, demoOwnsInput=false; const demoTimers=[];
-function markActed(){ if(userActed)return; userActed=true; demoTimers.forEach(clearTimeout); if(demoOwnsInput){input.value='';demoOwnsInput=false;} const n=document.getElementById('nudge'); if(n)n.hidden=true; }
-document.getElementById('csend').onclick=()=>{markActed();resolve(route(input.value));};
-input.addEventListener('keydown',e=>{if(e.key==='Enter'){markActed();resolve(route(input.value));}});
-input.addEventListener('focus',markActed);
-input.addEventListener('pointerdown',markActed);
-
-function runDemo(){
-  if(demoStarted||userActed)return; demoStarted=true;
-  const nudge=document.getElementById('nudge');
-  if(reduceM){ resolve('vp',{scroll:false}); nudge.hidden=false; nudge.textContent='↑ Example answer. Ask your own question above, or tap one below.'; return; }
-  const q='why are you VP-ready?'; let i=0; demoOwnsInput=true;
-  (function type(){
-    if(userActed)return;
-    input.value=q.slice(0,++i);
-    if(i<q.length){demoTimers.push(setTimeout(type,52));}
-    else{demoTimers.push(setTimeout(()=>{
-      if(userActed)return;
-      resolve('vp',{scroll:false});
-      demoTimers.push(setTimeout(()=>{
-        if(userActed)return;
-        input.value=''; demoOwnsInput=false;
-        nudge.hidden=false;
-        nudge.innerHTML='<span>↑ That was the agent answering itself. Now ask your own question — or tap one below.</span>';
-      },1150));
-    },430));}
-  })();
+function setNav(key){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.nav===key));
 }
-const cwrap=document.querySelector('.console-wrap');
-const dio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){dio.disconnect();setTimeout(runDemo,850);}}),{threshold:.5});
-dio.observe(cwrap);
+function stamp(){ return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+function scrollThread(){ const t=el('thread'); requestAnimationFrame(()=>t.scrollTop = t.scrollHeight); }
 
-/* typewriter placeholder — signals the box is a live agent input */
-(function(){
-  const ex=['prove leadership altitude','why are you VP-ready?','show measurable impact','the hardest decision you made','what is Intent-First UX?','walk the 12-year arc'];
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches){input.placeholder="Ask a question, or tap a prompt below…";return;}
-  let e=0,ch=0,del=false;
-  function step(){
-    if(document.activeElement===input||input.value){input.placeholder='Ask anything…';return setTimeout(step,600);}
-    const full='Ask: '+ex[e];
-    if(!del){ch++;if(ch>full.length){del=true;input.placeholder=full+'│';return setTimeout(step,1500);}}
-    else{ch--;if(ch<=5){del=false;e=(e+1)%ex.length;ch=5;}}
-    input.placeholder=full.slice(0,ch)+'│';
-    setTimeout(step,del?32:60);
-  }
-  step();
-})();
+function addUserMsg(text){
+  const d=document.createElement('div'); d.className='msg-user';
+  d.innerHTML = `${escapeHtml(text)}<span class="stamp">${stamp()}</span>`;
+  el('threadInner').appendChild(d); scrollThread();
+}
+function addAgentShell(){
+  const wrap=document.createElement('div'); wrap.className='msg-agent';
+  wrap.innerHTML = `<div class="agent-avatar"></div><div class="agent-body"></div>`;
+  el('threadInner').appendChild(wrap); scrollThread();
+  return wrap.querySelector('.agent-body');
+}
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-/* ===== Gravity capability field ===== */
-(function(){
-  const svg=document.getElementById('gsvg'), readout=document.getElementById('readout');
-  const NS='http://www.w3.org/2000/svg';
-  // capability masses
-  const masses=[
-    {id:'sys',label:'Systems & Governance',x:300,y:170,ev:'Carbon design governance, pattern libraries and tokens that cut UI drift −20% and standardised three enterprise platforms.'},
-    {id:'strat',label:'Strategy & Decision Design',x:700,y:175,ev:'Research-to-strategy playbooks and decision-first workflows — 60→85% validation at Siemens, +30% decision efficiency.'},
-    {id:'team',label:'Team Building & Ops',x:300,y:400,ev:'3-in-a-box operating model, mentorship and hiring — 4 designers across 4 squads, +35% first-pass approvals.'},
-    {id:'zero',label:'Zero-to-One Delivery',x:700,y:400,ev:'30+ MVPs and immersive 0→1 bets — game onboarding, virtual showroom, KhetMitra’s +17.3% yield.'}
-  ];
-  // project satellites: each linked to one+ mass
-  const proj=[
-    {id:'ibm',label:'IBM',links:['sys','team']},
-    {id:'bt',label:'BT',links:['strat','sys']},
-    {id:'sie',label:'Siemens',links:['strat','sys']},
-    {id:'jd',label:'John Deere',links:['zero','strat']},
-    {id:'tcs',label:'TCS',links:['zero','team']},
-    {id:'sm',label:'Smart Mining',links:['strat','sys'],case:'case-smart-mining.html'},
-    {id:'km',label:'KhetMitra',links:['zero','strat'],case:'case-khetmitra.html'},
-    {id:'bart',label:'BART',links:['sys'],case:'case-incident-bart.html'},
-    {id:'nw',label:'#NextWork',links:['strat','team'],case:'case-nextwork.html'},
-    {id:'fp',label:'Farm Pioneers',links:['zero'],case:'case-deere-pioneers.html'}
-  ];
-  // home positions for satellites (scatter)
-  const homes={ibm:[150,90],bt:[500,70],sie:[850,90],jd:[880,300],tcs:[140,520],sm:[560,300],km:[840,500],bart:[150,300],nw:[470,485],fp:[640,505]};
-  proj.forEach(p=>{p.hx=homes[p.id][0];p.hy=homes[p.id][1];p.x=p.hx;p.y=p.hy;p.tx=p.hx;p.ty=p.hy;});
-  let active=null;
-  // build link layer
-  const linkG=document.createElementNS(NS,'g'); svg.appendChild(linkG);
-  const lines={};
-  proj.forEach(p=>p.links.forEach(m=>{
-    const ln=document.createElementNS(NS,'line');ln.setAttribute('stroke','rgba(255,255,255,0.06)');ln.setAttribute('stroke-width','1');linkG.appendChild(ln);lines[p.id+'-'+m]=ln;
-  }));
-  // mass nodes
-  masses.forEach(m=>{
-    const g=document.createElementNS(NS,'g');g.style.cursor='pointer';
-    const halo=document.createElementNS(NS,'circle');halo.setAttribute('r',46);halo.setAttribute('fill','rgba(196,245,66,0.05)');halo.setAttribute('stroke','rgba(196,245,66,0.4)');
-    const core=document.createElementNS(NS,'circle');core.setAttribute('r',9);core.setAttribute('fill','#C4F542');
-    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-58);t.setAttribute('fill','#FAF9F5');t.setAttribute('font-family',"'Inter'");t.setAttribute('font-size','13');t.setAttribute('font-weight','600');t.textContent=m.label;
-    g.appendChild(halo);g.appendChild(core);g.appendChild(t);g.setAttribute('transform',`translate(${m.x},${m.y})`);
-    m.halo=halo;m.coreEl=core;
-    g.onclick=()=>setActive(m.id);
-    svg.appendChild(g);
-  });
-  // satellite nodes
-  proj.forEach(p=>{
-    const g=document.createElementNS(NS,'g');
-    const c=document.createElementNS(NS,'circle');c.setAttribute('r',5);c.setAttribute('fill','#0E0E13');c.setAttribute('stroke','#7CA3FF');c.setAttribute('stroke-width','1.5');
-    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-12);t.setAttribute('fill','#82828C');t.setAttribute('font-family',"'IBM Plex Mono'");t.setAttribute('font-size','10');t.textContent=p.label;
-    g.appendChild(c);g.appendChild(t);
-    if(p.case){
-      // openable case node: lime core dot + pointer + hover affordance + navigate
-      const core=document.createElementNS(NS,'circle');core.setAttribute('r',1.8);core.setAttribute('fill','#C4F542');g.appendChild(core);
-      const arr=document.createElementNS(NS,'text');arr.setAttribute('text-anchor','middle');arr.setAttribute('y',-12);arr.setAttribute('x',0);arr.setAttribute('fill','#C4F542');arr.setAttribute('font-family',"'IBM Plex Mono'");arr.setAttribute('font-size','10');arr.setAttribute('dx',(p.label.length*5.4)+'');arr.textContent='↗';arr.style.opacity='0';g.appendChild(arr);
-      g.style.cursor='pointer';
-      g.addEventListener('mouseenter',()=>{c.setAttribute('r',7);c.setAttribute('stroke','#C4F542');arr.style.opacity='1';t.setAttribute('fill','#FAF9F5');});
-      g.addEventListener('mouseleave',()=>{c.setAttribute('r',5);if(!(active&&p.links.includes(active)))c.setAttribute('stroke','#7CA3FF');arr.style.opacity='0';if(!active||p.links.includes(active)){}});
-      g.addEventListener('click',()=>{window.location.href=p.case;});
-    }
-    p.g=g;p.c=c;p.t=t;svg.appendChild(g);
-  });
-  function setActive(id){
-    active=(active===id)?null:id;
-    const m=masses.find(x=>x.id===id);
-    masses.forEach(x=>{x.halo.setAttribute('stroke','rgba(196,245,66,'+(x.id===active?0.9:0.4)+')');x.halo.setAttribute('r',x.id===active?54:46);});
-    const linked=active?proj.filter(pp=>pp.links.includes(active)):[];
-    proj.forEach(p=>{
-      const on=active&&p.links.includes(active);
-      if(active){
-        if(on){const idx=linked.indexOf(p);const ang=(idx/linked.length)*6.283 - 1.0;const r=96;p.tx=m.x+Math.cos(ang)*r;p.ty=m.y+Math.sin(ang)*r;p.c.setAttribute('stroke','#C4F542');p.t.setAttribute('fill','#FAF9F5');p.g.style.opacity=1;}
-        else{p.tx=p.hx;p.ty=p.hy;p.c.setAttribute('stroke','#3a3a44');p.t.setAttribute('fill','#3a3a44');p.g.style.opacity=.35;}
-      }else{p.tx=p.hx;p.ty=p.hy;p.c.setAttribute('stroke','#7CA3FF');p.t.setAttribute('fill','#82828C');p.g.style.opacity=1;}
-    });
-    if(active){readout.innerHTML=`<span class="tag">CENTRE OF MASS</span><h3>${m.label}</h3><p>${m.ev}</p>`;}
-    else{readout.innerHTML=`<span class="tag">SELECT A MASS</span><h3>Four centres of gravity</h3><p>Each capability has pulled specific projects into orbit. Tap a mass to feel the pull — or tap a project marked with a lime core (◆) to open its full case study.</p>`;}
+/* signature: agent state rail */
+async function runStateRail(body, steps){
+  const rail=document.createElement('div'); rail.className='state-rail';
+  rail.innerHTML=`<span class="pulse"></span><span class="steps"></span>`;
+  body.appendChild(rail); scrollThread();
+  const s=rail.querySelector('.steps');
+  for(let i=0;i<steps.length;i++){
+    s.innerHTML = steps.slice(0,i+1).map((x,j)=> j===i?`<b>${x}</b>`:x).join('  →  ');
+    await sleep(420);
   }
-  const reduceG=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function tick(){
-    proj.forEach(p=>{p.x+=(p.tx-p.x)*0.12;p.y+=(p.ty-p.y)*0.12;p.g.setAttribute('transform',`translate(${p.x},${p.y})`);
-      p.links.forEach(mid=>{const m=masses.find(x=>x.id===mid);const ln=lines[p.id+'-'+mid];ln.setAttribute('x1',p.x);ln.setAttribute('y1',p.y);ln.setAttribute('x2',m.x);ln.setAttribute('y2',m.y);
-        const lit=active&&mid===active&&p.links.includes(active);ln.setAttribute('stroke',lit?'rgba(196,245,66,0.5)':'rgba(255,255,255,0.06)');});
-    });
-    if(!reduceG)requestAnimationFrame(tick);
-  }
-  tick(); if(reduceG){for(let i=0;i<30;i++)proj.forEach(p=>{p.x+=(p.tx-p.x)*0.3;p.y+=(p.ty-p.y)*0.3;});tick();}
-})();
+  rail.classList.add('done');
+  return rail;
+}
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
 
-/* ===== Work cards ===== */
-const WORK=[
-  {cli:'Siemens · Smart Mining',h:'Clustered eight operational gaps into four interventions — instead of fixing them one by one.',role:'Design Lead',m:'+67%',href:'case-smart-mining.html'},
-  {cli:'Siemens · #NextWork',h:'Built the operating system around the methodology — without rebuilding the methodology.',role:'Lead Product Designer',m:'72%',href:'case-nextwork.html'},
-  {cli:'John Deere · 0→1',h:'A wordless interface a 7-year-old masters, wrapped in a layer a parent can audit.',role:'Lead Product / UX',m:'91%',href:'case-deere-pioneers.html'},
-  {cli:'Microsoft Teams · BART',h:'Compressed the first five minutes of incident response — five tools into one.',role:'Lead Product Designer',m:'5→1',href:'case-incident-bart.html'},
-  {cli:'John Deere · India',h:'Stopped showing data and showed the next move — an offline-first decision assistant.',role:'Design Lead',m:'+17.3%',href:'case-khetmitra.html'},
-  {cli:'IBM · Power Systems',h:'Aligned four squads on one design language — without slowing any of them down.',role:'Product Design Manager',m:'−20%',href:'#work'}
+/* ======================= SCRIPTED TOPICS ======================= */
+function openTopic(key){
+  enterWorkspace(); setNav(key==='chat'?'chat':key);
+  const labels={about:"Tell me about yourself", work:"Show me your work", frameworks:"What design frameworks have you created?", projects:"Show me your 0→1 projects", connect:"How can we connect?"};
+  el('threadTitle').textContent = "Chat with Anupam's agent";
+  addUserMsg(labels[key]||key);
+  respondScripted(key);
+}
+function navClick(key){
+  if(key==='chat'){ setNav('chat'); el('sidebar').classList.remove('open'); return; }
+  openTopic(key);
+  el('sidebar').classList.remove('open');
+}
+
+async function respondScripted(key){
+  const body = addAgentShell();
+  await runStateRail(body, RAILS[key]||RAILS.default);
+  const html = TOPIC_HTML[key] ? TOPIC_HTML[key]() : null;
+  if(html){ const d=document.createElement('div'); d.innerHTML=html; while(d.firstChild) body.appendChild(d.firstChild); }
+  scrollThread();
+}
+
+const RAILS = {
+  about:["parsing intent","retrieving: profile","composing"],
+  work:["parsing intent","retrieving: case_files","ranking by relevance","composing"],
+  frameworks:["parsing intent","retrieving: ifu, gravity","composing"],
+  projects:["parsing intent","retrieving: zero_to_one","composing"],
+  connect:["parsing intent","retrieving: contact","composing"],
+  case:["parsing intent","retrieving: case_file","expanding sections","composing"],
+  answer:["parsing intent","retrieving: knowledge","composing"],
+  default:["parsing intent","thinking","composing"]
+};
+
+function csLink(id, compact){
+  const link = CASE_LINKS[id]; if(!link || !link.url) return '';
+  const locked = !!link.pw && !isUnlocked(id);
+  return `<span class="cs-link" role="link" tabindex="0"
+      onclick="event.stopPropagation(); openDetailed('${id}')"
+      onkeydown="if(event.key==='Enter'){event.stopPropagation(); openDetailed('${id}')}">
+      ${locked?'<svg class="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>':''}
+      ${compact?'Full case file':'Open the full case file'}
+      <svg viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg></span>`;
+}
+function projectCard(id){
+  const p=PROJECTS[id];
+  return `<div class="p-card" role="button" tabindex="0" onclick="openCase('${id}')"
+      onkeydown="if(event.key==='Enter') openCase('${id}')">
+    <div class="p-thumb">${thumb(p.thumb)}</div>
+    <div class="p-body">
+      <h4>${p.title}</h4>
+      <div class="p-desc">${p.desc}</div>
+      ${csLink(id, true)}
+      <div class="p-foot"><span class="tag ${p.tag.c}">${p.tag.t}</span>
+        <span class="arrow-cta"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </div></div>`;
+}
+function followups(items){
+  return `<div class="followups"><span class="f-label">You can also ask</span>` +
+    items.map(i=>`<button class="chip small" onclick="askText('${i.replace(/'/g,"\\'")}')">${i}</button>`).join('') + `</div>`;
+}
+
+const TOPIC_HTML = {
+  about: () => `
+    <div class="agent-text"><p>I'm a Product Design Manager at <strong>IBM</strong>, leading design for Power Systems. Twelve years, five industries — my craft is turning ambiguous problems into design systems leaders can act on. I think in <strong>decisions, not deliverables</strong>.</p></div>
+    <div class="about-card">
+      <div class="about-grid">
+        <div class="stat"><div class="s-num">12</div><div class="s-lbl">Years in enterprise UX</div></div>
+        <div class="stat"><div class="s-num">5</div><div class="s-lbl">IBM · BT · Siemens · John Deere · TCS</div></div>
+        <div class="stat"><div class="s-num">2</div><div class="s-lbl">Original design frameworks</div></div>
+        <div class="stat"><div class="s-num">🥇</div><div class="s-lbl">M.Des Gold Medal, IIT</div></div>
+      </div>
+      <div class="timeline">
+        <div class="tl-row"><div class="tl-when">Now</div><div class="tl-what"><b>IBM</b> <span>· Product Design Manager, Power Systems — 4 squads, one design language, −20% UI drift</span></div></div>
+        <div class="tl-row"><div class="tl-when">Before</div><div class="tl-what"><b>BT Group</b> <span>· Billing experiences for 500K+ business users</span></div></div>
+        <div class="tl-row"><div class="tl-when">Earlier</div><div class="tl-what"><b>Siemens · John Deere · TCS</b> <span>· Decision design, field products, 30+ MVPs</span></div></div>
+        <div class="tl-row"><div class="tl-when">The start</div><div class="tl-what"><b>Faraka → Architecture → IIT</b> <span>· A drawing class, a systems habit, a gold medal</span></div></div>
+      </div>
+    </div>
+    ${followups(["What design frameworks have you created?","Show me your work","Walk the 12-year arc"])}`,
+
+  work: () => `
+    <div class="agent-text"><p>Four enterprise decisions the agent can open in full — each is a <strong>manager-altitude case file</strong>: the challenge, the call I made, and what it moved. Tap any card.</p></div>
+    <div class="card-grid">${projectCard('ibm')}${projectCard('mining')}${projectCard('nextwork')}${projectCard('bart')}</div>
+    ${followups(["Show me your 0→1 projects","What was your hardest decision?","How do you measure impact?"])}`,
+
+  projects: () => `
+    <div class="agent-text"><p>Beyond the enterprise arc, I build from zero. These two show the range — a <strong>field product that overrode its own brief</strong>, and a <strong>wordless 0→1 bet</strong> a 7-year-old masters.</p></div>
+    <div class="card-grid">${projectCard('khetmitra')}${projectCard('pioneers')}</div>
+    ${followups(["Show me your work","Why did you override the KhetMitra brief?","Tell me about yourself"])}`,
+
+  frameworks: () => `
+    <div class="agent-text"><p>Two frameworks I've developed and applied across enterprise and consumer work — you're inside one of them right now:</p></div>
+    <div class="card-grid">
+      <div class="fw-card"><div class="fw-code">FRAMEWORK / 01</div><h4>Intent-First UX (IFU)</h4>
+        <p>Every UI framework starts <em>after</em> intent — IFU starts before it. The interface structurally pre-resolves to the most probable user outcome through four stages: <b style="color:var(--paper)">Sense → Morph → Confirm → Escape</b>. This portfolio is a working demo: you expressed an intent, and it resolved. That's the framework, running.</p></div>
+      <div class="fw-card"><div class="fw-code">FRAMEWORK / 02</div><h4>GRAVITY</h4>
+        <p>A spatial UI paradigm where importance behaves like mass. Critical information pulls layout, motion and attention toward itself; low-stakes information stays in orbit. It's how a safety canvas with 240 daily alerts became readable at 18.</p></div>
+    </div>
+    ${followups(["How did you apply these at work?","Show me your work","Tell me about yourself"])}`,
+
+  connect: () => `
+    <div class="agent-text"><p>I'd love to talk — about AI-first design, enterprise systems, or a role where design leads the product. <strong>Available Q1 2026</strong> for VP / Head of Product Design / Director-level mandates. Based in Bangalore.</p></div>
+    <div class="connect-card">
+      <a class="connect-row" href="mailto:ar.anupamsarkar@gmail.com"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span class="c-label">Email</span><span class="c-val">ar.anupamsarkar@gmail.com</span></a>
+      <a class="connect-row" href="https://www.linkedin.com/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 11v6M8 8v.01M12 17v-4a2 2 0 014 0v4"/></svg><span class="c-label">LinkedIn</span><span class="c-val">connect</span></a>
+      <a class="connect-row" href="career-journey.html"><svg viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></svg><span class="c-label">Career journey</span><span class="c-val">the 12-year arc</span></a>
+    </div>
+    ${followups(["Why are you VP-ready?","Show me your work","Tell me about yourself"])}`
+};
+
+/* case study */
+async function openCase(id){
+  const p=PROJECTS[id];
+  setNav(['khetmitra','pioneers'].includes(id)?'projects':'work');
+  addUserMsg(`Tell me more about ${p.title}`);
+  const body=addAgentShell();
+  await runStateRail(body, RAILS.case);
+  const html = `
+    <div class="agent-text"><p>Here's the case file.</p></div>
+    <div class="case">
+      <div class="case-kicker">${p.kicker}</div>
+      <h3>${p.title}</h3>
+      <p class="case-sub">${p.desc}</p>
+      <div class="tag-row"><span class="tag ${p.tag.c}">${p.tag.t}</span><span class="tag">UX Strategy</span><span class="tag">Design Lead</span></div>
+      ${csLink(id, false)}
+      <div class="case-cols">
+        <div class="case-col"><h5><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>The challenge</h5><p>${p.challenge}</p></div>
+        <div class="case-col"><h5><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>My role</h5><p>${p.role}</p>
+          <h5 style="margin-top:14px"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-5"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>What I did</h5>
+          <ul>${p.did.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div class="case-col"><h5><svg viewBox="0 0 24 24"><path d="M4 19l5-7 4 4 7-9"/></svg>Impact</h5>
+          ${p.impact.map(([n,l])=>`<div class="impact-line"><span class="num">${n}</span><span class="lbl">${l}</span></div>`).join('')}
+          ${p.note?`<div class="placeholder-note">${p.note}</div>`:''}</div>
+      </div>
+    </div>
+    ${followups(["What was your hardest decision?","How do you measure impact?","Show me your work"])}`;
+  const d=document.createElement('div'); d.innerHTML=html;
+  while(d.firstChild) body.appendChild(d.firstChild);
+  scrollThread();
+}
+
+/* ======================= FREE-TEXT AGENT ======================= */
+function landingAsk(e){ e.preventDefault(); const v=el('landingInput').value.trim(); if(!v) return; el('landingInput').value=''; enterWorkspace(); setNav('chat'); addUserMsg(v); routeQuestion(v); }
+function composerAsk(e){ e.preventDefault(); const v=el('composerInput').value.trim(); if(!v) return; el('composerInput').value=''; addUserMsg(v); routeQuestion(v); }
+function askText(t){ addUserMsg(t); routeQuestion(t); }
+
+function routeQuestion(v){
+  const q=v.toLowerCase();
+  if(/framework|ifu|gravity|intent-first|intent first/.test(q)) return respondScripted('frameworks');
+  if(/about (yourself|you)|who are you|your background|your story/.test(q)) return respondScripted('about');
+  if(/your work|case (stud|file)|enterprise|show me.*work/.test(q)) return respondScripted('work');
+  if(/0.?(→|to|->).?1|zero.to.one|project|side/.test(q)) return respondScripted('projects');
+  if(/connect|contact|hire|hiring|reach|resume|email|available/.test(q)) return respondScripted('connect');
+  if(/mining|siemens smart|alert/.test(q)) return respondCase('mining');
+  if(/nextwork|next work|operating system/.test(q)) return respondCase('nextwork');
+  if(/bart|incident|teams/.test(q)) return respondCase('bart');
+  if(/khetmitra|khet|farmer|deere india|dashboard/.test(q)) return respondCase('khetmitra');
+  if(/pioneer|wordless|kids|children/.test(q)) return respondCase('pioneers');
+  if(/ibm|power systems|design language|squad/.test(q)) return respondCase('ibm');
+  askAgent(v);
+}
+async function respondCase(id){
+  const p=PROJECTS[id];
+  const body=addAgentShell();
+  await runStateRail(body, RAILS.case);
+  const d=document.createElement('div');
+  d.innerHTML=`<div class="agent-text"><p><strong>${p.title}</strong> — ${p.desc}</p><p>${p.challenge}</p></div>
+    <div class="card-grid">${projectCard(id)}</div>
+    ${followups(["Tell me more about "+p.title,"What was your hardest decision?","Show me your work"])}`;
+  while(d.firstChild) body.appendChild(d.firstChild);
+  scrollThread();
+}
+
+/* Local knowledge — pattern-matched answers for common free-text questions.
+   To make this a live LLM agent, point askAgent at a small backend endpoint
+   that proxies the Anthropic API with your key (never ship a key client-side). */
+const KNOWLEDGE = [
+  {re:/hardest|tough|difficult|trade.?off|decision|kill|pivot/, html:()=>`
+    <div class="agent-text"><p>Two decisions cost the most — and paid the most.</p>
+    <p><strong>I killed a concept that tested well</strong> (Siemens Smart Mining). The alert-centric concept amplified the exact alert fatigue it was meant to cure. I threw it away, absorbed a week-7 timeline hit, and pivoted to a spatial canvas. Result: 67% faster decisions, 240→18 daily alerts, SUS 92.</p>
+    <p><strong>I overrode the brief</strong> (KhetMitra). Field truth: not one farmer opened more than two data sources before deciding. I contradicted the stakeholder ask for a dashboard and re-sold leadership on a decision assistant. Result: 41→87% task completion, +17.3% yield, funded to phase 2.</p></div>
+    ${followups(["Tell me more about Smart Mining","Tell me more about KhetMitra","Show me your work"])}`},
+  {re:/impact|metric|number|result|outcome|roi|measure|proof|data/, html:()=>`
+    <div class="agent-text"><p>The numbers I stand behind, across five industries:</p></div>
+    <div class="about-card"><div class="about-grid">
+      <div class="stat"><div class="s-num">−20%</div><div class="s-lbl">UI drift · IBM Power Systems</div></div>
+      <div class="stat"><div class="s-num">+17.3%</div><div class="s-lbl">crop yield · KhetMitra pilot</div></div>
+      <div class="stat"><div class="s-num">67%</div><div class="s-lbl">faster safety decisions · Smart Mining</div></div>
+      <div class="stat"><div class="s-num">500K+</div><div class="s-lbl">business users · BT billing</div></div>
+      <div class="stat"><div class="s-num">5→1</div><div class="s-lbl">tools collapsed · BART</div></div>
+      <div class="stat"><div class="s-num">91%</div><div class="s-lbl">unaided task success · Farm Pioneers</div></div>
+      <div class="stat"><div class="s-num">+35%</div><div class="s-lbl">first-pass approvals · IBM</div></div>
+      <div class="stat"><div class="s-num">30+</div><div class="s-lbl">MVPs shipped · TCS</div></div>
+    </div></div>
+    <div class="agent-text"><p style="color:var(--muted);font-size:13px">Numbers are role-real and reshaped, never invented. Tier-2 figures are walked through live under NDA.</p></div>
+    ${followups(["Show me your work","What was your hardest decision?","Why are you VP-ready?"])}`},
+  {re:/lead|manage|mentor|team|altitude|senior|director|vp|head of|ready/, html:()=>`
+    <div class="agent-text"><p>I think in <strong>decisions, not deliverables</strong> — and design how teams operate, not just what they ship.</p></div>
+    <div class="about-card"><div class="timeline" style="margin-top:0;border-top:none;padding-top:0">
+      <div class="tl-row"><div class="tl-when">01</div><div class="tl-what"><span>Cluster problems, don't enumerate them — fund four bets, not forty tickets.</span></div></div>
+      <div class="tl-row"><div class="tl-when">02</div><div class="tl-what"><span>Design the operating system — governance, critique, decision rights — not only the screens.</span></div></div>
+      <div class="tl-row"><div class="tl-when">03</div><div class="tl-what"><span>Reach two layers up and one down — exec framing, cross-functional alignment, frontline evidence.</span></div></div>
+    </div></div>
+    <div class="agent-text"><p>Evidence: 4/4 designers mentored across squads at IBM, +35% first-pass approvals via 3-in-a-box governance, 95% workshop alignment at BT, and three organizational layers reached at Siemens — Ministry leadership to the mine floor. <strong>Available Q1 2026</strong> for VP / Head / Director-level mandates.</p></div>
+    ${followups(["Show measurable impact","Tell me more about #NextWork","How can we connect?"])}`},
+  {re:/arc|journey|career|story|12|twelve|years|history|path|timeline|faraka/, html:()=>`
+    <div class="agent-text"><p>A drawing class in <strong>Faraka</strong> → architecture → an M.Des gold medal at IIT → TCS → John Deere → Siemens → BT → <strong>IBM</strong>. No year of the twelve dead-ends — each industry switch fed a durable capability the next role compounded. The line only rises.</p></div>
+    <div class="connect-card"><a class="connect-row" href="career-journey.html"><svg viewBox="0 0 24 24"><path d="M4 19l5-7 4 4 7-9"/></svg><span class="c-label">Walk the interactive journey</span><span class="c-val">career-journey.html</span></a></div>
+    ${followups(["Tell me about yourself","Show me your work","What design frameworks have you created?"])}`},
+  {re:/bangalore|location|where|based|india/, html:()=>`
+    <div class="agent-text"><p>I'm based in <strong>Bangalore, India</strong> — working on IBM Power Systems. Open to conversations about VP / Head / Director-level design mandates from Q1 2026.</p></div>
+    ${followups(["How can we connect?","Tell me about yourself"])}`},
+  {re:/iit|education|degree|study|gold medal|architect/, html:()=>`
+    <div class="agent-text"><p>I trained as an <strong>architect</strong> first — space, structure and constraint; the habit of designing systems, not artifacts, starts there. Then postgraduate design at <strong>IIT, finishing with the M.Des gold medal</strong>, which completed the switch from buildings to interfaces.</p></div>
+    ${followups(["Walk the 12-year arc","Show me your work"])}`},
+  {re:/^(hi|hey|hello|namaste|yo)\b/, html:()=>`
+    <div class="agent-text"><p>Hi! I'm Anupam's portfolio agent. Ask me anything about his work, his frameworks, or the decisions behind the products he's shipped — or start with one of these.</p></div>
+    ${followups(["Tell me about yourself","Show me your work","What design frameworks have you created?"])}`}
 ];
-const wg=document.getElementById('workgrid');
-WORK.forEach(w=>{const a=document.createElement('a');a.className='wcard reveal';a.href=w.href;
-  a.innerHTML=`<div class="top"><span class="cli">${w.cli}</span><span class="open">OPEN ↗</span></div><h3>${w.h}</h3><div class="meta"><span class="role">${w.role}</span><span class="m">${w.m}</span></div>`;
-  wg.appendChild(a);});
 
-/* reveals */
-const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{threshold:.1});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+async function askAgent(question){
+  const body=addAgentShell();
+  await runStateRail(body, RAILS.answer);
+  const t=document.createElement('div'); t.className='typing'; t.innerHTML='<span></span><span></span><span></span>';
+  body.appendChild(t); scrollThread();
+  await sleep(650);
+  t.remove();
+  const q=question.toLowerCase();
+  const hit=KNOWLEDGE.find(k=>k.re.test(q));
+  const d=document.createElement('div');
+  if(hit){ d.innerHTML=hit.html(); }
+  else{
+    d.innerHTML=`<div class="agent-text"><p>I can speak to Anupam's story best through what's indexed — his background, the enterprise case files, the IFU and GRAVITY frameworks, and 0→1 projects like KhetMitra and Farm Pioneers. Try one of those, or rephrase your question.</p></div>
+      ${followups(["Show me your work","What design frameworks have you created?","How can we connect?"])}`;
+  }
+  while(d.firstChild) body.appendChild(d.firstChild);
+  scrollThread();
+}
+
+/* ======================= DETAILED CASE STUDY GATE ======================= */
+let gateFor = null;
+function isUnlocked(id){ try{ return sessionStorage.getItem('unlocked:'+id)==='1'; }catch(e){ return false; } }
+function markUnlocked(id){ try{ sessionStorage.setItem('unlocked:'+id,'1'); }catch(e){} }
+
+function openDetailed(id){
+  const link = CASE_LINKS[id]; if(!link || !link.url) return;
+  if(!link.pw || isUnlocked(id)){ window.open(link.url, '_blank', 'noopener'); return; }
+  gateFor = id;
+  el('gateProject').textContent = PROJECTS[id].title;
+  el('gateErr').textContent = '';
+  el('gateInput').value = '';
+  el('gateOverlay').classList.add('show');
+  setTimeout(()=>el('gateInput').focus(), 120);
+}
+function closeGate(){ el('gateOverlay').classList.remove('show'); gateFor = null; }
+function tryUnlock(e){
+  e.preventDefault();
+  const link = CASE_LINKS[gateFor]; if(!link) return closeGate();
+  const val = el('gateInput').value;
+  if(val === link.pw){
+    markUnlocked(gateFor);
+    el('gateErr').style.color = 'var(--ok)';
+    el('gateErr').textContent = 'unlocked → opening case study';
+    setTimeout(()=>{ closeGate(); window.open(link.url, '_blank', 'noopener'); el('gateErr').style.color=''; }, 500);
+  }else{
+    el('gateErr').style.color = '';
+    el('gateErr').textContent = 'incorrect password — try again';
+    const box = el('gateBox');
+    box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+    el('gateInput').select();
+  }
+}
+el('gateOverlay').addEventListener('click', e=>{ if(e.target===el('gateOverlay')) closeGate(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && el('gateOverlay').classList.contains('show')) closeGate(); });
+
+/* keyboard: "/" focuses input */
+document.addEventListener('keydown', e=>{
+  if(e.key==='/' && document.activeElement.tagName!=='INPUT'){
+    e.preventDefault();
+    (el('landing').classList.contains('hidden')? el('composerInput'): el('landingInput')).focus();
+  }
+});
 </script>
 </body>
 </html>
