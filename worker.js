@@ -82,11 +82,14 @@ async function handleAgent(request, env) {
     return jsonResponse({ answer });
   } catch (err) {
     if (err instanceof Anthropic.RateLimitError) {
+      console.warn(JSON.stringify({ event: "agent_rate_limited" }));
       return jsonResponse({ error: "rate_limited" }, 429);
     }
     if (err instanceof Anthropic.APIError) {
+      console.error(JSON.stringify({ event: "agent_upstream_error", status: err.status ?? null, type: err.name }));
       return jsonResponse({ error: "upstream", status: err.status ?? null }, 502);
     }
+    console.error(JSON.stringify({ event: "agent_error", message: err instanceof Error ? err.message : String(err) }));
     return jsonResponse({ error: "upstream" }, 502);
   }
 }
