@@ -1,0 +1,8 @@
+{
+  // Cloudflare Workers config — serves the portfolio as a static-assets site.
+  "name": "new-portfolio",
+  "compatibility_date": "2026-08-02",
+  "assets": {
+    "directory": "./"
+  }
+}
