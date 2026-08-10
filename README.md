@@ -17,6 +17,7 @@ Built as a fully static site: no build step, no dependencies, plain HTML/CSS/JS.
 | `case-khetmitra.html` | John Deere India · KhetMitra case file |
 | `case-incident-bart.html` | Microsoft Teams · BART case file |
 | `case-deere-pioneers.html` | John Deere · Farm Pioneers case file |
+| `uxkpi-lab.html` | UX KPI Tool · Testing Lab — synthetic usability testing prototype with a working simulation engine (KPI Matrix + Report powered by measured session data) |
 
 ## Run locally
 
