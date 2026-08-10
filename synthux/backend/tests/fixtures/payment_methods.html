@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Fixture: the 'Payment methods' screen of the fictional electricity-billing
+     app, containing the 'Manage mandate' comprehension trap. Rendered to
+     payment_methods.png (390x780) for perception-agent smoke tests. -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment methods</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background:#f4f5f7; color:#1c2733; width:390px; }
+  .top { background:#0f4c81; color:#fff; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+  .back { font-size:18px; }
+  .top h1 { font-size:17px; font-weight:600; }
+  .section { padding:16px; }
+  .label { font-size:12px; color:#66727e; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  .card { background:#fff; border-radius:10px; border:1px solid #e2e6ea; overflow:hidden; margin-bottom:16px; }
+  .row { display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:1px solid #eef1f4; }
+  .row:last-child { border-bottom:none; }
+  .ico { width:34px; height:34px; border-radius:8px; background:#e8f0f7; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .grow { flex:1; }
+  .t { font-size:14.5px; font-weight:600; }
+  .s { font-size:12px; color:#66727e; margin-top:2px; }
+  .chev { color:#9aa5af; font-size:16px; }
+  .badge { font-size:10.5px; background:#e6f4ea; color:#137333; border-radius:10px; padding:2px 8px; font-weight:600; }
+  .primary { display:block; width:100%; background:#0f4c81; color:#fff; border:none; border-radius:9px; padding:14px; font-size:15px; font-weight:600; margin-top:4px; }
+  .help { text-align:center; padding:14px; font-size:13px; color:#0f4c81; }
+</style>
+</head>
+<body>
+  <div class="top"><span class="back">&#8592;</span><h1>Payment methods</h1></div>
+  <div class="section">
+    <div class="label">Current method</div>
+    <div class="card">
+      <div class="row">
+        <div class="ico">&#128179;</div>
+        <div class="grow">
+          <div class="t">Visa card &#8226;&#8226;&#8226;&#8226; 4821</div>
+          <div class="s">Charged on the 5th of every month</div>
+        </div>
+        <span class="badge">ACTIVE</span>
+      </div>
+    </div>
+    <div class="label">Options</div>
+    <div class="card">
+      <div class="row">
+        <div class="ico">&#128196;</div>
+        <div class="grow">
+          <div class="t">Manage mandate</div>
+          <div class="s">e-NACH registration and updates</div>
+        </div>
+        <span class="chev">&#8250;</span>
+      </div>
+      <div class="row">
+        <div class="ico">&#129689;</div>
+        <div class="grow">
+          <div class="t">Add a card</div>
+          <div class="s">Debit or credit card</div>
+        </div>
+        <span class="chev">&#8250;</span>
+      </div>
+      <div class="row">
+        <div class="ico">&#128342;</div>
+        <div class="grow">
+          <div class="t">Payment history</div>
+          <div class="s">Past bills and receipts</div>
+        </div>
+        <span class="chev">&#8250;</span>
+      </div>
+    </div>
+    <button class="primary">Pay current bill &#8226; &#8377;12,640</button>
+    <div class="help">Need help? Contact support</div>
+  </div>
+</body>
+</html>

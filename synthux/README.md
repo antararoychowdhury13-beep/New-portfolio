@@ -73,5 +73,22 @@ python app.py               # launches the Gradio MVP with a mock runner
 
 The MVP runs end-to-end on synthetic fixture data (no GPUs, no API keys) so
 the report UI, metrics, and aggregation logic can be iterated on before any
-model is wired in. Set `SYNTHUX_HF_TOKEN` and flip `runner="live"` in
-`orchestrator.py` to attach real models.
+model is wired in.
+
+## Live perception (Step 3 — first real model)
+
+`synthux/perception.py` is the live A1 agent: screenshot in →
+Qwen3-VL-8B via HF Inference Providers → validated `ScreenPerception` out,
+with a one-round correction retry on invalid JSON. It activates when a
+Hugging Face token is present:
+
+```bash
+export SYNTHUX_HF_TOKEN=hf_...   # from huggingface.co/settings/tokens
+cd synthux/backend
+python -m synthux.perception tests/fixtures/payment_methods.png
+```
+
+The fixture is a rendered screen of the fictional billing app (including the
+"Manage mandate" trap), so the smoke test doubles as a sanity check: the
+output must list "Manage mandate" as a visible element WITHOUT resolving its
+meaning — ambiguity in the UI must survive into the world model.
