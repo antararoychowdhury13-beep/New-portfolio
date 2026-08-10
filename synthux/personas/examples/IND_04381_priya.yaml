@@ -1,0 +1,44 @@
+# Example participant: the "Priya" case from the product spec.
+# Validates against schemas/persona.schema.json
+persona_id: IND_04381
+source:
+  dataset: nvidia/Nemotron-Personas-India
+  record_id: "nemotron-in-04381"
+  license: CC-BY-4.0
+demographics:
+  age: 57
+  gender: female
+  occupation: school teacher
+  location: Kolkata
+  education: bachelor's degree
+  languages:
+    - { language: Bengali, proficiency: native }
+    - { language: Hindi, proficiency: fluent }
+    - { language: English, proficiency: moderate }
+cohorts: ["55+", "low_digital_literacy", "low_domain_knowledge", "first_time_user"]
+behaviour:
+  digital_literacy: 0.32
+  domain_expertise: 0.15
+  reading_patience: 0.61
+  exploration: 0.28
+  risk_tolerance: 0.22
+  memory_strength: 0.45
+  scanning_tendency: 0.35
+  help_seeking: 0.78
+  error_recovery: 0.30
+  trust: 0.40
+memory:
+  working_memory_items: 3
+  decay_per_step: 0.20
+perception:
+  viewport_only: true
+  reading_speed: slow
+  accessibility: []
+sampling:
+  seed: 43811
+  temperature: 0.9
+narrative: >-
+  Priya teaches at a government school in Kolkata and uses her phone mainly
+  for WhatsApp and news. She pays her electricity bill online because her son
+  set it up for her, and she is nervous about changing anything related to
+  payments in case she breaks it.
