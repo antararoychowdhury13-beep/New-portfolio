@@ -492,6 +492,69 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .locked-note{display:flex;gap:8px;align-items:flex-start;background:var(--cg);border:1px solid rgba(91,156,246,.25);border-radius:var(--rad);padding:9px 12px;margin-bottom:14px;font-size:10.5px;color:var(--t2)}
 .locked-note i{color:var(--c);font-size:13px;margin-top:1px}
 
+/* ===== SHARED CHIPS ===== */
+.chip{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;padding:2px 8px;border-radius:10px;margin:2px 2px 0 0}
+.ch-blue{background:var(--cg);color:var(--c)}
+.ch-green{background:var(--gg);color:var(--g)}
+.ch-amber{background:var(--ag);color:var(--a)}
+.ch-grey{background:rgba(255,255,255,.05);color:var(--t3)}
+
+/* ===== DASHBOARD ===== */
+.db-wrap{display:grid;grid-template-columns:1fr 252px;gap:14px;align-items:start}
+@media(max-width:900px){.db-wrap{grid-template-columns:1fr}}
+.db-greet{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.db-sub{font-size:11px;color:var(--t3);margin:3px 0 14px}
+.db-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:700px){.db-stats{grid-template-columns:1fr 1fr}}
+.db-stat{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:11px 13px}
+.db-stat .v{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;line-height:1.1}
+.db-stat .l{font-size:8.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin-top:3px}
+.db-stat .d{font-size:9.5px;margin-top:3px;color:var(--t3)}
+.db-stat .d.up{color:var(--g)}
+.db-meter{height:4px;border-radius:2px;background:var(--s3);margin-top:7px;overflow:hidden}
+.db-meter>div{height:100%;background:var(--a);border-radius:2px}
+.db-cont{background:var(--s2);border:1px solid rgba(91,156,246,.35);border-radius:var(--radl);padding:13px 15px;margin-bottom:12px}
+.db-cont-t{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:8px}
+.db-cont-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.db-cont-name{font-size:14px;font-weight:800}
+.db-cont-sub{font-size:10px;color:var(--t3);margin-top:2px}
+.db-chips{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.db-chip{font-family:'JetBrains Mono',monospace;font-size:8.5px;padding:2px 8px;border-radius:10px;border:1px solid var(--b1);color:var(--t3)}
+.db-chip.done{background:var(--cg);color:var(--c);border-color:transparent}
+.db-chip.curr{background:var(--c);color:#0b0d12;border-color:transparent;font-weight:700}
+.rail-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--radl);padding:12px 14px;margin-bottom:10px}
+.rail-t{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:7px}
+.rail-item{display:flex;gap:8px;font-size:10.5px;color:var(--t2);padding:7px 0;border-bottom:1px solid var(--b1);cursor:pointer;line-height:1.45}
+.rail-item:hover{color:var(--t1)}
+.rail-item:last-child{border-bottom:none}
+.rail-item i{color:var(--c);font-size:12px;margin-top:1px;flex-shrink:0}
+.rail-item.warn i{color:var(--a)}
+.rail-item b{color:var(--t1)}
+.svc-row{display:flex;align-items:center;font-size:10.5px;color:var(--t2);padding:5px 0}
+.svc-row .chip{margin-left:auto}
+
+/* ===== PROJECTS ===== */
+.pj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:9px;margin-bottom:14px}
+.pj-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:13px 15px;cursor:pointer;transition:border-color .12s;position:relative}
+.pj-card:hover{border-color:var(--b2)}
+.pj-card.live{border-color:rgba(91,156,246,.4)}
+.pj-n{font-size:12.5px;font-weight:700}
+.pj-m{font-size:9.5px;color:var(--t3);margin:3px 0 9px}
+.pj-new{border:1.5px dashed var(--b2);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:96px;color:var(--t3)}
+.pj-new:hover{border-color:var(--c);color:var(--c)}
+.pj-new i{font-size:18px}
+.pj-new span{font-size:11px;font-weight:600}
+
+/* ===== PERSONA LIBRARY PAGE ===== */
+.libp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:9px;margin-bottom:16px}
+.libp-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:13px 15px}
+.libp-hd{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.libp-n{font-size:12px;font-weight:700}
+.libp-d{font-size:9.5px;color:var(--t3)}
+.libp-note{font-size:10px;color:var(--t2);margin:5px 0 8px;font-style:italic}
+.libp-attrs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.libp-foot{display:flex;gap:6px;margin-top:9px}
+
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
@@ -508,9 +571,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   </div>
   <div class="nav-sec">
     <div class="nlbl">Workspace</div>
-    <div class="ni" onclick="gs('ph')"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
-    <div class="ni" onclick="gs('ph')"><i class="ti ti-folder"></i>Projects<span class="ni-b">4</span></div>
-    <div class="ni" onclick="gs('ph')"><i class="ti ti-users"></i>Persona Library</div>
+    <div class="ni" id="nav-dashboard" onclick="gs('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+    <div class="ni" id="nav-projects" onclick="gs('projects')"><i class="ti ti-folder"></i>Projects<span class="ni-b">4</span></div>
+    <div class="ni" id="nav-library" onclick="gs('library')"><i class="ti ti-users"></i>Persona Library</div>
   </div>
   <div class="nav-sec" style="margin-top:5px">
     <div class="nlbl">Active: HMC Revamp</div>
@@ -541,6 +604,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   </div>
   <div class="stepnav" id="stepnav"></div>
   <div class="content">
+
+    <!-- ============ SCREEN: DASHBOARD ============ -->
+    <div class="screen" id="screen-dashboard"><div id="db-content"></div></div>
+
+    <!-- ============ SCREEN: PROJECTS ============ -->
+    <div class="screen" id="screen-projects"><div id="pj-content"></div></div>
+
+    <!-- ============ SCREEN: PERSONA LIBRARY ============ -->
+    <div class="screen" id="screen-library"><div id="libp-content"></div></div>
 
     <!-- ============ SCREEN: SETUP ============ -->
     <div class="screen" id="screen-setup">
@@ -1416,6 +1488,7 @@ function renderPersonas(){
       <div class="pcard-hd">
         <div class="pav">${esc(p.name.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase())}</div>
         <input value="${esc(p.name)}" onchange="upd('${p.id}','name',this.value);renderPersonas()">
+        <i class="ti ti-stack rm" title="Save to library" onclick="saveToLibrary('${p.id}')"></i>
         <i class="ti ti-trash rm" onclick="removePersona('${p.id}')"></i>
       </div>
       <div class="pfield"><label>Occupation</label><input type="text" value="${esc(p.occupation)}" onchange="upd('${p.id}','occupation',this.value)"></div>
@@ -1627,6 +1700,7 @@ function startRun(){
       const seedBase=7+runCount*13;runCount++;
       STUDY=variants.map((v,idx)=>({...v,res:runVariant(v,per,seedBase+idx*101)}));
       activeVariant=0;
+      bumpTotals();
       lbl.innerHTML='All sessions complete — <span>opening KPI matrix</span>';
       prog.style.width="100%";
       chips.innerHTML='<span class="ais ais-done">reading</span><span class="ais ais-done">simulate</span><span class="ais ais-done">measure</span><span class="ais ais-done">aggregate</span>';
@@ -1770,6 +1844,181 @@ function addCT(){
   closeModal();
 }
 
+/* ---------- workspace screens: dashboard / projects / library ---------- */
+const T_KEY="uxkpi-totals";
+function totals(){try{return JSON.parse(localStorage.getItem(T_KEY)||'{"sessions":0,"lastDelta":null,"runs":0}')}catch{return{sessions:0,lastDelta:null,runs:0}}}
+function bumpTotals(){
+  const t=totals();
+  t.sessions+=STUDY.reduce((a,v)=>a+v.res.n,0);
+  t.runs++;
+  if(STUDY.length>1)t.lastDelta=STUDY[1].res.rate-STUDY[0].res.rate;
+  try{localStorage.setItem(T_KEY,JSON.stringify(t))}catch{}
+}
+function furthestStep(){
+  if(STUDY)return "kpi";
+  if(appState.personas.length)return "testing";
+  if(appState.analysis.status==="completed")return "personas";
+  if(appState.screens.before.length||appState.screens.after.length)return "upload";
+  return "setup";
+}
+const SAMPLE_PROJECTS=[
+  {name:"KhetMitra Onboarding",meta:"Multi-variant · 8 personas",chips:[["REPORT SHARED","ch-green"],["Δ +22 pp","ch-green"]]},
+  {name:"Billing Portal Audit",meta:"Single flow · 5 personas",chips:[["AWAITING SCREENS","ch-amber"]]},
+  {name:"Field App IA Study",meta:"Before vs After · archived",chips:[["ARCHIVED","ch-grey"]]},
+];
+function stepChips(){
+  const cur=furthestStep();
+  const curIdx=STEPS_DEF.findIndex(s=>s.key===cur);
+  return STEPS_DEF.map((s,i)=>`<span class="db-chip ${i<curIdx?"done":i===curIdx?"curr":""}">${s.label}</span>`).join("");
+}
+function renderDashboard(){
+  const t=totals();
+  const h=new Date().getHours();
+  const greet=h<12?"Good morning":h<17?"Good afternoon":"Good evening";
+  const name=document.getElementById("su-name").value||"Untitled project";
+  const cur=furthestStep();
+  const curLabel=(STEPS_DEF.find(s=>s.key===cur)||{}).label||"Setup";
+  const attention=[];
+  if(appState.analysis.status==="stale")attention.push({icon:"ti-alert-triangle",warn:true,html:"<b>Analysis is stale</b> — screens changed since the last run. Re-analyze.",go:"upload"});
+  if(STUDY)attention.push({icon:"ti-chart-bar",html:`<b>KPI matrix ready</b> — ${esc(name)}, success ${pct(STUDY[STUDY.length-1].res.rate)}${STUDY.length>1?" ("+pp(STUDY[STUDY.length-1].res.rate-STUDY[0].res.rate)+")":""}`,go:"kpi"});
+  if(!appState.personas.length)attention.push({icon:"ti-wand",html:"<b>Build your persona panel</b> — testing needs at least one persona.",go:"personas"});
+  if(appState.analysis.status==="not_run"&&!appState.screens.before.length)attention.push({icon:"ti-upload",html:"<b>Upload screens</b> — or load the sample flow to try the pipeline.",go:"upload"});
+  if(!attention.length)attention.push({icon:"ti-check",html:"<b>All caught up.</b> Re-run tests any time — each run is a fresh measured panel.",go:"testing"});
+  document.getElementById("db-content").innerHTML=`
+    <div class="db-wrap">
+      <div>
+        <div class="db-greet">${greet}, Anupam</div>
+        <div class="db-sub">${t.runs?`${t.sessions.toLocaleString()} measured sessions across ${t.runs} run${t.runs===1?"":"s"} on this device`:"No runs yet — the engine is warmed up and waiting"}</div>
+        <div class="db-stats">
+          <div class="db-stat"><div class="v">4</div><div class="l">Active projects</div><div class="d">1 live · 3 sample</div></div>
+          <div class="db-stat"><div class="v">${t.sessions.toLocaleString()}</div><div class="l">Panels simulated</div><div class="d ${t.sessions?"up":""}">${t.sessions?"measured, this device":"—"}</div></div>
+          <div class="db-stat"><div class="v ${t.lastDelta>0?"up":""}" ${t.lastDelta>0?'style="color:var(--g)"':""}>${t.lastDelta===null?"—":pp(t.lastDelta)}</div><div class="l">Last UX delta</div><div class="d">${t.lastDelta===null?"run a Before vs After":"measured, latest run"}</div></div>
+          <div class="db-stat"><div class="v">62%</div><div class="l">Monthly quota</div><div class="db-meter"><div style="width:62%"></div></div></div>
+        </div>
+        <div class="db-cont">
+          <div class="db-cont-t">Continue where you left off</div>
+          <div class="db-cont-row">
+            <div style="flex:1;min-width:0">
+              <div class="db-cont-name">${esc(name)}</div>
+              <div class="db-cont-sub">${esc(document.getElementById("su-industry").value)} · ${flowMode==="single"?"Single flow":flowMode==="compare"?"Before vs After":"Multi-variant"}</div>
+              <div class="db-chips">${stepChips()}</div>
+            </div>
+            <button class="btn primary" onclick="gs('${cur}')"><i class="ti ti-player-play"></i>Resume ${curLabel.toLowerCase()}</button>
+          </div>
+        </div>
+        <div class="sec-label">All projects</div>
+        <div class="pj-grid">
+          <div class="pj-card live" onclick="gs('${cur}')">
+            <div class="pj-n">${esc(name)}</div>
+            <div class="pj-m">${esc(document.getElementById("su-industry").value)} · ${appState.personas.length} personas</div>
+            <span class="chip ch-blue">${curLabel.toUpperCase()}</span>
+            ${t.lastDelta!==null&&t.lastDelta>0?`<span class="chip ch-green">Δ ${pp(t.lastDelta)}</span>`:""}
+          </div>
+          ${SAMPLE_PROJECTS.map(p=>`<div class="pj-card" title="Sample project — demo data">
+            <div class="pj-n">${p.name}</div><div class="pj-m">${p.meta} · <span style="color:var(--t4)">sample</span></div>
+            ${p.chips.map(([l,c])=>`<span class="chip ${c}">${l}</span> `).join("")}</div>`).join("")}
+        </div>
+      </div>
+      <div>
+        <div class="rail-card">
+          <div class="rail-t">Needs your attention</div>
+          ${attention.map(a=>`<div class="rail-item${a.warn?" warn":""}" onclick="gs('${a.go}')"><i class="ti ${a.icon}"></i><div>${a.html}</div></div>`).join("")}
+        </div>
+        <div class="rail-card">
+          <div class="rail-t">Connected services</div>
+          <div class="svc-row">Simulation engine <span class="chip ch-green">LIVE</span></div>
+          <div class="svc-row">Supabase <span class="chip ch-grey">MOCK</span></div>
+          <div class="svc-row">Claude <span class="chip ch-grey">MOCK</span></div>
+          <div class="svc-row">Gemini vision <span class="chip ch-grey">MOCK</span></div>
+          <div style="font-size:9px;color:var(--t4);margin-top:6px">Prototype build — external services are mocked; the measured engine runs for real in your browser.</div>
+        </div>
+      </div>
+    </div>`;
+}
+function newProject(){
+  if(!confirm("Start a new project? This clears the current prototype project (screens, analysis, personas, results)."))return;
+  try{localStorage.removeItem(S_KEY)}catch{}
+  appState.screens={before:[],after:[]};appState.analysis={status:"not_run",keyChanges:[]};
+  appState.personas=[];appState.sample=false;STUDY=null;
+  document.getElementById("su-name").value="Untitled project";
+  renderShots("before");renderShots("after");renderAnalysis();uploadChanged();renderPersonas();
+  document.getElementById("kpi-content").innerHTML='<div class="empty-state"><i class="ti ti-chart-bar"></i><div>No results yet — run tests from the Testing Engine first.</div></div>';
+  document.getElementById("report-content").innerHTML='<div class="empty-state"><i class="ti ti-file-analytics"></i><div>No report yet — run tests from the Testing Engine first.</div></div>';
+  gs("setup");
+}
+function renderProjects(){
+  const name=document.getElementById("su-name").value||"Untitled project";
+  const cur=furthestStep();
+  const curLabel=(STEPS_DEF.find(s=>s.key===cur)||{}).label||"Setup";
+  const t=totals();
+  document.getElementById("pj-content").innerHTML=`
+    <div class="sec-label">Projects</div>
+    <div class="pj-grid">
+      <div class="pj-card pj-new" onclick="newProject()"><i class="ti ti-plus"></i><span>New project</span></div>
+      <div class="pj-card live" onclick="gs('${cur}')">
+        <div class="pj-n">${esc(name)}</div>
+        <div class="pj-m">${esc(document.getElementById("su-industry").value)} · ${appState.personas.length} personas · updated now</div>
+        <span class="chip ch-blue">${curLabel.toUpperCase()}</span>
+        ${t.lastDelta!==null&&t.lastDelta>0?`<span class="chip ch-green">Δ ${pp(t.lastDelta)}</span>`:""}
+      </div>
+      ${SAMPLE_PROJECTS.map(p=>`<div class="pj-card" title="Sample project — demo data">
+        <div class="pj-n">${p.name}</div><div class="pj-m">${p.meta} · <span style="color:var(--t4)">sample</span></div>
+        ${p.chips.map(([l,c])=>`<span class="chip ${c}">${l}</span> `).join("")}</div>`).join("")}
+    </div>
+    <div style="font-size:10px;color:var(--t3)">In the prototype one project is live at a time; sample cards show how a filled portfolio reads. The full app keeps every project.</div>`;
+}
+const CL_KEY="uxkpi-custom-lib";
+function customLib(){try{return JSON.parse(localStorage.getItem(CL_KEY)||"[]")}catch{return[]}}
+function saveToLibrary(id){
+  const p=appState.personas.find(x=>x.id===id);if(!p)return;
+  const lib=customLib();
+  lib.push({name:p.name,age:p.age,occupation:p.occupation,location:p.location,tech:p.tech,exp:p.exp,a11y:p.a11y,note:"Saved from "+(document.getElementById("su-name").value||"project")});
+  try{localStorage.setItem(CL_KEY,JSON.stringify(lib))}catch{}
+  if(currentScreen==="library")renderLibrary();
+}
+function dropFromLibrary(i){
+  const lib=customLib();lib.splice(i,1);
+  try{localStorage.setItem(CL_KEY,JSON.stringify(lib))}catch{}
+  renderLibrary();
+}
+function addFromLibraryObj(o){
+  appState.personas.push(mkPersona(o));
+  renderPersonas();gs("personas");
+}
+function libCard(l,actions){
+  const b=deriveBehaviour({tech:l.tech,exp:l.exp,age:l.age,a11y:l.a11y||"none"});
+  const bars=[["Digital literacy",b.lit],["Domain expertise",b.dom],["Patience",b.patience],["Help-seeking",b.help]];
+  return `<div class="libp-card">
+    <div class="libp-hd"><div class="pav">${esc(l.name.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase())}</div>
+      <div style="flex:1;min-width:0"><div class="libp-n">${esc(l.name)} · ${l.age}</div>
+      <div class="libp-d">${esc(l.occupation||"—")}${l.location?", "+esc(l.location):""}</div></div></div>
+    ${l.note?`<div class="libp-note">${esc(l.note)}</div>`:""}
+    <div class="libp-attrs">
+      <span class="chip ch-grey">tech ${l.tech}/10</span>
+      <span class="chip ch-grey">${l.exp}y domain</span>
+      ${l.a11y&&l.a11y!=="none"?`<span class="chip ch-amber">${l.a11y.replace("_"," ")}</span>`:""}
+    </div>
+    ${bars.map(([lab,v])=>`<div class="bhv-row"><label>${lab}</label>
+      <div class="bhv-track"><div class="bhv-fill" style="width:${v*100}%"></div></div>
+      <span class="bhv-val">${v.toFixed(2)}</span></div>`).join("")}
+    <div class="libp-foot">${actions}</div>
+  </div>`;
+}
+function renderLibrary(){
+  const saved=customLib();
+  document.getElementById("libp-content").innerHTML=`
+    <div class="sec-label">Persona library — built-in archetypes</div>
+    <div style="font-size:10.5px;color:var(--t2);margin-bottom:12px;max-width:76ch">Each card shows the <b>behaviour profile</b> the engine derives from the persona's attributes. Adding a persona copies it into your project panel — edits there never change the library original.</div>
+    <div class="libp-grid">
+      ${LIBRARY.map((l,i)=>libCard(l,`<button class="btn sm primary" onclick="addFromLibraryObj(LIBRARY[${i}])"><i class="ti ti-plus"></i>Add to panel</button>`)).join("")}
+    </div>
+    <div class="sec-label">Your saved personas</div>
+    ${saved.length?`<div class="libp-grid">${saved.map((l,i)=>libCard(l,
+      `<button class="btn sm primary" onclick="addFromLibraryObj(customLib()[${i}])"><i class="ti ti-plus"></i>Add to panel</button>
+       <button class="btn sm" onclick="dropFromLibrary(${i})"><i class="ti ti-trash"></i></button>`)).join("")}</div>`
+    :`<div class="empty-state" style="padding:26px"><i class="ti ti-stack"></i><div>Save personas you'd reuse — the <i class="ti ti-stack"></i> icon on any Persona Builder card puts them here.</div></div>`}`;
+}
+
 /* ---------- step nav + routing ---------- */
 const STEPS_DEF=[
   {n:1,key:"setup",label:"Setup"},{n:2,key:"upload",label:"Upload"},{n:3,key:"personas",label:"Personas"},
@@ -1794,6 +2043,9 @@ function renderStepnav(){
   }).join("");
 }
 const SCREEN_META={
+  dashboard:["Dashboard","","nav-dashboard"],
+  projects:["Projects","","nav-projects"],
+  library:["Persona Library","","nav-library"],
   setup:["Project Setup","· Step 1 of 6",null],
   upload:["Upload Screens","· Step 2 of 6","nav-upload"],
   personas:["Persona Builder","· Step 3 of 6","nav-personas"],
@@ -1810,8 +2062,11 @@ function gs(id){
   const meta=SCREEN_META[id];
   document.getElementById("tb-title").textContent=meta[0];
   document.getElementById("tb-step").textContent=meta[1];
-  ["nav-upload","nav-personas","nav-testing","nav-kpi","nav-report"].forEach(n=>
+  ["nav-dashboard","nav-projects","nav-library","nav-upload","nav-personas","nav-testing","nav-kpi","nav-report"].forEach(n=>
     document.getElementById(n).classList.toggle("active",n===meta[2]));
+  if(id==="dashboard")renderDashboard();
+  if(id==="projects")renderProjects();
+  if(id==="library")renderLibrary();
   renderStepnav();
 }
 
@@ -1833,7 +2088,7 @@ renderShots("before");renderShots("after");
 renderAnalysis();
 uploadChanged();
 renderPersonas();
-gs(appState.personas.length?"testing":appState.screens.before.length?"upload":"setup");
+gs("dashboard");
 
 </script>
 </body>
