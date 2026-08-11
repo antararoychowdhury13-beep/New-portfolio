@@ -576,7 +576,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div class="ni" id="nav-library" onclick="gs('library')"><i class="ti ti-users"></i>Persona Library</div>
   </div>
   <div class="nav-sec" style="margin-top:5px">
-    <div class="nlbl">Active: HMC Revamp</div>
+    <div class="nlbl" id="active-label">Active: —</div>
     <div class="ni" id="nav-upload" onclick="gs('upload')"><i class="ti ti-upload"></i>Upload Screens</div>
     <div class="ni" id="nav-personas" onclick="gs('personas')"><i class="ti ti-wand"></i>Persona Builder</div>
     <div class="ni" id="nav-testing" onclick="gs('testing')"><i class="ti ti-test-pipe"></i>Testing Engine<span class="ni-dot"></span></div>
@@ -597,7 +597,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <div class="main">
   <div class="topbar">
     <div class="tb-t" id="tb-title">Testing Engine</div>
-    <div class="tb-cr"><i class="ti ti-chevron-right" style="font-size:10px"></i><b>HMC Dashboard Revamp</b><span style="color:var(--t3);margin-left:4px" id="tb-step">· Step 4 of 6</span></div>
+    <div class="tb-cr"><i class="ti ti-chevron-right" style="font-size:10px"></i><b id="tb-project">—</b><span style="color:var(--t3);margin-left:4px" id="tb-step">· Step 4 of 6</span></div>
     <button class="btn ghost"><i class="ti ti-question-mark"></i></button>
     <button class="btn" onclick="gs('ph')"><i class="ti ti-arrow-left"></i>Personas</button>
     <button class="btn primary" onclick="showRun()"><i class="ti ti-player-play"></i>Run Tests</button>
@@ -1239,6 +1239,7 @@ function setFM(mode){
   flowMode=mode;
   ['single','compare','multi'].forEach(m=>document.getElementById('fm-'+m).classList.toggle('sel',m===mode));
   updateRunStats();
+  if(typeof stateChanged==="function")try{stateChanged()}catch{}
 }
 
 function updateRunStats(){
@@ -1270,29 +1271,9 @@ const appState = {
   personas: [],
 };
 const S_KEY = "uxkpi-lab-v2";
-function saveState() {
-  try {
-    localStorage.setItem(S_KEY, JSON.stringify({
-      name: document.getElementById("su-name").value,
-      screens: { before: appState.screens.before.map(s => ({ label: s.label, seq: s.seq })),
-                 after: appState.screens.after.map(s => ({ label: s.label, seq: s.seq })) },
-      analysis: appState.analysis,
-      personas: appState.personas,
-    }));
-  } catch {}
-}
-function loadState() {
-  try {
-    const d = JSON.parse(localStorage.getItem(S_KEY) || "null");
-    if (!d) return;
-    if (d.name) document.getElementById("su-name").value = d.name;
-    appState.screens.before = (d.screens?.before || []).map(s => ({ ...s, img: null }));
-    appState.screens.after = (d.screens?.after || []).map(s => ({ ...s, img: null }));
-    appState.analysis = d.analysis || appState.analysis;
-    appState.personas = d.personas || [];
-  } catch {}
-}
-function stateChanged() { saveState(); renderStepnav(); }
+function saveState(){if(typeof REG!=="undefined"&&REG)syncActiveFromWorkspace()}
+function loadState(){regLoad();hydrateWorkspace()}
+function stateChanged(){saveState();if(typeof REG!=="undefined"&&REG)updateChrome();renderStepnav()}
 
 /* ---------------- deterministic RNG ---------------- */
 function mulberry32(a){return function(){a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296}}
@@ -1845,7 +1826,122 @@ function addCT(){
 }
 
 /* ---------- workspace screens: dashboard / projects / library ---------- */
+/* Multi-project registry: every project keeps its own screens, analysis,
+   personas, and flow mode. Selecting a project switches the whole
+   workspace — sidebar "Active" label, topbar crumb, wizard state. */
+const R_KEY="uxkpi-registry-v1";
 const T_KEY="uxkpi-totals";
+function seedProjects(){
+  return {activeId:"pr1",projects:[
+    {id:"pr1",name:"HMC Dashboard Revamp",industry:"Enterprise Software",
+     desc:"Operators struggle to change equipment alert thresholds. The redesign renames the settings entry point, flattens the navigation, and adds a confirmation state.",
+     flowMode:"compare",archived:false,
+     screens:{before:[],after:[]},analysis:{status:"not_run",keyChanges:[]},personas:[]},
+    {id:"pr2",name:"KhetMitra Onboarding",industry:"Consumer / Utilities",
+     desc:"First-time farmer onboarding for the KhetMitra app: reduce drop-off between language selection and farm profile completion.",
+     flowMode:"compare",archived:false,
+     screens:{before:["Welcome","Language","Phone number","OTP","Farm details","Crop selection","Home"].map((l,i)=>({label:l,seq:i+1,img:null})),
+              after:["Welcome","Language & phone","OTP","Farm profile","Home"].map((l,i)=>({label:l,seq:i+1,img:null}))},
+     analysis:{status:"completed",keyChanges:[
+       {text:"Language and phone-number steps merged — one screen fewer before OTP",tag:"navigation"},
+       {text:"Crop names now use local plain-language terms instead of agronomy vocabulary",tag:"label"},
+       {text:"Progress indicator added across onboarding",tag:"feedback"}]},
+     personas:[
+       {id:"k1",name:"Bhairav S.",age:52,occupation:"Cotton farmer",location:"Wardha",tech:2,exp:20,a11y:"none"},
+       {id:"k2",name:"Savita D.",age:34,occupation:"Dairy farmer",location:"Anand",tech:5,exp:12,a11y:"none"},
+       {id:"k3",name:"Kiran P.",age:26,occupation:"Agri-input dealer",location:"Nashik",tech:8,exp:5,a11y:"none"}]},
+    {id:"pr3",name:"Billing Portal Audit",industry:"Enterprise Software",
+     desc:"Baseline audit of the vendor billing portal before any redesign work.",
+     flowMode:"single",archived:false,
+     screens:{before:[],after:[]},analysis:{status:"not_run",keyChanges:[]},personas:[]},
+    {id:"pr4",name:"Field App IA Study",industry:"Enterprise Software",
+     desc:"Archived: information-architecture study for the field service app.",
+     flowMode:"compare",archived:true,
+     screens:{before:["Jobs","Job detail","Parts","Checklist","Sign-off"].map((l,i)=>({label:l,seq:i+1,img:null})),after:[]},
+     analysis:{status:"not_run",keyChanges:[]},personas:[]},
+  ]};
+}
+let REG=null;
+function regLoad(){
+  try{REG=JSON.parse(localStorage.getItem(R_KEY)||"null")}catch{REG=null}
+  if(!REG||!REG.projects||!REG.projects.length){
+    REG=seedProjects();
+    // migrate any pre-registry single-project state into project 1
+    try{
+      const old=JSON.parse(localStorage.getItem("uxkpi-lab-v2")||"null");
+      if(old){
+        const p=REG.projects[0];
+        if(old.name)p.name=old.name;
+        if(old.screens)p.screens={before:(old.screens.before||[]).map(s=>({...s,img:null})),after:(old.screens.after||[]).map(s=>({...s,img:null}))};
+        if(old.analysis)p.analysis=old.analysis;
+        if(old.personas)p.personas=old.personas;
+      }
+    }catch{}
+    regSave();
+  }
+}
+function regSave(){try{localStorage.setItem(R_KEY,JSON.stringify(REG))}catch{}}
+function activeProject(){return REG.projects.find(p=>p.id===REG.activeId)||REG.projects[0]}
+function syncActiveFromWorkspace(){
+  const p=activeProject();
+  p.name=document.getElementById("su-name").value;
+  p.industry=document.getElementById("su-industry").value;
+  p.desc=document.getElementById("su-desc").value;
+  p.flowMode=flowMode;
+  p.screens={before:appState.screens.before.map(s=>({label:s.label,seq:s.seq,img:null})),
+             after:appState.screens.after.map(s=>({label:s.label,seq:s.seq,img:null}))};
+  p.analysis=appState.analysis;
+  p.personas=appState.personas;
+  regSave();
+}
+function hydrateWorkspace(){
+  const p=activeProject();
+  document.getElementById("su-name").value=p.name;
+  document.getElementById("su-industry").value=p.industry;
+  document.getElementById("su-desc").value=p.desc;
+  appState.screens={before:p.screens.before.map(s=>({...s})),after:p.screens.after.map(s=>({...s}))};
+  appState.analysis=p.analysis;
+  appState.personas=p.personas;
+  appState.sample=/PowerGrid|mandate/i.test((p.screens.before[3]||{}).label||"");
+  setFMQuiet(p.flowMode||"single");
+  renderShots("before");renderShots("after");renderAnalysis();uploadChangedQuiet();renderPersonas();
+  updateChrome();
+}
+function setFMQuiet(mode){
+  flowMode=mode;
+  ["single","compare","multi"].forEach(m=>document.getElementById("fm-"+m).classList.toggle("sel",m===mode));
+}
+function uploadChangedQuiet(){
+  const ok=appState.screens.before.length>0&&appState.screens.after.length>0;
+  document.getElementById("an-btn").disabled=!ok;
+  document.getElementById("up-next").disabled=appState.analysis.status!=="completed";
+}
+function updateChrome(){
+  const p=activeProject();
+  const short=p.name.length>18?p.name.slice(0,17)+"…":p.name;
+  document.getElementById("active-label").textContent="Active: "+(short||"Untitled");
+  document.getElementById("tb-project").textContent=p.name||"Untitled project";
+  const badge=document.getElementById("nav-projects").querySelector(".ni-b");
+  if(badge)badge.textContent=REG.projects.length;
+}
+function switchProject(id){
+  if(id===REG.activeId){gs(furthestStep());return}
+  syncActiveFromWorkspace();
+  REG.activeId=id;regSave();
+  STUDY=null;activeVariant=0;
+  document.getElementById("kpi-content").innerHTML='<div class="empty-state"><i class="ti ti-chart-bar"></i><div>No results yet in this project — run tests from the Testing Engine.</div></div>';
+  document.getElementById("report-content").innerHTML='<div class="empty-state"><i class="ti ti-file-analytics"></i><div>No report yet in this project — run tests first.</div></div>';
+  hydrateWorkspace();
+  gs("dashboard");
+}
+function projStatus(p,isActive){
+  if(p.archived)return["ARCHIVED","ch-grey"];
+  if(isActive&&STUDY)return["KPI READY","ch-green"];
+  if(p.personas.length)return["TESTING","ch-blue"];
+  if(p.analysis.status==="completed")return["PERSONAS","ch-blue"];
+  if(p.screens.before.length||p.screens.after.length)return["UPLOAD","ch-amber"];
+  return["SETUP","ch-amber"];
+}
 function totals(){try{return JSON.parse(localStorage.getItem(T_KEY)||'{"sessions":0,"lastDelta":null,"runs":0}')}catch{return{sessions:0,lastDelta:null,runs:0}}}
 function bumpTotals(){
   const t=totals();
@@ -1861,26 +1957,33 @@ function furthestStep(){
   if(appState.screens.before.length||appState.screens.after.length)return "upload";
   return "setup";
 }
-const SAMPLE_PROJECTS=[
-  {name:"KhetMitra Onboarding",meta:"Multi-variant · 8 personas",chips:[["REPORT SHARED","ch-green"],["Δ +22 pp","ch-green"]]},
-  {name:"Billing Portal Audit",meta:"Single flow · 5 personas",chips:[["AWAITING SCREENS","ch-amber"]]},
-  {name:"Field App IA Study",meta:"Before vs After · archived",chips:[["ARCHIVED","ch-grey"]]},
-];
 function stepChips(){
   const cur=furthestStep();
   const curIdx=STEPS_DEF.findIndex(s=>s.key===cur);
   return STEPS_DEF.map((s,i)=>`<span class="db-chip ${i<curIdx?"done":i===curIdx?"curr":""}">${s.label}</span>`).join("");
 }
+function projCard(p){
+  const isActive=p.id===REG.activeId;
+  const [st,cls]=projStatus(p,isActive);
+  const t=totals();
+  return `<div class="pj-card${isActive?" live":""}" onclick="switchProject('${p.id}')" title="${isActive?"Active project — click to resume":"Click to make this the active project"}">
+    <div class="pj-n">${esc(p.name)}</div>
+    <div class="pj-m">${esc(p.industry)} · ${p.personas.length} personas${isActive?" · active":""}</div>
+    <span class="chip ${cls}">${st}</span>
+    ${isActive&&t.lastDelta!==null&&t.lastDelta>0?`<span class="chip ch-green">Δ ${pp(t.lastDelta)}</span>`:""}
+  </div>`;
+}
 function renderDashboard(){
   const t=totals();
+  const p=activeProject();
   const h=new Date().getHours();
   const greet=h<12?"Good morning":h<17?"Good afternoon":"Good evening";
-  const name=document.getElementById("su-name").value||"Untitled project";
   const cur=furthestStep();
   const curLabel=(STEPS_DEF.find(s=>s.key===cur)||{}).label||"Setup";
+  const activeCount=REG.projects.filter(x=>!x.archived).length;
   const attention=[];
   if(appState.analysis.status==="stale")attention.push({icon:"ti-alert-triangle",warn:true,html:"<b>Analysis is stale</b> — screens changed since the last run. Re-analyze.",go:"upload"});
-  if(STUDY)attention.push({icon:"ti-chart-bar",html:`<b>KPI matrix ready</b> — ${esc(name)}, success ${pct(STUDY[STUDY.length-1].res.rate)}${STUDY.length>1?" ("+pp(STUDY[STUDY.length-1].res.rate-STUDY[0].res.rate)+")":""}`,go:"kpi"});
+  if(STUDY)attention.push({icon:"ti-chart-bar",html:`<b>KPI matrix ready</b> — ${esc(p.name)}, success ${pct(STUDY[STUDY.length-1].res.rate)}${STUDY.length>1?" ("+pp(STUDY[STUDY.length-1].res.rate-STUDY[0].res.rate)+")":""}`,go:"kpi"});
   if(!appState.personas.length)attention.push({icon:"ti-wand",html:"<b>Build your persona panel</b> — testing needs at least one persona.",go:"personas"});
   if(appState.analysis.status==="not_run"&&!appState.screens.before.length)attention.push({icon:"ti-upload",html:"<b>Upload screens</b> — or load the sample flow to try the pipeline.",go:"upload"});
   if(!attention.length)attention.push({icon:"ti-check",html:"<b>All caught up.</b> Re-run tests any time — each run is a fresh measured panel.",go:"testing"});
@@ -1890,34 +1993,24 @@ function renderDashboard(){
         <div class="db-greet">${greet}, Anupam</div>
         <div class="db-sub">${t.runs?`${t.sessions.toLocaleString()} measured sessions across ${t.runs} run${t.runs===1?"":"s"} on this device`:"No runs yet — the engine is warmed up and waiting"}</div>
         <div class="db-stats">
-          <div class="db-stat"><div class="v">4</div><div class="l">Active projects</div><div class="d">1 live · 3 sample</div></div>
+          <div class="db-stat"><div class="v">${activeCount}</div><div class="l">Active projects</div><div class="d">${REG.projects.length-activeCount} archived</div></div>
           <div class="db-stat"><div class="v">${t.sessions.toLocaleString()}</div><div class="l">Panels simulated</div><div class="d ${t.sessions?"up":""}">${t.sessions?"measured, this device":"—"}</div></div>
-          <div class="db-stat"><div class="v ${t.lastDelta>0?"up":""}" ${t.lastDelta>0?'style="color:var(--g)"':""}>${t.lastDelta===null?"—":pp(t.lastDelta)}</div><div class="l">Last UX delta</div><div class="d">${t.lastDelta===null?"run a Before vs After":"measured, latest run"}</div></div>
+          <div class="db-stat"><div class="v" ${t.lastDelta>0?'style="color:var(--g)"':""}>${t.lastDelta===null?"—":pp(t.lastDelta)}</div><div class="l">Last UX delta</div><div class="d">${t.lastDelta===null?"run a Before vs After":"measured, latest run"}</div></div>
           <div class="db-stat"><div class="v">62%</div><div class="l">Monthly quota</div><div class="db-meter"><div style="width:62%"></div></div></div>
         </div>
         <div class="db-cont">
           <div class="db-cont-t">Continue where you left off</div>
           <div class="db-cont-row">
             <div style="flex:1;min-width:0">
-              <div class="db-cont-name">${esc(name)}</div>
-              <div class="db-cont-sub">${esc(document.getElementById("su-industry").value)} · ${flowMode==="single"?"Single flow":flowMode==="compare"?"Before vs After":"Multi-variant"}</div>
+              <div class="db-cont-name">${esc(p.name)}</div>
+              <div class="db-cont-sub">${esc(p.industry)} · ${flowMode==="single"?"Single flow":flowMode==="compare"?"Before vs After":"Multi-variant"}</div>
               <div class="db-chips">${stepChips()}</div>
             </div>
             <button class="btn primary" onclick="gs('${cur}')"><i class="ti ti-player-play"></i>Resume ${curLabel.toLowerCase()}</button>
           </div>
         </div>
-        <div class="sec-label">All projects</div>
-        <div class="pj-grid">
-          <div class="pj-card live" onclick="gs('${cur}')">
-            <div class="pj-n">${esc(name)}</div>
-            <div class="pj-m">${esc(document.getElementById("su-industry").value)} · ${appState.personas.length} personas</div>
-            <span class="chip ch-blue">${curLabel.toUpperCase()}</span>
-            ${t.lastDelta!==null&&t.lastDelta>0?`<span class="chip ch-green">Δ ${pp(t.lastDelta)}</span>`:""}
-          </div>
-          ${SAMPLE_PROJECTS.map(p=>`<div class="pj-card" title="Sample project — demo data">
-            <div class="pj-n">${p.name}</div><div class="pj-m">${p.meta} · <span style="color:var(--t4)">sample</span></div>
-            ${p.chips.map(([l,c])=>`<span class="chip ${c}">${l}</span> `).join("")}</div>`).join("")}
-        </div>
+        <div class="sec-label">All projects — click one to make it active</div>
+        <div class="pj-grid">${REG.projects.map(projCard).join("")}</div>
       </div>
       <div>
         <div class="rail-card">
@@ -1936,43 +2029,37 @@ function renderDashboard(){
     </div>`;
 }
 function newProject(){
-  if(!confirm("Start a new project? This clears the current prototype project (screens, analysis, personas, results)."))return;
-  try{localStorage.removeItem(S_KEY)}catch{}
-  appState.screens={before:[],after:[]};appState.analysis={status:"not_run",keyChanges:[]};
-  appState.personas=[];appState.sample=false;STUDY=null;
-  document.getElementById("su-name").value="Untitled project";
-  renderShots("before");renderShots("after");renderAnalysis();uploadChanged();renderPersonas();
-  document.getElementById("kpi-content").innerHTML='<div class="empty-state"><i class="ti ti-chart-bar"></i><div>No results yet — run tests from the Testing Engine first.</div></div>';
-  document.getElementById("report-content").innerHTML='<div class="empty-state"><i class="ti ti-file-analytics"></i><div>No report yet — run tests from the Testing Engine first.</div></div>';
+  const name=prompt("Name the new project:","Untitled project");
+  if(name===null)return;
+  syncActiveFromWorkspace();
+  const id="pr"+Date.now().toString(36);
+  REG.projects.unshift({id,name:name.trim()||"Untitled project",industry:"Enterprise Software",desc:"",
+    flowMode:"single",archived:false,
+    screens:{before:[],after:[]},analysis:{status:"not_run",keyChanges:[]},personas:[]});
+  REG.activeId=id;regSave();
+  STUDY=null;
+  document.getElementById("kpi-content").innerHTML='<div class="empty-state"><i class="ti ti-chart-bar"></i><div>No results yet in this project — run tests from the Testing Engine.</div></div>';
+  document.getElementById("report-content").innerHTML='<div class="empty-state"><i class="ti ti-file-analytics"></i><div>No report yet in this project — run tests first.</div></div>';
+  hydrateWorkspace();
   gs("setup");
 }
 function renderProjects(){
-  const name=document.getElementById("su-name").value||"Untitled project";
-  const cur=furthestStep();
-  const curLabel=(STEPS_DEF.find(s=>s.key===cur)||{}).label||"Setup";
-  const t=totals();
   document.getElementById("pj-content").innerHTML=`
-    <div class="sec-label">Projects</div>
+    <div class="sec-label">Projects — click a card to switch the active project</div>
     <div class="pj-grid">
       <div class="pj-card pj-new" onclick="newProject()"><i class="ti ti-plus"></i><span>New project</span></div>
-      <div class="pj-card live" onclick="gs('${cur}')">
-        <div class="pj-n">${esc(name)}</div>
-        <div class="pj-m">${esc(document.getElementById("su-industry").value)} · ${appState.personas.length} personas · updated now</div>
-        <span class="chip ch-blue">${curLabel.toUpperCase()}</span>
-        ${t.lastDelta!==null&&t.lastDelta>0?`<span class="chip ch-green">Δ ${pp(t.lastDelta)}</span>`:""}
-      </div>
-      ${SAMPLE_PROJECTS.map(p=>`<div class="pj-card" title="Sample project — demo data">
-        <div class="pj-n">${p.name}</div><div class="pj-m">${p.meta} · <span style="color:var(--t4)">sample</span></div>
-        ${p.chips.map(([l,c])=>`<span class="chip ${c}">${l}</span> `).join("")}</div>`).join("")}
+      ${REG.projects.filter(p=>!p.archived).map(projCard).join("")}
     </div>
-    <div style="font-size:10px;color:var(--t3)">In the prototype one project is live at a time; sample cards show how a filled portfolio reads. The full app keeps every project.</div>`;
+    <div class="sec-label">Archived</div>
+    <div class="pj-grid">${REG.projects.filter(p=>p.archived).map(projCard).join("")||'<div style="font-size:10.5px;color:var(--t3)">Nothing archived.</div>'}</div>
+    <div style="font-size:10px;color:var(--t3);margin-top:10px">Every project keeps its own screens, analysis, and persona panel. Run results live per session; re-run any project's tests after switching to it.</div>`;
 }
 const CL_KEY="uxkpi-custom-lib";
 function customLib(){try{return JSON.parse(localStorage.getItem(CL_KEY)||"[]")}catch{return[]}}
 function saveToLibrary(id){
   const p=appState.personas.find(x=>x.id===id);if(!p)return;
   const lib=customLib();
-  lib.push({name:p.name,age:p.age,occupation:p.occupation,location:p.location,tech:p.tech,exp:p.exp,a11y:p.a11y,note:"Saved from "+(document.getElementById("su-name").value||"project")});
+  lib.push({name:p.name,age:p.age,occupation:p.occupation,location:p.location,tech:p.tech,exp:p.exp,a11y:p.a11y,note:"Saved from "+activeProject().name});
   try{localStorage.setItem(CL_KEY,JSON.stringify(lib))}catch{}
   if(currentScreen==="library")renderLibrary();
 }
@@ -2008,7 +2095,7 @@ function renderLibrary(){
   const saved=customLib();
   document.getElementById("libp-content").innerHTML=`
     <div class="sec-label">Persona library — built-in archetypes</div>
-    <div style="font-size:10.5px;color:var(--t2);margin-bottom:12px;max-width:76ch">Each card shows the <b>behaviour profile</b> the engine derives from the persona's attributes. Adding a persona copies it into your project panel — edits there never change the library original.</div>
+    <div style="font-size:10.5px;color:var(--t2);margin-bottom:12px;max-width:76ch">Each card shows the <b>behaviour profile</b> the engine derives from the persona's attributes. Adding a persona copies it into the active project's panel (<b>${esc(activeProject().name)}</b>) — edits there never change the library original.</div>
     <div class="libp-grid">
       ${LIBRARY.map((l,i)=>libCard(l,`<button class="btn sm primary" onclick="addFromLibraryObj(LIBRARY[${i}])"><i class="ti ti-plus"></i>Add to panel</button>`)).join("")}
     </div>
@@ -2084,10 +2171,6 @@ function gs(id){
 renderModelGrid();
 renderMethods("all");
 loadState();
-renderShots("before");renderShots("after");
-renderAnalysis();
-uploadChanged();
-renderPersonas();
 gs("dashboard");
 
 </script>
