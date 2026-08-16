@@ -1,8 +1,14 @@
 {
-  // Cloudflare Workers config — serves the portfolio as a static-assets site.
+  // Cloudflare Workers config — static portfolio (public/) + /api/chat chatbot.
+  // Secrets/vars for the chatbot (set in Worker settings → Variables and Secrets):
+  //   OPENAI_API_KEY (secret, required for primary provider gpt-4o-mini)
+  //   OPENAI_MODEL, OLLAMA_BASE_URL, OLLAMA_MODEL (vars, optional)
+  //   OLLAMA_API_KEY (secret, optional)
   "name": "new-portfolio",
+  "main": "src/worker.js",
   "compatibility_date": "2026-08-02",
   "assets": {
-    "directory": "./"
+    "directory": "./public",
+    "binding": "ASSETS"
   }
 }

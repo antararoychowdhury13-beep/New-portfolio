@@ -98,6 +98,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:40;backdrop-filter:blur(16px);-w
 .a-actions a::after{content:"↗";color:var(--accent)}
 .a-actions a:hover{border-color:var(--accent);background:rgba(196,245,66,.05)}
 .a-note{font-size:13px;color:var(--muted);margin-top:14px;max-width:640px}
+.a-ai{max-width:680px}
+.a-ai p{font-size:15.5px;margin-bottom:12px}
+.a-ai p:last-child{margin-bottom:0}
+.a-ai b{color:var(--accent);font-weight:600}
 .a-prin{display:flex;flex-direction:column;gap:14px;margin-top:8px}
 .a-prin .p{display:flex;gap:14px;align-items:baseline}
 .a-prin .p .nm{font-family:var(--mono);color:var(--accent);font-size:12px}
@@ -360,8 +364,44 @@ function show(it){bodyEl.innerHTML=it.body();}
 /* interaction guard + self-running demo so visitors SEE what the agent does */
 let userActed=false, demoStarted=false, demoOwnsInput=false; const demoTimers=[];
 function markActed(){ if(userActed)return; userActed=true; demoTimers.forEach(clearTimeout); if(demoOwnsInput){input.value='';demoOwnsInput=false;} const n=document.getElementById('nudge'); if(n)n.hidden=true; }
-document.getElementById('csend').onclick=()=>{markActed();resolve(route(input.value));};
-input.addEventListener('keydown',e=>{if(e.key==='Enter'){markActed();resolve(route(input.value));}});
+/* live AI chat — /api/chat resolves via gpt-4o-mini (primary) or Ollama
+   (secondary); on any failure we fall back to the local keyword index */
+const chatHist=[];
+function escTx(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function aiHtml(s){
+  let h=escTx(s).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/^[-*] (.*)$/gm,'&bull; $1');
+  return h.split(/\n{2,}/).map(p=>'<p>'+p.replace(/\n/g,'<br>')+'</p>').join('');
+}
+async function ask(q){
+  q=(q||'').trim();
+  if(!q){resolve('vp');return;}
+  ansEl.classList.remove('empty');
+  if(typing)clearInterval(typing);
+  tagEl.textContent='LIVE AGENT';
+  bodyEl.innerHTML='';
+  lineEl.innerHTML='&rsaquo; resolving &rarr; querying the live agent&hellip;<span class="cursor"></span>';
+  ansEl.scrollIntoView({behavior:reduceM?'auto':'smooth',block:'nearest'});
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({messages:[...chatHist,{role:'user',content:q}]}),
+      signal:AbortSignal.timeout(30000)});
+    if(!r.ok)throw new Error('api '+r.status);
+    const d=await r.json();
+    if(!d.answer)throw new Error('empty answer');
+    chatHist.push({role:'user',content:q},{role:'assistant',content:d.answer});
+    while(chatHist.length>8)chatHist.shift();
+    tagEl.textContent=d.provider==='openai'?'GPT-4O MINI':d.provider==='ollama'?'OLLAMA':'LIVE AGENT';
+    lineEl.textContent='› '+q;
+    bodyEl.innerHTML='<div class="a-body"><div class="a-ai">'+aiHtml(d.answer)+'</div></div>';
+    input.value='';
+  }catch(e){
+    const k=route(q);
+    resolve(k,{scroll:false});
+    tagEl.textContent=INTENTS[k].tag+' · LOCAL INDEX';
+  }
+}
+document.getElementById('csend').onclick=()=>{markActed();ask(input.value);};
+input.addEventListener('keydown',e=>{if(e.key==='Enter'){markActed();ask(input.value);}});
 input.addEventListener('focus',markActed);
 input.addEventListener('pointerdown',markActed);
 
