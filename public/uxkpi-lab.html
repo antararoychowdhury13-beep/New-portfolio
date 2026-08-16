@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UX KPI — Testing Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0b0d12;--s1:#111318;--s2:#181a22;--s3:#1e2028;
+  --b1:#252836;--b2:#2f3245;--b3:#3a3f55;
+  --t1:#eeeef4;--t2:#9999b8;--t3:#5c5c7a;--t4:#3a3a52;
+  --c:#5b9cf6;--cg:rgba(91,156,246,.1);--chov:rgba(91,156,246,.15);
+  --g:#22c55e;--gg:rgba(34,197,94,.1);
+  --a:#f59e0b;--ag:rgba(245,158,11,.1);
+  --r:#ef4444;--rg:rgba(239,68,68,.1);
+  --p:#a855f7;--pg:rgba(168,85,247,.1);
+  --te:#14b8a6;--teg:rgba(20,184,166,.1);
+  --o:#f97316;--og:rgba(249,115,22,.1);
+  --y:#eab308;--yg:rgba(234,179,8,.1);
+  --rad:6px;--radl:10px;--radxl:14px;
+  --shadow:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.4);
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* LAYOUT */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sb{width:212px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow-y:auto}
+.sb-logo{padding:16px 14px 14px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--b1)}
+.lbox{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,rgba(91,156,246,.25),rgba(91,156,246,.08));border:1px solid rgba(91,156,246,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lbox span{font-size:8px;color:var(--c);font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.5px}
+.lname{font-size:12px;font-weight:700;color:var(--t1);letter-spacing:-.2px}
+.ltag{font-size:9px;color:var(--t3);letter-spacing:.3px;margin-top:1px}
+.nav-sec{padding:10px 7px 2px}
+.nlbl{font-size:9px;color:var(--t3);letter-spacing:1.8px;text-transform:uppercase;padding:0 7px;margin-bottom:4px;font-weight:600}
+.ni{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:var(--rad);cursor:pointer;font-size:12px;font-weight:500;color:var(--t3);transition:all .1s;margin-bottom:1px;position:relative}
+.ni:hover{background:rgba(255,255,255,.04);color:var(--t2)}
+.ni.active{background:var(--cg);color:var(--c)}
+.ni.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;background:var(--c);border-radius:1px}
+.ni i{font-size:14px;width:15px;flex-shrink:0}
+.ni-b{margin-left:auto;font-size:9px;font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.05);border:1px solid var(--b1);border-radius:6px;padding:1px 5px;color:var(--t3)}
+.ni-dot{margin-left:auto;width:5px;height:5px;border-radius:50%;background:var(--c);box-shadow:0 0 5px var(--c)}
+.sb-sp{flex:1}
+.sb-ft{padding:10px 12px;border-top:1px solid var(--b1)}
+.urow{display:flex;align-items:center;gap:8px}
+.uav{width:26px;height:26px;border-radius:50%;background:var(--cg);border:1px solid rgba(91,156,246,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--c);flex-shrink:0}
+.un{font-size:11px;font-weight:600;color:var(--t1)}
+.ur{font-size:9px;color:var(--t3)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:var(--s1);border-bottom:1px solid var(--b1);height:50px;padding:0 20px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.tb-t{font-size:13px;font-weight:700;color:var(--t1);flex:1;letter-spacing:-.2px}
+.tb-cr{font-size:11px;color:var(--t3);display:flex;align-items:center;gap:4px}
+.tb-cr b{color:var(--t2);font-weight:600}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--rad);border:1px solid var(--b2);background:transparent;color:var(--t2);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .1s;white-space:nowrap;letter-spacing:-.1px}
+.btn:hover{background:rgba(255,255,255,.04);border-color:var(--b3);color:var(--t1)}
+.btn.primary{background:var(--c);color:#0b0d12;border-color:transparent;font-weight:700}
+.btn.primary:hover{background:#74aaff}
+.btn.ghost{border:none;color:var(--t3);padding:6px 9px}
+.btn.ghost:hover{color:var(--t2);background:rgba(255,255,255,.04)}
+.btn.sm{padding:4px 9px;font-size:10px}
+.btn i{font-size:12px}
+
+/* STEP NAV */
+.stepnav{background:var(--s1);border-bottom:1px solid var(--b1);padding:0 20px;height:40px;display:flex;align-items:center;gap:0;flex-shrink:0}
+.sn{display:flex;align-items:center;gap:0;cursor:pointer}
+.sdot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0;transition:all .15s}
+.sd-done{background:var(--c);color:#0b0d12}
+.sd-curr{background:transparent;color:var(--c);border:1.5px solid var(--c)}
+.sd-todo{background:var(--s3);color:var(--t3);border:1px solid var(--b1)}
+.slbl{font-size:10px;font-weight:600;margin:0 7px;white-space:nowrap}
+.slbl.curr{color:var(--t1)}
+.slbl.done{color:var(--c)}
+.slbl.todo{color:var(--t3)}
+.sline{width:18px;height:1px;background:var(--b1);flex-shrink:0}
+.sline.done{background:var(--c)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:18px 20px}
+.screen{display:none;animation:fu .15s ease}
+.screen.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+/* SECTION */
+.sh{margin-bottom:14px}
+.sh-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.sh-t{font-size:15px;font-weight:800;color:var(--t1);letter-spacing:-.3px}
+.sh-s{font-size:11px;color:var(--t2);margin-top:3px;line-height:1.5}
+.sec-label{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--b1)}
+
+/* FLOW MODE */
+.fm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.fc{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:14px;cursor:pointer;transition:all .12s;position:relative;overflow:hidden}
+.fc:hover{border-color:var(--b2);background:var(--s3)}
+.fc.sel{border-color:var(--c);background:var(--cg)}
+.fc.sel .fc-icon{color:var(--c)}
+.fc.sel .fc-title{color:var(--c)}
+.fc-ck{position:absolute;top:9px;right:9px;width:14px;height:14px;border-radius:50%;background:var(--c);display:none;align-items:center;justify-content:center}
+.fc.sel .fc-ck{display:flex}
+.fc-ck i{font-size:9px;color:#0b0d12}
+.fc-icon{font-size:20px;color:var(--t3);margin-bottom:7px;display:block;transition:color .12s}
+.fc-title{font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;transition:color .12s}
+.fc-desc{font-size:10px;color:var(--t3);line-height:1.5}
+.fc-tag{display:inline-block;font-size:9px;padding:2px 6px;border-radius:5px;margin-top:6px;font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.04);color:var(--t3);border:1px solid var(--b1)}
+
+/* AI MODEL PANEL */
+.model-panel{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);overflow:hidden;margin-bottom:18px}
+.mp-header{padding:11px 14px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
+.mp-title{font-size:11px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:6px}
+.mp-title i{font-size:13px;color:var(--c)}
+.mp-sub{font-size:10px;color:var(--t3)}
+.mp-body{padding:12px 14px}
+.model-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.mg-step{font-size:9px;color:var(--t3);text-align:center;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+
+/* MODEL SELECTOR CARD */
+.model-sel-card{background:var(--s3);border:1px solid var(--b1);border-radius:var(--radl);padding:10px 12px;transition:all .12s;cursor:pointer;position:relative}
+.model-sel-card:hover{border-color:var(--b2)}
+.model-sel-card.assigned{border-color:var(--c)}
+.msc-step{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.msc-selected{display:flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--rad);padding:7px 9px;cursor:pointer;transition:all .12s;margin-bottom:6px}
+.msc-selected:hover{border-color:var(--b2)}
+.model-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.md-cyan{background:var(--c);box-shadow:0 0 5px rgba(91,156,246,.6)}
+.md-green{background:var(--g);box-shadow:0 0 5px rgba(34,197,94,.5)}
+.md-purple{background:var(--p);box-shadow:0 0 5px rgba(168,85,247,.5)}
+.md-amber{background:var(--a);box-shadow:0 0 5px rgba(245,158,11,.5)}
+.md-teal{background:var(--te);box-shadow:0 0 5px rgba(20,184,166,.5)}
+.md-red{background:var(--r);box-shadow:0 0 5px rgba(239,68,68,.5)}
+.md-orange{background:var(--o);box-shadow:0 0 5px rgba(249,115,22,.5)}
+.md-yellow{background:var(--y);box-shadow:0 0 5px rgba(234,179,8,.5)}
+.msc-name{font-size:11px;font-weight:600;color:var(--t1);flex:1;font-family:'JetBrains Mono',monospace}
+.msc-arrow{font-size:11px;color:var(--t3)}
+.msc-role{font-size:9px;color:var(--t3);line-height:1.4}
+.msc-cost{font-size:9px;font-family:'JetBrains Mono',monospace;padding:2px 5px;border-radius:4px;margin-top:4px;display:inline-block}
+.cost-free{background:var(--gg);color:var(--g)}
+.cost-low{background:var(--cg);color:var(--c)}
+.cost-med{background:var(--ag);color:var(--a)}
+.cost-high{background:var(--rg);color:var(--r)}
+
+/* MODEL DROPDOWN */
+.model-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--s2);border:1px solid var(--b2);border-radius:var(--radl);z-index:50;overflow:hidden;box-shadow:var(--shadow-lg);display:none}
+.model-dropdown.open{display:block}
+.md-search{padding:8px 10px;border-bottom:1px solid var(--b1)}
+.md-search input{width:100%;background:var(--s3);border:1px solid var(--b1);border-radius:var(--rad);padding:5px 8px;color:var(--t1);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;outline:none}
+.md-search input:focus{border-color:var(--c)}
+.md-search input::placeholder{color:var(--t3)}
+.md-groups{max-height:280px;overflow-y:auto}
+.md-group-label{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;padding:8px 10px 4px}
+.md-option{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;transition:background .1s}
+.md-option:hover{background:var(--s3)}
+.md-option.selected{background:var(--cg)}
+.mdo-name{font-size:11px;font-weight:600;color:var(--t1);font-family:'JetBrains Mono',monospace;flex:1}
+.mdo-provider{font-size:9px;color:var(--t3)}
+.mdo-badges{display:flex;gap:3px}
+.mdo-badge{font-size:8px;padding:1px 5px;border-radius:4px;font-weight:600}
+.bd-free{background:var(--gg);color:var(--g)}
+.bd-fast{background:var(--teg);color:var(--te)}
+.bd-vis{background:var(--pg);color:var(--p)}
+.bd-reason{background:var(--cg);color:var(--c)}
+.bd-code{background:var(--og);color:var(--o)}
+
+/* FORMULA BAR */
+.formula-bar{background:var(--s3);border:1px solid var(--b1);border-radius:var(--rad);padding:8px 12px;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t2);line-height:1.7}
+.fb-label{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-weight:700}
+.cv{color:var(--c)}.gv{color:var(--g)}.av{color:var(--a)}.pv{color:var(--p)}
+
+/* METHOD FILTER */
+.method-filter{display:flex;gap:5px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;flex-wrap:wrap}
+.mft{padding:4px 10px;border-radius:20px;border:1px solid var(--b1);background:transparent;color:var(--t3);font-size:10px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:all .1s;letter-spacing:-.1px}
+.mft:hover{border-color:var(--b2);color:var(--t2)}
+.mft.active{background:var(--c);color:#0b0d12;border-color:transparent}
+
+/* METHOD GRID */
+.method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:16px}
+.mc{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:12px;cursor:pointer;transition:all .12s;position:relative;overflow:hidden}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--b1);transition:background .12s}
+.mc:hover{border-color:var(--b2);background:var(--s3)}
+.mc.sel{border-color:var(--c);background:var(--cg)}
+.mc.sel::before{background:var(--c)}
+.mc-ck{position:absolute;top:7px;right:7px;width:13px;height:13px;border-radius:50%;background:var(--c);display:none;align-items:center;justify-content:center}
+.mc.sel .mc-ck{display:flex}
+.mc-ck i{font-size:8px;color:#0b0d12}
+.mc-n{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--t3);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.mc-kind{font-size:8px;padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.mk-sim{background:var(--gg);color:var(--g)}
+.mk-insp{background:var(--pg);color:var(--p)}
+.mc-icon{font-size:17px;color:var(--t3);margin-bottom:5px;display:block;transition:color .12s}
+.mc.sel .mc-icon{color:var(--c)}
+.mc-title{font-size:11px;font-weight:700;color:var(--t1);margin-bottom:2px;line-height:1.3;transition:color .12s}
+.mc.sel .mc-title{color:var(--c)}
+.mc-desc{font-size:10px;color:var(--t3);line-height:1.4}
+.mc-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.mc-tag{font-size:8px;padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.04);color:var(--t3);border:1px solid var(--b1)}
+.mc-model-row{display:flex;align-items:center;gap:4px;margin-top:5px}
+.mc-mdot{width:5px;height:5px;border-radius:50%}
+.mc-mname{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--t3)}
+
+/* METHOD DETAIL */
+.method-detail{background:var(--s2);border:1px solid var(--c);border-radius:var(--radl);padding:14px;margin-bottom:14px;display:none;animation:fu .15s ease}
+.method-detail.vis{display:block}
+.md-top{display:flex;align-items:flex-start;gap:11px;margin-bottom:12px}
+.md-icon-b{width:38px;height:38px;border-radius:var(--rad);background:var(--cg);border:1px solid rgba(91,156,246,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.md-icon-b i{font-size:19px;color:var(--c)}
+.md-main{flex:1}
+.md-title{font-size:14px;font-weight:800;color:var(--t1);letter-spacing:-.3px;margin-bottom:2px}
+.md-sub{font-size:11px;color:var(--t2);line-height:1.5}
+.md-weight{font-size:10px;color:var(--t3);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.md-weight b{color:var(--c)}
+.md-model-tag{display:flex;align-items:center;gap:6px;background:var(--s3);border:1px solid var(--b1);border-radius:var(--rad);padding:6px 10px;flex-shrink:0}
+.md-model-tag select{background:transparent;border:none;color:var(--t1);font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;cursor:pointer;outline:none;appearance:none;padding-right:14px}
+.md-model-tag-wrap{position:relative}
+.md-model-tag-wrap::after{content:'▾';position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--t3);pointer-events:none}
+.md-calc{background:var(--s3);border-radius:var(--rad);padding:10px 12px;margin-bottom:10px;border:1px solid var(--b1)}
+.mdc-lbl{font-size:9px;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.mdc-f{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t1);background:var(--bg);border-radius:5px;padding:8px 10px;margin-bottom:7px;border:1px solid var(--b1);line-height:1.8}
+.mdc-steps{display:flex;flex-direction:column;gap:4px}
+.mdc-s{display:flex;align-items:flex-start;gap:7px;font-size:10px;color:var(--t2);line-height:1.5}
+.mdc-sn{width:16px;height:16px;border-radius:50%;background:var(--cg);color:var(--c);font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.md-outputs{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.md-out{background:var(--s3);border-radius:var(--rad);padding:8px 10px;border:1px solid var(--b1)}
+.mdo-lbl{font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.mdo-val{font-size:10px;color:var(--t1);font-family:'JetBrains Mono',monospace;line-height:1.5}
+
+/* STEP GUIDE */
+.sg{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);overflow:hidden;margin-bottom:16px}
+.sg-hd{padding:11px 14px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
+.sg-hd-left{display:flex;align-items:center;gap:7px}
+.sg-hd-left i{font-size:14px;color:var(--c)}
+.sg-hd-t{font-size:12px;font-weight:700;color:var(--t1)}
+.sg-hd-sub{font-size:10px;color:var(--t3)}
+.sg-body{padding:10px 14px}
+.gs{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--b1);cursor:pointer;transition:background .1s;border-radius:var(--rad);padding:8px 6px}
+.gs:last-child{border-bottom:none}
+.gs:hover{background:rgba(255,255,255,.02)}
+.gs-left{display:flex;flex-direction:column;align-items:center;width:20px;flex-shrink:0}
+.gs-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.gsn-active{background:var(--c);color:#0b0d12}
+.gsn-done{background:var(--cg);color:var(--c);border:1px solid rgba(91,156,246,.3)}
+.gsn-todo{background:var(--s3);color:var(--t3);border:1px solid var(--b1)}
+.gs-line{width:1px;flex:1;min-height:10px;background:var(--b1);margin:2px 0}
+.gs-line.done{background:rgba(91,156,246,.3)}
+.gs-content{flex:1}
+.gs-t{font-size:11px;font-weight:600;color:var(--t1);margin-bottom:2px}
+.gs-s{font-size:10px;color:var(--t3);line-height:1.5}
+.gs-detail{font-size:10px;color:var(--t2);line-height:1.6;margin-top:6px;display:none;background:var(--s3);border-radius:var(--rad);padding:8px 10px;border-left:2px solid var(--c)}
+.gs.exp .gs-detail{display:block}
+.gs-mb{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-family:'JetBrains Mono',monospace;background:var(--bg);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;margin-top:5px;color:var(--t3)}
+
+/* CUSTOM TESTS */
+.ct-row{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rad);padding:9px 11px;display:flex;align-items:center;gap:9px;margin-bottom:6px;transition:border-color .1s}
+.ct-row:hover{border-color:var(--b2)}
+.ct-icon{width:26px;height:26px;border-radius:6px;background:var(--cg);border:1px solid rgba(91,156,246,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ct-icon i{font-size:13px;color:var(--c)}
+.ct-info{flex:1;min-width:0}
+.ct-n{font-size:11px;font-weight:600;color:var(--t1)}
+.ct-d{font-size:10px;color:var(--t3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ct-model{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--t3);background:var(--s3);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;flex-shrink:0}
+.ct-del{color:var(--t3);cursor:pointer;padding:3px;border-radius:4px;transition:color .1s}
+.ct-del:hover{color:var(--r)}
+.ct-add{background:var(--s2);border:1.5px dashed var(--b2);border-radius:var(--rad);padding:9px 11px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .12s}
+.ct-add:hover{border-color:var(--c);background:var(--cg)}
+.ct-add span{font-size:11px;color:var(--t3);font-weight:500}
+.ct-add:hover span{color:var(--c)}
+
+/* RUN PANEL */
+.run-panel{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:14px;display:none;margin-top:16px;animation:fu .15s ease}
+.rp-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.rp-t{font-size:13px;font-weight:700;color:var(--t1)}
+.rp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
+.rps{background:var(--s3);border-radius:var(--rad);padding:9px 11px;text-align:center;border:1px solid var(--b1)}
+.rps-v{font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--t1);line-height:1}
+.rps-l{font-size:9px;color:var(--t3);margin-top:3px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.rp-slider{display:flex;align-items:center;gap:10px;background:var(--s3);border:1px solid var(--b1);border-radius:var(--rad);padding:8px 12px;margin-bottom:12px}
+.rp-slider label{font-size:10px;font-weight:600;color:var(--t2);white-space:nowrap}
+.rp-slider input[type="range"]{flex:1;accent-color:var(--c)}
+.rp-slider .rp-n{font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--c);min-width:30px;text-align:right}
+.rp-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.rpc{display:flex;align-items:center;gap:5px;background:var(--s3);border:1px solid var(--b1);border-radius:20px;padding:4px 9px;font-size:10px;color:var(--t1);font-weight:500}
+.rpc small{color:var(--t3);font-weight:400}
+.rpc-av{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700}
+.ai-bar{background:var(--bg);border:1px solid var(--b1);border-radius:var(--rad);padding:9px 11px;display:flex;align-items:center;gap:9px}
+.aipulse{width:7px;height:7px;border-radius:50%;background:var(--c);flex-shrink:0;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.55)}}
+.ai-lbl{font-size:10px;color:var(--c);font-family:'JetBrains Mono',monospace;flex:1}
+.ai-lbl span{color:rgba(91,156,246,.5)}
+.ai-steps{display:flex;gap:4px}
+.ais{font-size:9px;padding:2px 6px;border-radius:8px;font-family:'JetBrains Mono',monospace}
+.ais-done{background:var(--cg);color:rgba(91,156,246,.5);text-decoration:line-through}
+.ais-curr{background:rgba(91,156,246,.2);color:var(--c)}
+.ais-todo{background:rgba(255,255,255,.03);color:var(--t3)}
+.prog{height:3px;background:var(--s3);border-radius:2px;overflow:hidden;margin-top:8px}
+.prog-f{height:100%;border-radius:2px;transition:width .5s ease;background:var(--c)}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(6px)}
+.overlay.open{display:flex}
+.modal{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radxl);width:460px;max-width:92vw;overflow:hidden;box-shadow:var(--shadow-lg)}
+.mhd{padding:14px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
+.mhd-t{font-size:13px;font-weight:700;color:var(--t1)}
+.mhd-close{color:var(--t3);cursor:pointer;font-size:17px;transition:color .1s}
+.mhd-close:hover{color:var(--t1)}
+.mbody{padding:14px 16px}
+.mfg{margin-bottom:11px}
+.mfl{font-size:11px;font-weight:600;color:var(--t1);margin-bottom:5px;display:block;letter-spacing:-.1px}
+.mfl small{font-weight:400;color:var(--t3);margin-left:3px}
+.mfi,.mfs,.mfta{width:100%;padding:7px 10px;border-radius:var(--rad);border:1px solid var(--b2);background:var(--s3);color:var(--t1);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;box-sizing:border-box;transition:border-color .1s;outline:none}
+.mfi:focus,.mfta:focus{border-color:var(--c)}
+.mfs{appearance:none;cursor:pointer}
+.mfta{resize:vertical;min-height:65px}
+.mfrow{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mft-footer{padding:11px 16px;border-top:1px solid var(--b1);display:flex;justify-content:flex-end;gap:7px}
+
+/* DIVIDER */
+.div{height:1px;background:var(--b1);margin:14px 0}
+.ia{display:flex;gap:7px;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--b1);margin-top:4px}
+
+/* ===== RESULTS: KPI MATRIX + REPORT ===== */
+.note-bar{display:flex;gap:8px;align-items:flex-start;background:var(--ag);border:1px solid rgba(245,158,11,.25);border-radius:var(--rad);padding:9px 12px;margin-bottom:14px;font-size:10.5px;color:var(--t2);line-height:1.5}
+.note-bar i{color:var(--a);font-size:13px;flex-shrink:0;margin-top:1px}
+.note-bar b{color:var(--t1)}
+.empty-state{padding:60px 20px;text-align:center;color:var(--t3)}
+.empty-state i{font-size:28px;margin-bottom:10px;display:block}
+.empty-state div{font-size:12px}
+
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px;margin-bottom:16px}
+.vcard{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:14px}
+.vcard.best{border-color:rgba(34,197,94,.4)}
+.v-label{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.v-hero-row{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.v-hero{font-size:32px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--t1);line-height:1}
+.v-hero-sub{font-size:10px;color:var(--t3)}
+.v-ci{font-size:9px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-top:4px}
+.delta{font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:2px 8px;border-radius:10px}
+.delta.up{background:var(--gg);color:var(--g)}
+.delta.down{background:var(--rg);color:var(--r)}
+.delta.flat{background:rgba(255,255,255,.04);color:var(--t3)}
+.stackbar{display:flex;gap:2px;height:13px;border-radius:4px;overflow:hidden;margin:11px 0 7px}
+.sb-seg{min-width:2px}
+.seg-success{background:var(--g)}
+.seg-partial{background:var(--y)}
+.seg-failed{background:var(--r)}
+.seg-abandoned{background:var(--b3)}
+.v-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:9px;color:var(--t3)}
+.v-legend .sw{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:4px}
+.v-legend b{color:var(--t2);font-family:'JetBrains Mono',monospace}
+.v-stats{display:flex;gap:4px 14px;flex-wrap:wrap;margin-top:9px;padding-top:9px;border-top:1px solid var(--b1);font-size:9.5px;color:var(--t3)}
+.v-stats b{color:var(--t1);font-family:'JetBrains Mono',monospace;font-size:11px}
+
+.kpi-panel{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);overflow:hidden;margin-bottom:16px}
+.kpi-panel-hd{padding:11px 14px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:7px}
+.kpi-panel-hd i{font-size:13px;color:var(--c)}
+.kpi-panel-hd span{font-size:11px;font-weight:700;color:var(--t1)}
+.kpi-panel-hd small{font-size:9px;color:var(--t3);margin-left:auto}
+.kpi-table-wrap{overflow-x:auto}
+.kpi-table{width:100%;border-collapse:collapse;font-size:11px}
+.kpi-table th{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;text-align:right;padding:9px 14px;border-bottom:1px solid var(--b1);white-space:nowrap}
+.kpi-table th:first-child{text-align:left}
+.kpi-table td{padding:9px 14px;border-bottom:1px solid var(--b1);text-align:right;font-family:'JetBrains Mono',monospace;color:var(--t2);white-space:nowrap}
+.kpi-table td:first-child{text-align:left;font-family:'Plus Jakarta Sans',sans-serif;color:var(--t1);font-weight:600}
+.kpi-table tr:last-child td{border-bottom:none}
+.kpi-table .best-v{color:var(--g);font-weight:600}
+.kpi-table .worst-v{color:var(--r)}
+.cell-bar{display:inline-block;height:5px;border-radius:3px;background:var(--c);vertical-align:middle;margin-right:7px}
+
+/* REPORT */
+.variant-tabs{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
+.vt{padding:5px 12px;border-radius:20px;border:1px solid var(--b1);background:transparent;color:var(--t3);font-size:10px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .1s}
+.vt:hover{border-color:var(--b2);color:var(--t2)}
+.vt.active{background:var(--c);color:#0b0d12;border-color:transparent}
+.iss{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:13px 15px;margin-bottom:9px}
+.iss-hd{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.sevb{font-size:8px;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:.8px;padding:3px 8px;border-radius:10px}
+.sev-CRITICAL{background:var(--rg);color:var(--r);border:1px solid rgba(239,68,68,.3)}
+.sev-HIGH{background:var(--og);color:var(--o);border:1px solid rgba(249,115,22,.3)}
+.sev-MEDIUM{background:var(--yg);color:var(--y);border:1px solid rgba(234,179,8,.3)}
+.sev-LOW{background:rgba(255,255,255,.04);color:var(--t3);border:1px solid var(--b1)}
+.iss-t{font-size:12.5px;font-weight:700;color:var(--t1)}
+.iss-meta{margin-left:auto;font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.iss-meter{height:6px;border-radius:3px;background:var(--s3);margin:9px 0 7px;overflow:hidden}
+.iss-meter>div{height:100%;border-radius:3px}
+.iss-s{font-size:11px;color:var(--t2);line-height:1.55;margin-bottom:5px}
+.iss-cohort{font-size:10px;color:var(--t3);margin-bottom:7px}
+.iss-cohort b{color:var(--t1)}
+.iss-q{font-size:10.5px;font-style:italic;color:var(--t2);background:var(--s3);border-left:2px solid var(--b2);border-radius:0 5px 5px 0;padding:5px 10px;margin:4px 0;line-height:1.5}
+.iss-fix{display:flex;gap:7px;align-items:flex-start;background:var(--cg);border-radius:var(--rad);padding:7px 10px;margin-top:8px;font-size:10.5px;color:var(--t2);line-height:1.5}
+.iss-fix i{color:var(--c);font-size:12px;flex-shrink:0;margin-top:1px}
+.iss-fix b{color:var(--c)}
+
+.pt-wrap{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);overflow:hidden;margin-bottom:16px}
+.pt-grid2{display:grid;grid-template-columns:280px 1fr}
+.pt-list2{border-right:1px solid var(--b1);max-height:480px;overflow-y:auto}
+.ptr{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--b1);padding:8px 12px;cursor:pointer;color:var(--t1);font-family:'Plus Jakarta Sans',sans-serif}
+.ptr:hover{background:var(--s3)}
+.ptr.active{background:var(--cg)}
+.ptr-id{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t2)}
+.ptr-cohort{font-size:9.5px;color:var(--t3);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.outb{font-size:8px;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;padding:2px 6px;border-radius:9px;white-space:nowrap}
+.out-SUCCESS{background:var(--gg);color:var(--g)}
+.out-PARTIAL{background:var(--yg);color:var(--y)}
+.out-FAILURE{background:var(--rg);color:var(--r)}
+.out-ABANDONED{background:rgba(255,255,255,.05);color:var(--t3)}
+.tsc{padding:14px 18px;max-height:480px;overflow-y:auto}
+.tsc-hd{display:flex;align-items:center;gap:9px;margin-bottom:3px}
+.tsc-hd h3{font-size:13px;font-weight:700;color:var(--t1);font-family:'JetBrains Mono',monospace}
+.tsc-meta{font-size:10px;color:var(--t3);margin-bottom:12px;font-family:'JetBrains Mono',monospace}
+.tstep{display:grid;grid-template-columns:44px 1fr;gap:10px;margin-bottom:11px}
+.tstep-time{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--t4);padding-top:2px}
+.tstep-act{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--t1)}
+.tstep-scr{color:var(--t3);background:var(--s3);border-radius:4px;padding:1px 6px;margin-right:5px;font-size:9.5px}
+.tstep-say{font-size:10.5px;font-style:italic;color:var(--t2);margin:3px 0 4px;line-height:1.5}
+.tconf{display:flex;align-items:center;gap:7px}
+.tconf-track{width:80px;height:4px;background:var(--s3);border-radius:2px}
+.tconf-fill{height:100%;border-radius:2px;background:var(--c);display:block}
+.tconf-l{font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace}
+
+/* ===== SETUP ===== */
+.setup-wrap{max-width:560px}
+.sf{margin-bottom:14px}
+.sf label{display:block;font-size:11px;font-weight:600;margin-bottom:5px}
+.sf input,.sf textarea,.sf select{width:100%;padding:8px 11px;border-radius:var(--rad);border:1px solid var(--b2);background:var(--s2);color:var(--t1);font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;box-sizing:border-box}
+.sf input:focus,.sf textarea:focus{border-color:var(--c)}
+.sf textarea{resize:vertical;min-height:60px}
+.sf .hint{font-size:10px;color:var(--t3);margin-top:4px}
+
+/* ===== UPLOAD ===== */
+.up-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.bucket{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);overflow:hidden}
+.bucket-hd{padding:10px 13px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:8px}
+.bucket-hd .bt{font-size:11px;font-weight:700}
+.bucket-hd .bn{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3)}
+.dz{margin:10px;border:1.5px dashed var(--b2);border-radius:var(--rad);padding:18px 12px;text-align:center;cursor:pointer;transition:all .12s}
+.dz:hover,.dz.over{border-color:var(--c);background:var(--cg)}
+.dz i{font-size:18px;color:var(--t3);display:block;margin-bottom:5px}
+.dz .d1{font-size:11px;font-weight:600;color:var(--t2)}
+.dz .d2{font-size:9.5px;color:var(--t3);margin-top:2px;font-family:'JetBrains Mono',monospace}
+.shots{padding:4px 10px 10px;display:flex;flex-direction:column;gap:5px;max-height:250px;overflow-y:auto}
+.shot{display:flex;align-items:center;gap:9px;background:var(--s3);border:1px solid var(--b1);border-radius:var(--rad);padding:6px 9px}
+.shot-thumb{width:34px;height:26px;border-radius:4px;background:linear-gradient(135deg,var(--b2),var(--s2));border:1px solid var(--b2);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.shot-thumb img{width:100%;height:100%;object-fit:cover}
+.shot-thumb span{font-size:7px;font-family:'JetBrains Mono',monospace;color:var(--t3)}
+.shot-seq{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);width:16px}
+.shot input{flex:1;background:transparent;border:none;color:var(--t1);font-size:11px;outline:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.shot .rm{color:var(--t3);cursor:pointer;font-size:12px}
+.shot .rm:hover{color:var(--r)}
+.an-panel{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:13px 15px;margin-bottom:14px}
+.kc{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--b1);font-size:11px;color:var(--t2)}
+.kc:last-child{border-bottom:none}
+.kc-tag{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;padding:2px 7px;border-radius:9px;flex-shrink:0;margin-top:1px}
+.kt-label{background:var(--gg);color:var(--g)}
+.kt-navigation{background:var(--cg);color:var(--c)}
+.kt-feedback{background:var(--pg);color:var(--p)}
+.kt-visual{background:rgba(255,255,255,.05);color:var(--t3)}
+
+/* ===== PERSONA BUILDER ===== */
+.pb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:9px;margin-bottom:14px}
+.pcard{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:12px 14px}
+.pcard-hd{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.pav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;background:var(--cg);color:var(--c);border:1px solid rgba(91,156,246,.25)}
+.pcard-hd input{background:transparent;border:none;color:var(--t1);font-size:12.5px;font-weight:700;outline:none;font-family:'Plus Jakarta Sans',sans-serif;width:100%;min-width:0}
+.pcard-hd .rm{color:var(--t3);cursor:pointer}
+.pcard-hd .rm:hover{color:var(--r)}
+.pfield{display:grid;grid-template-columns:92px 1fr 30px;align-items:center;gap:8px;margin-bottom:6px}
+.pfield label{font-size:9.5px;color:var(--t3)}
+.pfield input[type=range]{width:100%;accent-color:var(--c);height:14px}
+.pfield input[type=text]{background:var(--s3);border:1px solid var(--b1);border-radius:5px;color:var(--t1);font-size:10.5px;padding:4px 8px;outline:none;font-family:'Plus Jakarta Sans',sans-serif;grid-column:2/4}
+.pfield select{background:var(--s3);border:1px solid var(--b1);border-radius:5px;color:var(--t1);font-size:10px;padding:4px 6px;outline:none;grid-column:2/4;font-family:'Plus Jakarta Sans',sans-serif}
+.pfield .pv{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--c);text-align:right}
+.bhv{margin-top:9px;padding-top:9px;border-top:1px solid var(--b1)}
+.bhv-t{font-size:8.5px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px}
+.bhv-row{display:grid;grid-template-columns:92px 1fr 30px;align-items:center;gap:8px;margin-bottom:4px}
+.bhv-row label{font-size:9px;color:var(--t3)}
+.bhv-track{height:4px;border-radius:2px;background:var(--s3);overflow:hidden}
+.bhv-fill{height:100%;border-radius:2px;background:var(--te)}
+.bhv-val{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t3);text-align:right}
+.pb-actions{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.lib-drawer{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:12px 14px;margin-bottom:14px;display:none}
+.lib-drawer.open{display:block}
+.lib-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--b1)}
+.lib-row:last-child{border-bottom:none}
+.lib-info{flex:1;min-width:0}
+.lib-n{font-size:11px;font-weight:600}
+.lib-d{font-size:9.5px;color:var(--t3)}
+.locked-note{display:flex;gap:8px;align-items:flex-start;background:var(--cg);border:1px solid rgba(91,156,246,.25);border-radius:var(--rad);padding:9px 12px;margin-bottom:14px;font-size:10.5px;color:var(--t2)}
+.locked-note i{color:var(--c);font-size:13px;margin-top:1px}
+
+/* ===== SHARED CHIPS ===== */
+.chip{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;padding:2px 8px;border-radius:10px;margin:2px 2px 0 0}
+.ch-blue{background:var(--cg);color:var(--c)}
+.ch-green{background:var(--gg);color:var(--g)}
+.ch-amber{background:var(--ag);color:var(--a)}
+.ch-grey{background:rgba(255,255,255,.05);color:var(--t3)}
+
+/* ===== DASHBOARD ===== */
+.db-wrap{display:grid;grid-template-columns:1fr 252px;gap:14px;align-items:start}
+@media(max-width:900px){.db-wrap{grid-template-columns:1fr}}
+.db-greet{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.db-sub{font-size:11px;color:var(--t3);margin:3px 0 14px}
+.db-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:700px){.db-stats{grid-template-columns:1fr 1fr}}
+.db-stat{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:11px 13px}
+.db-stat .v{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;line-height:1.1}
+.db-stat .l{font-size:8.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin-top:3px}
+.db-stat .d{font-size:9.5px;margin-top:3px;color:var(--t3)}
+.db-stat .d.up{color:var(--g)}
+.db-meter{height:4px;border-radius:2px;background:var(--s3);margin-top:7px;overflow:hidden}
+.db-meter>div{height:100%;background:var(--a);border-radius:2px}
+.db-cont{background:var(--s2);border:1px solid rgba(91,156,246,.35);border-radius:var(--radl);padding:13px 15px;margin-bottom:12px}
+.db-cont-t{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:8px}
+.db-cont-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.db-cont-name{font-size:14px;font-weight:800}
+.db-cont-sub{font-size:10px;color:var(--t3);margin-top:2px}
+.db-chips{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.db-chip{font-family:'JetBrains Mono',monospace;font-size:8.5px;padding:2px 8px;border-radius:10px;border:1px solid var(--b1);color:var(--t3)}
+.db-chip.done{background:var(--cg);color:var(--c);border-color:transparent}
+.db-chip.curr{background:var(--c);color:#0b0d12;border-color:transparent;font-weight:700}
+.rail-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--radl);padding:12px 14px;margin-bottom:10px}
+.rail-t{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:7px}
+.rail-item{display:flex;gap:8px;font-size:10.5px;color:var(--t2);padding:7px 0;border-bottom:1px solid var(--b1);cursor:pointer;line-height:1.45}
+.rail-item:hover{color:var(--t1)}
+.rail-item:last-child{border-bottom:none}
+.rail-item i{color:var(--c);font-size:12px;margin-top:1px;flex-shrink:0}
+.rail-item.warn i{color:var(--a)}
+.rail-item b{color:var(--t1)}
+.svc-row{display:flex;align-items:center;font-size:10.5px;color:var(--t2);padding:5px 0}
+.svc-row .chip{margin-left:auto}
+
+/* ===== PROJECTS ===== */
+.pj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:9px;margin-bottom:14px}
+.pj-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:13px 15px;cursor:pointer;transition:border-color .12s;position:relative}
+.pj-card:hover{border-color:var(--b2)}
+.pj-card.live{border-color:rgba(91,156,246,.4)}
+.pj-n{font-size:12.5px;font-weight:700}
+.pj-m{font-size:9.5px;color:var(--t3);margin:3px 0 9px}
+.pj-new{border:1.5px dashed var(--b2);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:96px;color:var(--t3)}
+.pj-new:hover{border-color:var(--c);color:var(--c)}
+.pj-new i{font-size:18px}
+.pj-new span{font-size:11px;font-weight:600}
+
+/* ===== PERSONA LIBRARY PAGE ===== */
+.libp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:9px;margin-bottom:16px}
+.libp-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:13px 15px}
+.libp-hd{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.libp-n{font-size:12px;font-weight:700}
+.libp-d{font-size:9.5px;color:var(--t3)}
+.libp-note{font-size:10px;color:var(--t2);margin:5px 0 8px;font-style:italic}
+.libp-attrs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.libp-foot{display:flex;gap:6px;margin-top:9px}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<div class="sb">
+  <div class="sb-logo">
+    <div class="lbox"><span>KPI</span></div>
+    <div><div class="lname">UX KPI Tool</div><div class="ltag">v3 · Testing Lab</div></div>
+  </div>
+  <div class="nav-sec">
+    <div class="nlbl">Workspace</div>
+    <div class="ni" id="nav-dashboard" onclick="gs('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+    <div class="ni" id="nav-projects" onclick="gs('projects')"><i class="ti ti-folder"></i>Projects<span class="ni-b">4</span></div>
+    <div class="ni" id="nav-library" onclick="gs('library')"><i class="ti ti-users"></i>Persona Library</div>
+  </div>
+  <div class="nav-sec" style="margin-top:5px">
+    <div class="nlbl" id="active-label">Active: —</div>
+    <div class="ni" id="nav-upload" onclick="gs('upload')"><i class="ti ti-upload"></i>Upload Screens</div>
+    <div class="ni" id="nav-personas" onclick="gs('personas')"><i class="ti ti-wand"></i>Persona Builder</div>
+    <div class="ni" id="nav-testing" onclick="gs('testing')"><i class="ti ti-test-pipe"></i>Testing Engine<span class="ni-dot"></span></div>
+    <div class="ni" id="nav-kpi" onclick="gs('kpi')"><i class="ti ti-chart-bar"></i>KPI Matrix</div>
+    <div class="ni" id="nav-report" onclick="gs('report')"><i class="ti ti-file-analytics"></i>Report</div>
+  </div>
+  <div class="sb-sp"></div>
+  <div class="sb-ft">
+    <div class="urow">
+      <div class="uav">AN</div>
+      <div><div class="un">Anupam</div><div class="ur">Design Lead · IBM</div></div>
+      <i class="ti ti-dots-vertical" style="margin-left:auto;font-size:13px;color:var(--t3);cursor:pointer"></i>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-t" id="tb-title">Testing Engine</div>
+    <div class="tb-cr"><i class="ti ti-chevron-right" style="font-size:10px"></i><b id="tb-project">—</b><span style="color:var(--t3);margin-left:4px" id="tb-step">· Step 4 of 6</span></div>
+    <button class="btn ghost"><i class="ti ti-question-mark"></i></button>
+    <button class="btn" onclick="gs('ph')"><i class="ti ti-arrow-left"></i>Personas</button>
+    <button class="btn primary" onclick="showRun()"><i class="ti ti-player-play"></i>Run Tests</button>
+  </div>
+  <div class="stepnav" id="stepnav"></div>
+  <div class="content">
+
+    <!-- ============ SCREEN: DASHBOARD ============ -->
+    <div class="screen" id="screen-dashboard"><div id="db-content"></div></div>
+
+    <!-- ============ SCREEN: PROJECTS ============ -->
+    <div class="screen" id="screen-projects"><div id="pj-content"></div></div>
+
+    <!-- ============ SCREEN: PERSONA LIBRARY ============ -->
+    <div class="screen" id="screen-library"><div id="libp-content"></div></div>
+
+    <!-- ============ SCREEN: SETUP ============ -->
+    <div class="screen" id="screen-setup">
+      <div class="sec-label">01 — Project Setup</div>
+      <div class="setup-wrap">
+        <div class="sf"><label>Project name</label>
+          <input id="su-name" type="text" value="HMC Dashboard Revamp" oninput="stateChanged()"></div>
+        <div class="sf"><label>Industry</label>
+          <select id="su-industry" onchange="stateChanged()">
+            <option>Enterprise Software</option><option>Consumer / Utilities</option>
+            <option>Fintech</option><option>Healthcare</option><option>E-commerce</option>
+          </select></div>
+        <div class="sf"><label>What is being redesigned?</label>
+          <textarea id="su-desc" oninput="stateChanged()">Operators struggle to change equipment alert thresholds. The redesign renames the settings entry point, flattens the navigation, and adds a confirmation state.</textarea>
+          <div class="hint">This description gives the analysis and report their vocabulary.</div></div>
+        <div class="ia" style="border-top:none;justify-content:flex-start">
+          <button class="btn primary" onclick="gs('upload')">Continue to Upload<i class="ti ti-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN: UPLOAD ============ -->
+    <div class="screen" id="screen-upload">
+      <div class="sec-label">02 — Upload Screens <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">drag &amp; drop, or load the sample flow · filenames like 01-login.png auto-order</span></div>
+      <div class="up-grid">
+        <div class="bucket">
+          <div class="bucket-hd"><i class="ti ti-square" style="color:var(--t3);font-size:13px"></i><span class="bt">BEFORE — current design</span><span class="bn" id="bn-before">0 screens</span></div>
+          <div class="dz" id="dz-before" onclick="document.getElementById('fi-before').click()">
+            <i class="ti ti-upload"></i><div class="d1">Drop screenshots here</div><div class="d2">01-home.png · 02-billing.png …</div>
+          </div>
+          <input type="file" id="fi-before" accept="image/*" multiple hidden>
+          <div class="shots" id="shots-before"></div>
+        </div>
+        <div class="bucket">
+          <div class="bucket-hd"><i class="ti ti-arrows-left-right" style="color:var(--c);font-size:13px"></i><span class="bt">AFTER — redesign</span><span class="bn" id="bn-after">0 screens</span></div>
+          <div class="dz" id="dz-after" onclick="document.getElementById('fi-after').click()">
+            <i class="ti ti-upload"></i><div class="d1">Drop screenshots here</div><div class="d2">same task, new design</div>
+          </div>
+          <input type="file" id="fi-after" accept="image/*" multiple hidden>
+          <div class="shots" id="shots-after"></div>
+        </div>
+      </div>
+      <div class="pb-actions">
+        <button class="btn" onclick="loadSampleFlow()"><i class="ti ti-stack"></i>Load sample flow (PowerGrid billing)</button>
+        <button class="btn primary" id="an-btn" onclick="runAnalysis()" disabled><i class="ti ti-eye"></i>Analyze flows</button>
+      </div>
+      <div class="an-panel" id="an-panel" style="display:none"></div>
+      <div class="ia" style="border-top:none;justify-content:space-between">
+        <button class="btn" onclick="gs('setup')"><i class="ti ti-arrow-left"></i>Setup</button>
+        <button class="btn primary" id="up-next" onclick="gs('personas')" disabled>Continue to Personas<i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN: PERSONA BUILDER ============ -->
+    <div class="screen" id="screen-personas">
+      <div class="sec-label">03 — Persona Builder <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">each persona expands into a 12-participant simulated panel at test time</span></div>
+      <div class="locked-note"><i class="ti ti-bulb"></i><div>
+        The <b>behaviour preview</b> under each card shows how the engine will simulate this person —
+        derived live from their attributes. Demographics shape behaviour <b>distributions</b>, never
+        fixed outcomes: every participant in the panel varies individually around these centres.</div></div>
+      <div class="pb-actions">
+        <button class="btn primary" onclick="generatePersonas()"><i class="ti ti-wand"></i>Generate 5 personas</button>
+        <button class="btn" onclick="document.getElementById('lib').classList.toggle('open')"><i class="ti ti-stack"></i>Add from library</button>
+        <button class="btn" onclick="addPersona()"><i class="ti ti-plus"></i>Add blank</button>
+      </div>
+      <div class="lib-drawer" id="lib"></div>
+      <div class="pb-grid" id="pb-grid"></div>
+      <div class="ia" style="border-top:none;justify-content:space-between">
+        <button class="btn" onclick="gs('upload')"><i class="ti ti-arrow-left"></i>Upload</button>
+        <button class="btn primary" id="pb-next" onclick="gs('testing')" disabled>Lock panel · Continue to Testing<i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN: TESTING ENGINE ============ -->
+    <div class="screen active" id="screen-testing">
+
+      <!-- 01 FLOW MODE -->
+      <div class="sec-label">01 — Flow Mode</div>
+      <div class="fm-grid">
+        <div class="fc sel" id="fm-single" onclick="setFM('single')">
+          <div class="fc-ck"><i class="ti ti-check"></i></div>
+          <i class="ti ti-square fc-icon"></i>
+          <div class="fc-title">Single Flow</div>
+          <div class="fc-desc">Evaluate one flow in isolation. Baseline audit without a redesign to compare against.</div>
+          <div class="fc-tag">1 flow · baseline</div>
+        </div>
+        <div class="fc" id="fm-compare" onclick="setFM('compare')">
+          <div class="fc-ck"><i class="ti ti-check"></i></div>
+          <i class="ti ti-arrows-left-right fc-icon"></i>
+          <div class="fc-title">Before vs After</div>
+          <div class="fc-desc">Test both flows and generate delta scores. Standard mode for redesign validation.</div>
+          <div class="fc-tag">2 flows · delta scoring</div>
+        </div>
+        <div class="fc" id="fm-multi" onclick="setFM('multi')">
+          <div class="fc-ck"><i class="ti ti-check"></i></div>
+          <i class="ti ti-layers-difference fc-icon"></i>
+          <div class="fc-title">Multi-variant</div>
+          <div class="fc-desc">Compare 3+ design variants simultaneously. A/B/C concept testing or multiple redesign options.</div>
+          <div class="fc-tag">3+ flows · ranking</div>
+        </div>
+      </div>
+
+      <!-- 02 AI MODEL ASSIGNMENT -->
+      <div class="sec-label">02 — AI Model Assignment</div>
+      <div class="model-panel">
+        <div class="mp-header">
+          <div>
+            <div class="mp-title"><i class="ti ti-cpu"></i>Model per evaluation step — click any to change</div>
+          </div>
+          <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace">KPIs = <span style="color:var(--g)">measured</span> from simulated sessions, <span style="color:var(--c)">never model-rated</span></div>
+        </div>
+        <div class="mp-body">
+          <div class="model-grid" id="model-grid">
+            <!-- populated by JS -->
+          </div>
+          <div class="formula-bar">
+            <div class="fb-label">How the KPIs are computed</div>
+            <span class="cv">task_success</span> = completions / participants, with <span class="gv">Wilson 95% CI</span><br>
+            <span class="cv">severity</span> = <span class="av">frequency</span>^0.7 × <span class="pv">impact</span> × cohort-skew — measured from behaviour, not opinion<br>
+            Cache: input hash → skip duplicate AI calls on unchanged screens
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 TESTING METHODS -->
+      <div class="sec-label">03 — Testing Methods <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">Select up to 3 · <span style="color:var(--g)">SIMULATED</span> = measured from synthetic-user sessions · <span style="color:var(--p)">INSPECTION</span> = opinion-based expert review add-on</span></div>
+      <div class="method-filter">
+        <button class="mft active" onclick="filterM('all',this)">All 20</button>
+        <button class="mft" onclick="filterM('heuristic',this)">Heuristic</button>
+        <button class="mft" onclick="filterM('behavioral',this)">Behavioural</button>
+        <button class="mft" onclick="filterM('cognitive',this)">Cognitive</button>
+        <button class="mft" onclick="filterM('task',this)">Task-based</button>
+        <button class="mft" onclick="filterM('accessibility',this)">Accessibility</button>
+        <button class="mft" onclick="filterM('emotional',this)">Emotional</button>
+      </div>
+      <div class="method-grid" id="method-grid"></div>
+
+      <!-- METHOD DETAIL -->
+      <div class="method-detail" id="method-detail"></div>
+
+      <!-- 04 STEP GUIDE -->
+      <div class="sec-label">04 — Evaluation Step Guide <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">click any step to expand</span></div>
+      <div class="sg">
+        <div class="sg-hd">
+          <div class="sg-hd-left"><i class="ti ti-list-check"></i><div class="sg-hd-t" id="sg-t">Select a method above</div></div>
+          <div class="sg-hd-sub" id="sg-sub">Step-by-step AI evaluation guide</div>
+        </div>
+        <div class="sg-body" id="sg-body">
+          <div style="padding:16px 0;text-align:center;font-size:11px;color:var(--t3)">Click a testing method above to see how the AI evaluates each persona step by step.</div>
+        </div>
+      </div>
+
+      <!-- 05 CUSTOM TESTS -->
+      <div class="sec-label">05 — Custom Tests <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">add your own criteria</span></div>
+      <div id="ct-list">
+        <div class="ct-row">
+          <div class="ct-icon"><i class="ti ti-checklist"></i></div>
+          <div class="ct-info"><div class="ct-n">Brand consistency check</div><div class="ct-d">Evaluate whether design language matches IBM Carbon Design System guidelines</div></div>
+          <div class="ct-model">claude-sonnet-4</div>
+          <i class="ti ti-trash ct-del" onclick="this.closest('.ct-row').remove()"></i>
+        </div>
+      </div>
+      <div class="ct-add" onclick="openModal()">
+        <i class="ti ti-plus" style="font-size:15px;color:var(--t3)"></i>
+        <span>Add custom test criteria</span>
+      </div>
+
+      <!-- RUN PANEL -->
+      <div class="run-panel" id="run-panel">
+        <div class="rp-hd">
+          <div class="rp-t">Test Run Configuration</div>
+          <button class="btn ghost sm" onclick="document.getElementById('run-panel').style.display='none'"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="rp-slider">
+          <label>Participants per persona</label>
+          <input type="range" min="6" max="24" step="2" value="12" id="rp-n-slider" oninput="updateRunStats()">
+          <span class="rp-n" id="rp-n-val">25</span>
+        </div>
+        <div class="rp-stats">
+          <div class="rps"><div class="rps-v" id="rp-m">1</div><div class="rps-l">Methods</div></div>
+          <div class="rps"><div class="rps-v" id="rp-p">25</div><div class="rps-l">Participants</div></div>
+          <div class="rps"><div class="rps-v" id="rp-f">1</div><div class="rps-l">Flows</div></div>
+          <div class="rps"><div class="rps-v" id="rp-c">~25</div><div class="rps-l">Sessions</div></div>
+        </div>
+        <div class="rp-chips" id="rp-chips"></div>
+        <div style="font-size:9.5px;color:var(--t3);margin:-6px 0 12px">Your panel from the Persona Builder — each persona expands into its own simulated participant panel with individually varied behaviour.</div>
+        <div class="ai-bar">
+          <div class="aipulse"></div>
+          <div class="ai-lbl" id="rp-lbl">Ready — <span>click Start to begin</span></div>
+          <div class="ai-steps" id="rp-chips-inner">
+            <span class="ais ais-todo">reading</span>
+            <span class="ais ais-todo">simulate</span>
+            <span class="ais ais-todo">measure</span>
+            <span class="ais ais-todo">aggregate</span>
+          </div>
+        </div>
+        <div class="prog"><div class="prog-f" id="rp-prog" style="width:0%"></div></div>
+        <div class="ia">
+          <button class="btn" onclick="document.getElementById('run-panel').style.display='none'">Cancel</button>
+          <button class="btn primary" id="start-btn" onclick="startRun()"><i class="ti ti-player-play"></i>Start Test Run</button>
+        </div>
+      </div>
+
+      <div class="ia" style="margin-top:16px">
+        <button class="btn" onclick="gs('ph')"><i class="ti ti-arrow-left"></i>Back to Personas</button>
+        <button class="btn primary" onclick="showRun()"><i class="ti ti-player-play"></i>Run Tests</button>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN: KPI MATRIX ============ -->
+    <div class="screen" id="screen-kpi">
+      <div id="kpi-content">
+        <div class="empty-state"><i class="ti ti-chart-bar"></i><div>No results yet — run tests from the Testing Engine first.</div></div>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN: REPORT ============ -->
+    <div class="screen" id="screen-report">
+      <div id="report-content">
+        <div class="empty-state"><i class="ti ti-file-analytics"></i><div>No report yet — run tests from the Testing Engine first.</div></div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-ph" style="padding:40px;text-align:center;color:var(--t3)"><i class="ti ti-arrow-left" style="font-size:28px;margin-bottom:10px;display:block"></i><div style="font-size:12px">Navigate using the sidebar or step nav</div></div>
+  </div>
+</div>
+
+<!-- ADD TEST MODAL -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <div class="mhd"><div class="mhd-t">Add Custom Test</div><i class="ti ti-x mhd-close" onclick="closeModal()"></i></div>
+    <div class="mbody">
+      <div class="mfg"><label class="mfl">Test name</label><input class="mfi" type="text" placeholder="e.g. Brand consistency check" id="ct-name"></div>
+      <div class="mfg"><label class="mfl">Evaluation criteria <small>(be specific)</small></label><textarea class="mfta" placeholder="e.g. Check whether all interactive elements follow IBM Carbon Design System spacing, colour, and typography tokens..." id="ct-desc"></textarea></div>
+      <div class="mfrow">
+        <div class="mfg" style="margin-bottom:0">
+          <label class="mfl">AI model</label>
+          <select class="mfs" id="ct-model">
+            <option value="claude-sonnet-4">claude-sonnet-4 (thorough)</option>
+            <option value="claude-haiku-4">claude-haiku-4 (fast)</option>
+            <option value="gemini-1.5-flash">gemini-1.5-flash (vision)</option>
+            <option value="gpt-4o">gpt-4o (OpenAI)</option>
+            <option value="gpt-4o-mini">gpt-4o-mini (fast)</option>
+            <option value="gemini-2.0-flash">gemini-2.0-flash (latest)</option>
+            <option value="mistral-large">mistral-large-latest</option>
+          </select>
+        </div>
+        <div class="mfg" style="margin-bottom:0">
+          <label class="mfl">Applies to</label>
+          <select class="mfs" id="ct-scope">
+            <option>All personas</option>
+            <option>Power users only</option>
+            <option>Accessibility profiles</option>
+            <option>New users only</option>
+            <option>Senior users (45+)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mft-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="addCT()"><i class="ti ti-plus"></i>Add test</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODEL PICKER DROPDOWN (shared) -->
+<div id="model-dropdown" class="model-dropdown">
+  <div class="md-search"><input type="text" placeholder="Search models..." id="md-search-input" oninput="filterModels(this.value)"></div>
+  <div class="md-groups" id="md-groups"></div>
+</div>
+
+<script>
+// ===== ALL AVAILABLE MODELS =====
+const ALL_MODELS = [
+  // Anthropic
+  {id:'claude-opus-4',name:'claude-opus-4',provider:'Anthropic',color:'cyan',cost:'high',badges:['reason','code'],desc:'Most capable — complex reasoning, deep analysis'},
+  {id:'claude-sonnet-4',name:'claude-sonnet-4',provider:'Anthropic',color:'cyan',cost:'med',badges:['reason'],desc:'Balanced — primary evaluator for UX analysis'},
+  {id:'claude-haiku-4',name:'claude-haiku-4',provider:'Anthropic',color:'cyan',cost:'low',badges:['fast'],desc:'Fastest — scoring, aggregation, low-stakes steps'},
+  {id:'claude-sonnet-4-5',name:'claude-sonnet-4-5',provider:'Anthropic',color:'cyan',cost:'med',badges:['reason'],desc:'Latest Sonnet — improved instruction following'},
+  // Google
+  {id:'gemini-2.0-flash',name:'gemini-2.0-flash',provider:'Google',color:'teal',cost:'free',badges:['fast','vis'],desc:'Latest Flash — fast vision + text'},
+  {id:'gemini-1.5-flash',name:'gemini-1.5-flash',provider:'Google',color:'teal',cost:'free',badges:['vis','fast'],desc:'Reliable vision — screen reading, layout analysis'},
+  {id:'gemini-1.5-pro',name:'gemini-1.5-pro',provider:'Google',color:'teal',cost:'med',badges:['reason','vis'],desc:'High-quality — complex multimodal reasoning'},
+  {id:'gemini-2.5-pro',name:'gemini-2.5-pro',provider:'Google',color:'teal',cost:'high',badges:['reason','vis'],desc:'Most capable Gemini — deep analysis + vision'},
+  // OpenAI
+  {id:'gpt-4o',name:'gpt-4o',provider:'OpenAI',color:'green',cost:'med',badges:['reason','vis'],desc:'GPT flagship — vision + strong reasoning'},
+  {id:'gpt-4o-mini',name:'gpt-4o-mini',provider:'OpenAI',color:'green',cost:'low',badges:['fast'],desc:'Fast + cheap — suitable for scoring steps'},
+  {id:'o3',name:'o3',provider:'OpenAI',color:'green',cost:'high',badges:['reason'],desc:'Deep reasoning — complex UX inference tasks'},
+  {id:'o4-mini',name:'o4-mini',provider:'OpenAI',color:'green',cost:'low',badges:['reason','fast'],desc:'Efficient reasoning — good for heuristic eval'},
+  // Mistral
+  {id:'mistral-large',name:'mistral-large-latest',provider:'Mistral',color:'amber',cost:'med',badges:['reason'],desc:'Open-weight — strong instruction following'},
+  {id:'mistral-small',name:'mistral-small-latest',provider:'Mistral',color:'amber',cost:'low',badges:['fast'],desc:'Fast + affordable EU-hosted option'},
+  {id:'codestral',name:'codestral-latest',provider:'Mistral',color:'amber',cost:'med',badges:['code'],desc:'Code-specialised — for dev handoff analysis'},
+  // Meta / HuggingFace
+  {id:'llama-3.3-70b',name:'llama-3.3-70b',provider:'Meta / HF',color:'orange',cost:'free',badges:['reason','free'],desc:'Open source — self-host for full cost control'},
+  {id:'llama-3.1-8b',name:'llama-3.1-8b',provider:'Meta / HF',color:'orange',cost:'free',badges:['fast','free'],desc:'Lightweight — fast, cheap HuggingFace inference'},
+  // Cohere
+  {id:'command-r-plus',name:'command-r-plus',provider:'Cohere',color:'purple',cost:'med',badges:['reason'],desc:'RAG-optimised — great for doc-grounded eval'},
+  {id:'command-r',name:'command-r',provider:'Cohere',color:'purple',cost:'low',badges:['fast'],desc:'Fast + grounded — citation-aware analysis'},
+  // xAI
+  {id:'grok-2',name:'grok-2',provider:'xAI',color:'red',cost:'med',badges:['reason'],desc:'Real-time knowledge + strong reasoning'},
+];
+
+// ===== EVAL STEPS =====
+const STEPS = {
+  vision:'gemini-1.5-flash',
+  eval:'claude-sonnet-4',
+  score:'claude-haiku-4',
+  kpi:'claude-sonnet-4'
+};
+const STEP_LABELS = {vision:'Screen reading',eval:'Persona evaluation',score:'Scoring & aggregation',kpi:'KPI inference'};
+let modelAssignments = {...STEPS};
+let activeDropdownStep = null;
+
+function getModelById(id){return ALL_MODELS.find(m=>m.id===id)||ALL_MODELS[1]}
+
+function renderModelGrid(){
+  const grid = document.getElementById('model-grid');
+  grid.innerHTML = Object.entries(STEP_LABELS).map(([step,label])=>{
+    const m = getModelById(modelAssignments[step]);
+    return `
+    <div style="position:relative">
+      <div class="msc-step">${label}</div>
+      <div class="msc-selected" onclick="openModelPicker('${step}',this)">
+        <div class="model-dot md-${m.color}"></div>
+        <div class="msc-name">${m.name}</div>
+        <i class="ti ti-chevron-down msc-arrow"></i>
+      </div>
+      <div style="font-size:9px;color:var(--t3);line-height:1.4">${m.desc}</div>
+      <div class="msc-cost cost-${m.cost}" style="margin-top:4px">${m.cost==='free'?'Free':m.cost==='low'?'Low cost':m.cost==='med'?'Medium cost':'Higher cost'}</div>
+    </div>`;
+  }).join('');
+}
+
+function openModelPicker(step, anchor){
+  activeDropdownStep = step;
+  const dd = document.getElementById('model-dropdown');
+  const rect = anchor.getBoundingClientRect();
+  dd.style.position='fixed';
+  dd.style.top=(rect.bottom+4)+'px';
+  dd.style.left=rect.left+'px';
+  dd.style.width=rect.width+'px';
+  dd.style.minWidth='280px';
+  renderModelOptions(ALL_MODELS);
+  dd.classList.add('open');
+  document.getElementById('md-search-input').value='';
+  document.getElementById('md-search-input').focus();
+  setTimeout(()=>document.addEventListener('click',closePicker,{once:true}),50);
+}
+
+function closePicker(e){
+  if(!document.getElementById('model-dropdown').contains(e.target)){
+    document.getElementById('model-dropdown').classList.remove('open');
+  }
+}
+
+function filterModels(q){
+  const filtered = ALL_MODELS.filter(m=>m.name.toLowerCase().includes(q.toLowerCase())||m.provider.toLowerCase().includes(q.toLowerCase()));
+  renderModelOptions(filtered);
+}
+
+function renderModelOptions(models){
+  const groups = {};
+  models.forEach(m=>{
+    if(!groups[m.provider]) groups[m.provider]=[];
+    groups[m.provider].push(m);
+  });
+  const html = Object.entries(groups).map(([prov,ms])=>`
+    <div class="md-group-label">${prov}</div>
+    ${ms.map(m=>`
+      <div class="md-option${modelAssignments[activeDropdownStep]===m.id?' selected':''}" onclick="selectModel('${m.id}')">
+        <div class="model-dot md-${m.color}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="mdo-name">${m.name}</div>
+          <div class="mdo-provider">${m.desc}</div>
+        </div>
+        <div class="mdo-badges">
+          ${m.badges.map(b=>`<span class="mdo-badge bd-${b}">${b}</span>`).join('')}
+        </div>
+      </div>
+    `).join('')}
+  `).join('');
+  document.getElementById('md-groups').innerHTML = html;
+}
+
+function selectModel(id){
+  modelAssignments[activeDropdownStep] = id;
+  document.getElementById('model-dropdown').classList.remove('open');
+  renderModelGrid();
+  if(selectedMethod) renderMethodDetail(selectedMethod);
+}
+
+// ===== TESTING METHODS =====
+// SIMULATED = a readout of the same synthetic-user sessions (behaviour, measured).
+// INSPECTION = opinion-based expert-review add-on (AI inspects screens directly).
+const SIMULATED_METHODS = new Set(['task_scenario','think_aloud','cognitive_load','mental_model','flow_eff','first_click','five_sec','conv_path','learnability']);
+const METHODS = [
+  {id:'heuristic',n:'01',icon:'ti-eye',title:"Nielsen's Heuristic Eval",desc:'Scores all 10 Nielsen heuristics per screen per persona.',cat:'heuristic',step:'eval',weight:1.2,
+   tags:['10 heuristics','per screen','severity'],
+   formula:'H_score = Σ(heuristic_i × sev_weight) / 10\nOverall = avg(H_score) across screens',
+   steps:[{t:'Read screens',d:'gemini reads all screenshots, describes layout, elements, affordances, labels visible.'},{t:'Load persona',d:'haiku loads persona profile — tech comfort, role, behavioral traits, mental model.'},{t:'Score 10 heuristics',d:'sonnet evaluates each Nielsen heuristic (0-10) per screen: Visibility, Match, User Control, Consistency, Error Prevention, Recognition, Flexibility, Aesthetics, Recovery, Help.'},{t:'Weight by severity',d:'High violation=0.5x, Medium=0.8x, Low=1.0x applied to each score.'},{t:'Aggregate persona score',d:'Average all screen scores to produce persona H_score 0-10.'},{t:'Output friction map',d:'Returns per-screen friction points with heuristic reference, severity, recommendation.'}],
+   outputs:['heuristic_scores (10 values)','friction_points[]','per_screen_scores[]','overall_score /10']},
+  {id:'task_scenario',n:'02',icon:'ti-route',title:'Task Scenario Testing',desc:'Generates 5 tasks and simulates persona completing each.',cat:'task',step:'eval',weight:1.3,
+   tags:['5 tasks','success rate','step deviation'],
+   formula:'T_score = Σ(success_i × complexity_weight_i) / Σ(weights)\nComplexity: Simple=1.0, Medium=1.3, Complex=1.6',
+   steps:[{t:'Generate 5 tasks',d:'sonnet creates tasks relevant to persona role and flow type. Mix of simple, medium, complex.'},{t:'Define optimal paths',d:'For each task: optimal step count, expected entry + exit points.'},{t:'Simulate completion',d:'Persona navigates each task. Wrong turns, hesitations, abandonments recorded.'},{t:'Classify outcomes',d:'Each task: complete (1.0), partial (0.5), abandoned (0).'},{t:'Apply complexity weights',d:'Weighted average across all 5 tasks.'},{t:'Return results',d:'task_scenarios_result[] with steps_taken, expected_steps, deviation_reason, time_estimate.'}],
+   outputs:['task_scenarios_result[]','task_success_rate','t_score /10','abandoned_tasks[]']},
+  {id:'think_aloud',n:'03',icon:'ti-messages',title:'Think-Aloud Simulation',desc:'First-person verbal transcript of persona navigating each screen.',cat:'behavioral',step:'eval',weight:1.0,
+   tags:['transcript','emotional arc','key quotes'],
+   formula:'TA_score = sentiment × 0.4 + task_success × 0.4 + clarity × 0.2\nSentiment derived from NLP tone analysis',
+   steps:[{t:'Load mental model',d:'Persona motivation_quote, goals, frustrations, and mental_model loaded as evaluation seed.'},{t:'Generate narration',d:'First-person narration written for each screen — what the persona thinks, notices, does.'},{t:'Mark inflection points',d:'Confusion, frustration, confidence, delight moments tagged.'},{t:'Extract key quotes',d:'2-3 representative quotes: 1 frustration, 1 clarity, 1 delight.'},{t:'Score emotional arc',d:'Arc classified: smooth / frustrated-to-confident / confused-throughout / delighted.'},{t:'Calculate TA_score',d:'Sentiment scored 0-10. Combined formula applied.'}],
+   outputs:['think_aloud_transcript','key_quotes[]','emotional_arc','ta_score /10']},
+  {id:'cognitive_load',n:'04',icon:'ti-brain',title:'Cognitive Load Mapping',desc:'Scores mental effort per screen and identifies overload zones.',cat:'cognitive',step:'eval',weight:1.1,
+   tags:['per screen','load type','peak zones'],
+   formula:'CL_score = 10 - avg(extraneous_load_per_screen)\nTypes: Intrinsic (task) + Extraneous (bad design) + Germane (learning)',
+   steps:[{t:'Set persona baseline',d:'Cognitive baseline from tech_comfort_score. Lower comfort = lower overload tolerance.'},{t:'Read information density',d:'gemini counts info elements per screen: text, inputs, nav items, tables.'},{t:'Score load per screen',d:'0-10 per screen per load type. Annotate peak overload UI areas.'},{t:'Classify load type',d:'Intrinsic, Extraneous (UX problem), or Germane. Only Extraneous penalised.'},{t:'Calculate average',d:'Average load across screens. Peak screen identified.'},{t:'Return load map',d:'cognitive_load_map[] with score, type, peak areas, reduction_opportunity.'}],
+   outputs:['cognitive_load_map[]','average_load','peak_load_screen','reduction_opportunities[]']},
+  {id:'fitts',n:'05',icon:'ti-target',title:"Fitts' Law Analysis",desc:'Estimates click target distances and sizes to predict interaction speed.',cat:'cognitive',step:'score',weight:0.8,
+   tags:['targets','distance','interaction time'],
+   formula:"T = a + b×log₂(D/W+1)\nD=distance, W=target width, a=0.2, b=0.1 (desktop)\nF_score = 10-(avg_T/max_T×10)",
+   steps:[{t:'Extract interactive elements',d:'gemini identifies all clickable elements with estimated screen positions.'},{t:'Estimate distances',d:'Relative distances between sequential interaction targets estimated.'},{t:'Apply Fitts formula',d:'haiku applies formula to each target pair. T values calculated.'},{t:'Flag slow targets',d:'Targets with T above threshold or W<44px flagged as friction.'}],
+   outputs:['fitts_scores[]','slow_targets[]','f_score /10']},
+  {id:'hicks',n:'06',icon:'ti-menu-2',title:"Hick's Law Analysis",desc:'Counts choices at decision points and estimates decision time.',cat:'cognitive',step:'score',weight:0.8,
+   tags:['choice count','decision time','overload'],
+   formula:"RT = b × log₂(n+1), b=0.166s/bit\nScreens n>7 flagged (Miller's Law)\nH_score = 10-(avg_RT/max_RT×10)",
+   steps:[{t:'Count choices per screen',d:'gemini counts nav options, CTAs, and menu items per screen.'},{t:'Identify decision points',d:'Screens requiring binary or multi-choice decisions.'},{t:"Apply Hick's formula",d:'Decision time estimated at each decision point.'},{t:'Flag overloaded screens',d:'Screens with n>7 choices flagged as cognitively overloaded.'}],
+   outputs:["hick_scores[]","overloaded_screens[]","h_score /10"]},
+  {id:'gestalt',n:'07',icon:'ti-layout',title:'Gestalt Principles Audit',desc:'Checks proximity, similarity, continuity, closure across layouts.',cat:'heuristic',step:'eval',weight:0.9,
+   tags:['proximity','similarity','visual grouping'],
+   formula:'G_score = Σ(principle_pass × weight) / Σ(weights)\n6 principles: Proximity(1.2), Similarity(1.1), Continuity(1.0),\nClosure(0.8), Figure-Ground(1.0), Symmetry(0.9)',
+   steps:[{t:'Describe visual groupings',d:'gemini describes how elements are visually grouped on each screen.'},{t:'Check proximity',d:'Related elements close together? Unrelated elements separated?'},{t:'Check similarity + continuity',d:'Similar elements look similar? Eye flows logically?'},{t:'Score all 6 principles',d:'Each: pass/partial/fail with justification and improvement note.'}],
+   outputs:['gestalt_scores{}','principle_failures[]','g_score /10']},
+  {id:'accessibility',n:'08',icon:'ti-accessible',title:'WCAG 2.1 AA Audit',desc:'Checks 25 AA criteria: contrast, target size, keyboard nav.',cat:'accessibility',step:'eval',weight:1.2,
+   tags:['WCAG AA','contrast','keyboard'],
+   formula:'A11y = (Σ(pass × level_weight)) / (total × max_weight) × 100\nLevel A=3, Level AA=2, AAA=1',
+   steps:[{t:'Load a11y persona profile',d:'Persona accessibility_profile loaded: none/visual_impairment/motor_difficulty/cognitive_load.'},{t:'Check contrast ratios',d:'gemini estimates contrast. sonnet applies WCAG AA minimums (4.5:1 normal, 3:1 large).'},{t:'Check target sizes',d:'44×44px minimum. AI flags undersized targets.'},{t:'Check keyboard nav',d:'Tab order, focus indicators, skip links, ARIA roles.'},{t:'Check semantic structure',d:'Heading hierarchy, alt text, form labels, landmarks.'},{t:'Score 25 criteria',d:'Returns a11y_score (0-100) with pass/fail per criterion.'}],
+   outputs:['a11y_score /100','wcag_violations[]','contrast_failures[]','keyboard_issues[]']},
+  {id:'error_prev',n:'09',icon:'ti-shield-check',title:'Error Prevention Analysis',desc:'Maps error-prone interactions and evaluates recovery paths.',cat:'heuristic',step:'eval',weight:1.0,
+   tags:['error likelihood','recovery','validation'],
+   formula:'EP = 1-(Σ(error_risk × sev_weight)/max_risk) × 10\nDestructive=3, Correctable=2, Cosmetic=1',
+   steps:[{t:'Identify error-prone interactions',d:'All form fields, destructive actions, ambiguous CTAs, irreversible decisions flagged.'},{t:'Score error likelihood',d:'low/medium/high per interaction per persona mental model.'},{t:'Check validation',d:'Inline validation, confirmation dialogs, undo options present?'},{t:'Evaluate recovery paths',d:'If error occurs, is recovery clear and forgiving?'}],
+   outputs:['error_prone_interactions[]','recovery_quality_score','ep_score /10']},
+  {id:'prog_disc',n:'10',icon:'ti-stack',title:'Progressive Disclosure',desc:'Evaluates whether complexity is revealed progressively or dumped upfront.',cat:'cognitive',step:'score',weight:0.8,
+   tags:['info density','reveal timing','complexity'],
+   formula:'PD = (info_at_right_time / total_info) × 10\nEarly reveal: -0.5 per premature element\nLate reveal: -1.0 per missing critical element',
+   steps:[{t:'Map information density',d:'gemini counts visible information elements per screen.'},{t:'Check disclosure sequence',d:'Advanced features hidden until needed? Defaults sensible?'},{t:'Score timing',d:'Info revealed too early = overload. Too late = confusion.'},{t:'Return disclosure map',d:'pd_score, overloaded_screens[], reveal_improvements[].'}],
+   outputs:['pd_score /10','overloaded_screens[]','reveal_improvements[]']},
+  {id:'mental_model',n:'11',icon:'ti-brain',title:'Mental Model Alignment',desc:"Checks how closely UI matches the persona's existing expectations.",cat:'behavioral',step:'eval',weight:1.1,
+   tags:['terminology','nav patterns','metaphors'],
+   formula:'MM = (matches / (matches+mismatches)) × 10\nWeights: terminology(1.3), nav(1.2), metaphor(1.0), interaction(1.1)',
+   steps:[{t:'Load mental model',d:"Persona's mental_model field — expectations from prior tool usage."},{t:'Compare terminology',d:"Do labels, headings, CTAs match what this persona would expect?"},{t:'Check nav patterns',d:"Does nav structure match how persona mentally organises the domain?"},{t:'Score alignment',d:'mm_score, terminology_mismatches[], expectation_gaps[].'}],
+   outputs:['mm_score /10','terminology_mismatches[]','expectation_gaps[]']},
+  {id:'flow_eff',n:'12',icon:'ti-route-2',title:'Flow Efficiency Analysis',desc:'Measures task path length, backtracking, and dead-end detection.',cat:'task',step:'score',weight:1.0,
+   tags:['path length','backtracking','dead ends'],
+   formula:'FE = (optimal_steps / actual_steps) × 10\nPenalty: dead_ends×2 + backtracks×1.5',
+   steps:[{t:'Define optimal path',d:'Minimum steps to complete primary task in redesigned flow.'},{t:'Simulate persona path',d:'Deviations, backtracks, and dead ends recorded.'},{t:'Calculate ratio',d:'optimal / actual. 1.0 = perfect efficiency.'},{t:'Flag dead ends',d:'Screens where persona cannot proceed without backtracking.'}],
+   outputs:['flow_efficiency_score /10','path_analysis{}','dead_ends[]']},
+  {id:'first_click',n:'13',icon:'ti-click',title:'First-Click Testing',desc:'Predicts where each persona clicks first on each screen.',cat:'task',step:'eval',weight:0.9,
+   tags:['first click','attention','navigation confidence'],
+   formula:'FC = correct_first_clicks / total_screens × 10\nPartial credit 0.5 for understandable but suboptimal click',
+   steps:[{t:'Define correct first click',d:'Primary intended action per screen from flow description.'},{t:'Simulate attention pattern',d:'F-pattern, Z-pattern, or goal-directed — based on persona tech comfort.'},{t:'Predict first click',d:'AI predicts click target based on visual weight, position, label clarity.'},{t:'Score accuracy',d:'Correct / total screens.'}],
+   outputs:['first_click_map[]','fc_score /10','mislabelled_ctas[]']},
+  {id:'desirability',n:'14',icon:'ti-heart',title:'Desirability & Appeal',desc:'Evaluates visual appeal, brand fit, and emotional response per persona.',cat:'emotional',step:'eval',weight:0.7,
+   tags:['visual appeal','brand fit','delight'],
+   formula:'DA = (visual_quality×0.35) + (brand_alignment×0.35) + (emotion×0.3)',
+   steps:[{t:'Load brand context',d:'Industry + product description define expected aesthetic standard.'},{t:'Evaluate visual quality',d:'gemini analyses whitespace, typography, colour, balance.'},{t:'Check brand alignment',d:'Does design match industry and product expectations for this persona?'},{t:'Score emotional response',d:'Would this feel trustworthy, professional, modern?'}],
+   outputs:['da_score /10','visual_quality_score','brand_alignment_score','emotional_response']},
+  {id:'five_sec',n:'15',icon:'ti-clock-hour-5',title:'5-Second Test Simulation',desc:'Simulates what persona recalls after 5 seconds on each screen.',cat:'behavioral',step:'eval',weight:0.8,
+   tags:['recall','first impression','key message'],
+   formula:'5S = recalled_key / intended_key × 10\nKey = {purpose, primary CTA, key info}',
+   steps:[{t:'Define intended takeaways',d:'3 intended elements per screen: purpose, action, key info.'},{t:'Simulate 5-second attention',d:'AI simulates visual attention window based on hierarchy.'},{t:'Generate recall list',d:"What persona would report remembering."},{t:'Score accuracy',d:'recalled_key / intended_key.'}],
+   outputs:['recall_results[]','5s_score /10','missing_elements[]']},
+  {id:'kano',n:'16',icon:'ti-stars',title:'Kano Model Classification',desc:'Classifies features as Must-have, Performance, or Delighter.',cat:'behavioral',step:'eval',weight:0.9,
+   tags:['must-have','delighters','satisfaction'],
+   formula:'Kano = (must_have×3 + delighter×1 + perf_delta×2) / max × 10\nDissatisfier: -2 per instance',
+   steps:[{t:'Inventory all features',d:'gemini lists all visible features per screen.'},{t:'Classify per persona',d:'Must-have / Performance / Delighter / Indifferent / Dissatisfier.'},{t:'Check must-haves',d:'Are all must-have features visible and accessible?'},{t:'Score impact',d:'Weighted formula applied. Dissatisfiers penalised.'}],
+   outputs:['kano_classification{}','must_haves_missing[]','kano_score /10']},
+  {id:'ux_writing',n:'17',icon:'ti-text-caption',title:'UX Writing & Microcopy',desc:'Evaluates label clarity, CTAs, error messages, and tone.',cat:'heuristic',step:'eval',weight:0.8,
+   tags:['labels','CTAs','error messages'],
+   formula:'UXW = label_clarity×0.35 + cta_eff×0.30 + error_qual×0.20 + tone×0.15',
+   steps:[{t:'Extract all text',d:'gemini extracts labels, buttons, headings, placeholders, error messages.'},{t:'Evaluate label clarity',d:'Self-explanatory? Appropriate reading level for persona? No jargon?'},{t:'Score CTAs',d:'Starts with verb, specific outcome implied, visible, distinct.'},{t:'Check error messages',d:'Human, actionable, non-blaming, specific.'},{t:'Evaluate tone',d:'Consistent tone across screens matching persona expectations.'}],
+   outputs:['uxw_score /10','unclear_labels[]','weak_ctas[]','poor_error_messages[]']},
+  {id:'conv_path',n:'18',icon:'ti-trending-up',title:'Conversion Path Analysis',desc:'Maps critical path and scores drop-off risk at every step.',cat:'task',step:'eval',weight:1.1,
+   tags:['drop-off risk','critical path','funnel'],
+   formula:'CP = 10 - Σ(drop_off×pos_weight) / max_friction\nPos weights: step1=2.0, step2=1.8, step3=1.5, step4+=1.0',
+   steps:[{t:'Define critical path',d:'Mandatory sequence from entry to goal completion.'},{t:'Score drop-off risk',d:'Each step scored for abandonment likelihood per persona.'},{t:'Weight by position',d:'Earlier drop-offs weighted higher.'},{t:'Flag friction hotspots',d:'Steps with >0.7 drop-off risk are critical.'},{t:'Return funnel',d:'critical_path_map[], drop_off_risks[], cp_score.'}],
+   outputs:['critical_path_map[]','drop_off_risks[]','cp_score /10']},
+  {id:'inclusive',n:'19',icon:'ti-heart-handshake',title:'Inclusive Design Review',desc:'Audits for age bias, cultural assumptions, language barriers.',cat:'accessibility',step:'eval',weight:0.9,
+   tags:['exclusion audit','cultural','age inclusivity'],
+   formula:'ID = (inclusion_passes / 12) × 10\n12 criteria: age(3) + culture(3) + language(3) + ability(3)',
+   steps:[{t:'Load demographic context',d:'Age, location, accessibility profile, role level inform the inclusion lens.'},{t:'Check age inclusivity',d:'Font sizes, targets, terminology appropriate for 55+ if applicable?'},{t:'Check cultural assumptions',d:'Date formats, icons, metaphors culturally neutral?'},{t:'Check language complexity',d:'Readability estimated. Technical jargon flagged for non-technical personas.'},{t:'Score 12 criteria',d:'id_score, exclusion_patterns[], inclusion_improvements[].'}],
+   outputs:['id_score /10','exclusion_patterns[]','language_complexity_score']},
+  {id:'learnability',n:'20',icon:'ti-school',title:'Learnability & Onboarding',desc:'Simulates first-time user and measures time to first success.',cat:'behavioral',step:'eval',weight:1.0,
+   tags:['first use','onboarding','productivity'],
+   formula:'L = 10-(steps_to_success/benchmark-1)×5\nBenchmark: simple=5, complex=12\nBonus: +0.5 per onboarding element present',
+   steps:[{t:'Set first-time state',d:'Persona set to zero prior knowledge of this specific UI.'},{t:'Navigate to first success',d:'Persona attempts primary task for the first time.'},{t:'Count steps',d:'Including wrong turns before successful completion.'},{t:'Check onboarding support',d:'Tooltips, empty states, contextual help, progress indicators present?'},{t:'Score learnability',d:'Fewer steps + better onboarding = higher L_score.'}],
+   outputs:['l_score /10','steps_to_first_success','onboarding_support_quality']}
+];
+
+let selectedMethod = null;
+let selectedMethods = new Set();
+const flowModes = {single:1,compare:2,multi:3};
+let flowMode = 'single';
+
+function renderMethods(filter='all'){
+  const grid = document.getElementById('method-grid');
+  const filtered = filter==='all'?METHODS:METHODS.filter(m=>m.cat===filter);
+  grid.innerHTML = filtered.map(m=>{
+    const sim = SIMULATED_METHODS.has(m.id);
+    return `
+    <div class="mc${selectedMethods.has(m.id)?' sel':''}" onclick="toggleM('${m.id}')">
+      <div class="mc-ck"><i class="ti ti-check"></i></div>
+      <div class="mc-n">${m.n}<span class="mc-kind ${sim?'mk-sim':'mk-insp'}">${sim?'SIMULATED':'INSPECTION'}</span></div>
+      <i class="ti ${m.icon} mc-icon"></i>
+      <div class="mc-title">${m.title}</div>
+      <div class="mc-desc">${m.desc}</div>
+      <div class="mc-tags">${m.tags.map(t=>`<span class="mc-tag">${t}</span>`).join('')}</div>
+      <div class="mc-model-row">
+        <div class="mc-mdot" style="background:var(--${getModelById(modelAssignments[m.step]||m.step).color})"></div>
+        <div class="mc-mname">${modelAssignments[m.step]||m.step}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleM(id){
+  if(selectedMethods.has(id)){
+    selectedMethods.delete(id);
+    if(selectedMethod===id){
+      selectedMethod=null;
+      document.getElementById('method-detail').classList.remove('vis');
+      document.getElementById('sg-body').innerHTML='<div style="padding:16px 0;text-align:center;font-size:11px;color:var(--t3)">Select a method to see its evaluation guide.</div>';
+      document.getElementById('sg-t').textContent='Select a method above';
+    }
+  } else {
+    if(selectedMethods.size>=3){alert('Max 3 methods. Remove one first.');return;}
+    selectedMethods.add(id);
+    selectedMethod=id;
+    renderMethodDetail(id);
+    renderStepGuide(id);
+  }
+  const activeF = document.querySelector('.mft.active');
+  const cat = activeF?.textContent.toLowerCase();
+  filterM(cat?.includes('all')?'all':cat||'all', activeF);
+  updateRunStats();
+}
+
+function renderMethodDetail(id){
+  const m = METHODS.find(x=>x.id===id);
+  if(!m) return;
+  const primaryModel = getModelById(modelAssignments[m.step]);
+  const d = document.getElementById('method-detail');
+  d.classList.add('vis');
+  d.innerHTML=`
+    <div class="md-top">
+      <div class="md-icon-b"><i class="ti ${m.icon}"></i></div>
+      <div class="md-main">
+        <div class="md-title">${m.title}</div>
+        <div class="md-sub">${m.desc}</div>
+        <div class="md-weight">Reported as: <b>${SIMULATED_METHODS.has(m.id)?'measured behaviour (simulated sessions)':'expert-review opinion (inspection)'}</b></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end;flex-shrink:0">
+        <div style="font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.8px">Primary model</div>
+        <div class="md-model-tag-wrap">
+          <div class="md-model-tag">
+            <div class="model-dot md-${primaryModel.color}"></div>
+            <select onchange="changeStepModel('${m.step}',this.value)" style="background:transparent;border:none;color:var(--t1);font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;cursor:pointer;outline:none">
+              ${ALL_MODELS.map(mod=>`<option value="${mod.id}"${mod.id===modelAssignments[m.step]?' selected':''}>${mod.name}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--t3)">${primaryModel.provider} · ${primaryModel.cost==='free'?'Free':primaryModel.cost==='low'?'Low cost':primaryModel.cost==='med'?'Medium':'Higher cost'}</div>
+      </div>
+    </div>
+    <div class="md-calc">
+      <div class="mdc-lbl"><i class="ti ti-calculator"></i>Calculation Formula</div>
+      <div class="mdc-f">${m.formula.replace(/\n/g,'<br>')}</div>
+      <div class="mdc-steps">
+        ${m.steps.map((s,i)=>`<div class="mdc-s"><div class="mdc-sn">${i+1}</div><div><strong style="color:var(--t1)">${s.t}:</strong> ${s.d}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="md-outputs">
+      ${m.outputs.map(o=>`<div class="md-out"><div class="mdo-lbl">Output field</div><div class="mdo-val">${o}</div></div>`).join('')}
+    </div>`;
+}
+
+function changeStepModel(step, modelId){
+  modelAssignments[step] = modelId;
+  renderModelGrid();
+  renderMethods('all');
+  if(selectedMethod) renderMethodDetail(selectedMethod);
+}
+
+function renderStepGuide(id){
+  const m = METHODS.find(x=>x.id===id);
+  if(!m) return;
+  document.getElementById('sg-t').textContent = m.title+' — Step guide';
+  document.getElementById('sg-body').innerHTML = m.steps.map((s,i)=>`
+    <div class="gs" onclick="this.classList.toggle('exp')">
+      <div class="gs-left">
+        <div class="gs-num gsn-todo">${i+1}</div>
+        ${i<m.steps.length-1?'<div class="gs-line"></div>':''}
+      </div>
+      <div class="gs-content">
+        <div class="gs-t">${s.t}</div>
+        <div class="gs-s">${s.d}</div>
+        <div class="gs-detail">
+          <strong>How the AI processes this:</strong><br>${s.d}
+          <div class="gs-mb"><div class="model-dot md-${getModelById(modelAssignments[m.step]).color}" style="width:5px;height:5px"></div>${modelAssignments[m.step]}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterM(cat, el){
+  document.querySelectorAll('.mft').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderMethods(cat==='all 20'||cat==='all'?'all':cat);
+}
+
+function setFM(mode){
+  flowMode=mode;
+  ['single','compare','multi'].forEach(m=>document.getElementById('fm-'+m).classList.toggle('sel',m===mode));
+  updateRunStats();
+  if(typeof stateChanged==="function")try{stateChanged()}catch{}
+}
+
+function updateRunStats(){
+  const n = +document.getElementById('rp-n-slider').value;
+  document.getElementById('rp-n-val').textContent=n;
+  document.getElementById('rp-p').textContent=n;
+  document.getElementById('rp-m').textContent=selectedMethods.size||1;
+  document.getElementById('rp-f').textContent=flowModes[flowMode]||1;
+  document.getElementById('rp-c').textContent='~'+(n*(flowModes[flowMode]||1));
+}
+
+function showRun(){
+  gs('testing');
+  document.getElementById('run-panel').style.display='block';
+  updateRunStats();
+  document.getElementById('run-panel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ================================================================
+   APP STATE + FULL LIFECYCLE
+   Setup → Upload → Personas → Testing → KPI → Report.
+   What you upload and who you build actually drives the results:
+   analysed key changes become hazard reductions; personas become
+   simulated participant panels (JS port of lib/synthux/engine.ts).
+   ================================================================ */
+const appState = {
+  screens: { before: [], after: [] },          // {label, seq, img}
+  analysis: { status: "not_run", keyChanges: [] }, // {text, tag}
+  personas: [],
+};
+const S_KEY = "uxkpi-lab-v2";
+function saveState(){if(typeof REG!=="undefined"&&REG)syncActiveFromWorkspace()}
+function loadState(){regLoad();hydrateWorkspace()}
+function stateChanged(){saveState();if(typeof REG!=="undefined"&&REG)updateChrome();renderStepnav()}
+
+/* ---------------- deterministic RNG ---------------- */
+function mulberry32(a){return function(){a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296}}
+class RNG{
+  constructor(seed){this.next=mulberry32(seed);this.spare=null}
+  random(){return this.next()}
+  uniform(a,b){return a+(b-a)*this.next()}
+  choice(arr){return arr[Math.floor(this.next()*arr.length)]}
+  gauss(mu,sigma){
+    if(this.spare!==null){const s=this.spare;this.spare=null;return mu+sigma*s}
+    let u,v,s;
+    do{u=this.next()*2-1;v=this.next()*2-1;s=u*u+v*v}while(s>=1||s===0);
+    const m=Math.sqrt(-2*Math.log(s)/s);this.spare=v*m;return mu+sigma*u*m;
+  }
+}
+function hashSeed(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+const clamp01=x=>Math.min(1,Math.max(0,x));
+const pct=x=>Math.round(x*100)+"%";
+const pp=x=>(x>0?"+":"")+Math.round(x*100)+" pp";
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+/* ================================================================
+   02 — UPLOAD SCREENS
+   ================================================================ */
+const SAMPLE_FLOW = {
+  before: ["Home","Billing","Payment methods","Manage mandate","Mandate form","Account","Help"],
+  after:  ["Home","Billing","Payment methods","Manage Direct Debit","Direct debit form","Confirmation","Help"],
+  keyChanges: [
+    { text: "Renamed 'Manage mandate' → 'Manage Direct Debit' — the critical entry point now uses user vocabulary", tag: "label" },
+    { text: "Billing navigation flattened: payment setup is one level shallower", tag: "navigation" },
+    { text: "Added an explicit confirmation screen with receipt after switching", tag: "feedback" },
+    { text: "Primary action styling unified across the flow", tag: "visual" },
+  ],
+};
+function renderShots(side){
+  const wrap=document.getElementById("shots-"+side);
+  const list=appState.screens[side];
+  list.sort((a,b)=>a.seq-b.seq);
+  wrap.innerHTML=list.map((s,i)=>`
+    <div class="shot">
+      <div class="shot-thumb">${s.img?`<img src="${s.img}" alt="">`:`<span>${esc(s.label.slice(0,6).toUpperCase())}</span>`}</div>
+      <span class="shot-seq">${String(s.seq).padStart(2,"0")}</span>
+      <input value="${esc(s.label)}" onchange="appState.screens['${side}'][${i}].label=this.value;stateChanged()">
+      <i class="ti ti-x rm" onclick="appState.screens['${side}'].splice(${i},1);renderShots('${side}');uploadChanged()"></i>
+    </div>`).join("");
+  document.getElementById("bn-"+side).textContent=list.length+" screen"+(list.length===1?"":"s");
+}
+function addFiles(side,files){
+  const list=appState.screens[side];
+  [...files].forEach(f=>{
+    if(!f.type.startsWith("image/"))return;
+    const stem=f.name.replace(/\.[^.]+$/,"");
+    const m=stem.match(/^(\d+)[-_](.*)$/);
+    const seq=m?parseInt(m[1],10):list.length+1;
+    const label=(m?m[2]:stem).replace(/[-_]/g," ").trim()||("Screen "+seq);
+    const s={label,seq,img:null};
+    list.push(s);
+    const r=new FileReader();
+    r.onload=e=>{s.img=e.target.result;renderShots(side)};
+    r.readAsDataURL(f);
+  });
+  renderShots(side);uploadChanged();
+}
+function loadSampleFlow(){
+  appState.screens.before=SAMPLE_FLOW.before.map((l,i)=>({label:l,seq:i+1,img:null}));
+  appState.screens.after=SAMPLE_FLOW.after.map((l,i)=>({label:l,seq:i+1,img:null}));
+  appState.sample=true;
+  renderShots("before");renderShots("after");uploadChanged();
+}
+function uploadChanged(){
+  const ok=appState.screens.before.length>0&&appState.screens.after.length>0;
+  document.getElementById("an-btn").disabled=!ok;
+  // Screens changed after analysis → analysis is stale, never silently outdated.
+  if(appState.analysis.status==="completed"){
+    appState.analysis={status:"stale",keyChanges:appState.analysis.keyChanges};
+    renderAnalysis();
+  }
+  document.getElementById("up-next").disabled=appState.analysis.status!=="completed";
+  stateChanged();
+}
+function runAnalysis(){
+  const panel=document.getElementById("an-panel");
+  panel.style.display="block";
+  const shots=[...appState.screens.before,...appState.screens.after];
+  let i=0;
+  appState.analysis={status:"processing",keyChanges:[]};
+  const tick=()=>{
+    if(i<shots.length){
+      panel.innerHTML=`<div class="sec-label" style="margin-bottom:8px">Flow analysis — running</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c)">
+        Reading screen ${i+1}/${shots.length}: ${esc(shots[i].label)}…</div>
+        <div class="prog" style="margin-top:8px"><div class="prog-f" style="width:${Math.round((i/shots.length)*100)}%"></div></div>`;
+      i++;setTimeout(tick,140);return;
+    }
+    appState.analysis={status:"completed",keyChanges:deriveKeyChanges()};
+    renderAnalysis();
+    document.getElementById("up-next").disabled=false;
+    stateChanged();
+  };
+  tick();
+}
+function deriveKeyChanges(){
+  if(appState.sample)return SAMPLE_FLOW.keyChanges;
+  const before=new Set(appState.screens.before.map(s=>s.label.toLowerCase()));
+  const changes=[];
+  appState.screens.after.forEach(s=>{
+    if(!before.has(s.label.toLowerCase()))
+      changes.push({text:`New or renamed screen in redesign: '${s.label}'`,tag:"label"});
+  });
+  if(appState.screens.after.length<appState.screens.before.length)
+    changes.push({text:`Flow shortened: ${appState.screens.before.length} → ${appState.screens.after.length} screens`,tag:"navigation"});
+  if(!changes.length)changes.push({text:"Layout and styling changes between flows",tag:"visual"});
+  return changes;
+}
+function renderAnalysis(){
+  const a=appState.analysis;
+  const panel=document.getElementById("an-panel");
+  if(a.status==="not_run"){panel.style.display="none";return}
+  panel.style.display="block";
+  const stale=a.status==="stale"
+    ?`<div class="note-bar" style="margin:0 0 10px"><i class="ti ti-alert-triangle"></i><div><b>Screens changed since this analysis.</b> Re-run Analyze flows so the key changes match the current screens.</div></div>`:"";
+  panel.innerHTML=`${stale}<div class="sec-label" style="margin-bottom:6px">Key changes found — these drive the measured engine's hazard model</div>
+    ${a.keyChanges.map(k=>`<div class="kc"><span class="kc-tag kt-${k.tag}">${k.tag.toUpperCase()}</span><div>${esc(k.text)}</div></div>`).join("")}
+    <div style="font-size:9.5px;color:var(--t3);margin-top:8px">label → reduces comprehension hazard · navigation → reduces wrong turns · feedback → reduces silent failures · visual → no hazard effect</div>`;
+}
+
+/* ================================================================
+   03 — PERSONA BUILDER
+   ================================================================ */
+const A11Y_OPTS=[["none","None"],["low_vision","Low vision"],["motor","Motor difficulty"],["screen_reader","Screen reader"],["cognitive","Cognitive load sensitivity"]];
+const LIBRARY=[
+  {name:"Priya R.",age:57,occupation:"School teacher",location:"Kolkata",tech:3,exp:2,a11y:"none",note:"Low digital literacy · first-time user"},
+  {name:"Rajesh M.",age:29,occupation:"Software developer",location:"Bengaluru",tech:9,exp:8,a11y:"none",note:"Expert user · skims aggressively"},
+  {name:"Sunita P.",age:61,occupation:"Retired accountant",location:"Pune",tech:4,exp:15,a11y:"low_vision",note:"55+ · low-vision profile"},
+  {name:"David K.",age:38,occupation:"Operations manager",location:"Mumbai",tech:6,exp:10,a11y:"none",note:"Moderate literacy · domain veteran"},
+  {name:"Marcus T.",age:33,occupation:"Marketing lead",location:"Delhi",tech:7,exp:1,a11y:"none",note:"Digitally fluent · zero domain knowledge"},
+  {name:"Anaya S.",age:24,occupation:"Graduate student",location:"Chennai",tech:8,exp:0,a11y:"screen_reader",note:"Screen-reader user"},
+];
+const ARCHETYPES=[
+  ["Asha","Field engineer","Nagpur",5,6],["Vikram","Plant supervisor","Jamshedpur",4,14],
+  ["Meera","Customer support agent","Hyderabad",7,3],["Joseph","Facilities director","Kochi",5,18],
+  ["Tanvi","Data analyst","Gurgaon",9,2],["Ibrahim","Shift operator","Kanpur",3,9],
+  ["Lakshmi","Procurement officer","Coimbatore",6,11],["Rohan","Intern","Bhopal",8,0],
+];
+let pidCounter=1;
+function mkPersona(base){return {id:"p"+(pidCounter++),name:base.name,age:base.age,occupation:base.occupation,location:base.location,tech:base.tech,exp:base.exp,a11y:base.a11y||"none"}}
+function deriveBehaviour(p){
+  const lit=clamp01(p.tech/10);
+  const dom=clamp01(Math.min(p.exp,15)/15);
+  const patience=clamp01(0.65-(p.age>=55?0.15:0)+lit*0.2);
+  const help=clamp01(0.85-lit*0.5);
+  const sens=p.a11y==="none"?1:(p.a11y==="low_vision"||p.a11y==="screen_reader")?1.5:1.25;
+  return {lit,dom,patience,help,sens};
+}
+function generatePersonas(){
+  const rng=new RNG(hashSeed("gen"+Date.now()%100000));
+  appState.personas=[];
+  const picks=[...ARCHETYPES].sort(()=>rng.random()-0.5).slice(0,5);
+  picks.forEach(([name,occ,loc,tech,exp])=>{
+    appState.personas.push(mkPersona({
+      name,occupation:occ,location:loc,
+      age:Math.round(clamp01(rng.gauss(0.5,0.22))*47)+22,
+      tech:Math.max(1,Math.min(10,Math.round(rng.gauss(tech,1.2)))),
+      exp:Math.max(0,Math.min(20,Math.round(rng.gauss(exp,2)))),
+      a11y:rng.random()<0.15?"low_vision":"none",
+    }));
+  });
+  renderPersonas();
+}
+function addPersona(){appState.personas.push(mkPersona({name:"New persona",age:35,occupation:"",location:"",tech:5,exp:5}));renderPersonas()}
+function addFromLibrary(i){appState.personas.push(mkPersona(LIBRARY[i]));renderPersonas()}
+function removePersona(id){appState.personas=appState.personas.filter(p=>p.id!==id);renderPersonas()}
+function upd(id,field,val){
+  const p=appState.personas.find(x=>x.id===id);if(!p)return;
+  p[field]=["age","tech","exp"].includes(field)?+val:val;
+  renderBehaviour(p);
+  const el=document.getElementById("pv-"+field+"-"+id);
+  if(el)el.textContent=val;
+  stateChanged();
+}
+function renderBehaviour(p){
+  const b=deriveBehaviour(p);
+  const rows=[["Digital literacy",b.lit],["Domain expertise",b.dom],["Patience",b.patience],["Help-seeking",b.help]];
+  document.getElementById("bhv-"+p.id).innerHTML=rows.map(([l,v])=>`
+    <div class="bhv-row"><label>${l}</label>
+      <div class="bhv-track"><div class="bhv-fill" style="width:${v*100}%"></div></div>
+      <span class="bhv-val">${v.toFixed(2)}</span></div>`).join("");
+}
+function renderPersonas(){
+  const g=document.getElementById("pb-grid");
+  g.innerHTML=appState.personas.map(p=>`
+    <div class="pcard">
+      <div class="pcard-hd">
+        <div class="pav">${esc(p.name.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase())}</div>
+        <input value="${esc(p.name)}" onchange="upd('${p.id}','name',this.value);renderPersonas()">
+        <i class="ti ti-stack rm" title="Save to library" onclick="saveToLibrary('${p.id}')"></i>
+        <i class="ti ti-trash rm" onclick="removePersona('${p.id}')"></i>
+      </div>
+      <div class="pfield"><label>Occupation</label><input type="text" value="${esc(p.occupation)}" onchange="upd('${p.id}','occupation',this.value)"></div>
+      <div class="pfield"><label>Location</label><input type="text" value="${esc(p.location)}" onchange="upd('${p.id}','location',this.value)"></div>
+      <div class="pfield"><label>Age</label><input type="range" min="18" max="75" value="${p.age}" oninput="upd('${p.id}','age',this.value)"><span class="pv" id="pv-age-${p.id}">${p.age}</span></div>
+      <div class="pfield"><label>Tech comfort</label><input type="range" min="1" max="10" value="${p.tech}" oninput="upd('${p.id}','tech',this.value)"><span class="pv" id="pv-tech-${p.id}">${p.tech}</span></div>
+      <div class="pfield"><label>Domain years</label><input type="range" min="0" max="20" value="${p.exp}" oninput="upd('${p.id}','exp',this.value)"><span class="pv" id="pv-exp-${p.id}">${p.exp}</span></div>
+      <div class="pfield"><label>Accessibility</label><select onchange="upd('${p.id}','a11y',this.value)">
+        ${A11Y_OPTS.map(([v,l])=>`<option value="${v}"${p.a11y===v?" selected":""}>${l}</option>`).join("")}</select></div>
+      <div class="bhv"><div class="bhv-t">Behaviour preview — how the engine will simulate this person</div>
+        <div id="bhv-${p.id}"></div></div>
+    </div>`).join("");
+  appState.personas.forEach(renderBehaviour);
+  document.getElementById("pb-next").disabled=appState.personas.length===0;
+  document.getElementById("lib").innerHTML=`<div class="sec-label" style="margin-bottom:4px">Persona library</div>`+
+    LIBRARY.map((l,i)=>`<div class="lib-row">
+      <div class="pav">${l.name.split(/\s+/).map(w=>w[0]).join("").slice(0,2)}</div>
+      <div class="lib-info"><div class="lib-n">${l.name} · ${l.age}</div><div class="lib-d">${l.occupation}, ${l.location} · ${l.note}</div></div>
+      <button class="btn sm" onclick="addFromLibrary(${i})"><i class="ti ti-plus"></i>Add</button></div>`).join("");
+  stateChanged();
+}
+
+/* ================================================================
+   MEASURED ENGINE — hazard-based port of lib/synthux/engine.ts
+   ================================================================ */
+function deriveHazards(flowType,keyChanges,screenCount){
+  const optimalSteps=Math.max(3,Math.min(8,screenCount||5));
+  const base={optimalSteps,comprehension:0.42,wrongTurn:0.2,feedbackGap:0.08};
+  if(flowType==="before")return base;
+  const tags=keyChanges.map(k=>k.tag);
+  const n=keyChanges.length;
+  const strength=clamp01(n/5);
+  const labelFix=tags.includes("label")?0.55:0.3;
+  const navFix=tags.includes("navigation")?0.5:0.25;
+  const fbFix=tags.includes("feedback")?0.6:0.25;
+  return {optimalSteps,
+    comprehension:base.comprehension*(1-labelFix*(0.5+0.5*strength)),
+    wrongTurn:base.wrongTurn*(1-navFix*(0.5+0.5*strength)),
+    feedbackGap:base.feedbackGap*(1-fbFix*(0.5+0.5*strength))};
+}
+const CONFUSED=["I'm not sure what this option means.","I expected this to be worded differently.","This doesn't look like what I was trying to do.","Maybe it's under a different section?"];
+const CONFIDENT=["This looks like the right place.","That's clearly what I need.","Straightforward so far."];
+function simulateSession(rng,b,hz,labels){
+  const jit=x=>clamp01(rng.gauss(x,0.12));
+  const lit=jit(b.lit),dom=jit(b.dom);
+  const steps=[];let actions=0,backtracks=0,trapHit=false,usedHelp=false;const confs=[];
+  const name=k=>labels[k-1]||("step "+k);
+  const say=(phase,said,conf)=>{confs.push(conf);steps.push({phase,said,conf:Math.round(conf*100)/100})};
+  const fin=o=>({outcome:o,actions,backtracks,trapHit,usedHelp,
+    meanConf:confs.length?confs.reduce((a,c)=>a+c,0)/confs.length:0,steps});
+  const trapStep=Math.max(2,Math.ceil(hz.optimalSteps*0.6));
+  for(let k=1;k<=hz.optimalSteps;k++){
+    actions++;
+    if(rng.random()<hz.wrongTurn*(1.3-lit)*b.sens){
+      actions+=2;backtracks++;
+      say(name(k),rng.choice(CONFUSED),rng.uniform(0.2,0.45));
+      if(rng.random()>0.4+b.patience*0.5)return fin("abandoned");
+    }
+    if(k===trapStep&&rng.random()<hz.comprehension*(1-dom*0.7)*b.sens){
+      trapHit=true;
+      say(name(k),rng.choice(CONFUSED),rng.uniform(0.15,0.35));
+      actions+=2;backtracks++;
+      if(rng.random()<b.help){
+        usedHelp=true;actions+=3;
+        say("help","Let me check the help section.",rng.uniform(0.3,0.5));
+        if(rng.random()>0.25+lit*0.6)return fin("abandoned");
+        say(name(k),"So that WAS the right option after all.",rng.uniform(0.5,0.7));
+      }else if(rng.random()>b.patience)return fin("abandoned");
+    }else{
+      say(name(k),rng.choice(CONFIDENT),rng.uniform(0.55,0.9));
+    }
+  }
+  if(rng.random()<hz.feedbackGap*(1.4-lit))return fin("failure");
+  if(rng.random()<0.06)return fin("partial");
+  say("done","Done — that's set up.",rng.uniform(0.7,0.95));
+  return fin("success");
+}
+function wilson(k,n,z=1.96){
+  if(n===0)return[0,0];
+  const p=k/n,d=1+z*z/n,c=(p+z*z/(2*n))/d;
+  const h=(z/d)*Math.sqrt(p*(1-p)/n+z*z/(4*n*n));
+  return[Math.max(0,c-h),Math.min(1,c+h)];
+}
+const med=xs=>{if(!xs.length)return 0;const s=[...xs].sort((a,b)=>a-b);const m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
+
+function runVariant(variant,perPersona,seedBase){
+  const keyChanges=variant.changes;
+  const labels=(variant.flow==="after"?appState.screens.after:appState.screens.before).map(s=>s.label);
+  const hz=deriveHazards(variant.flow,keyChanges,labels.length);
+  const personaStats=[];const allSessions=[];
+  appState.personas.forEach(p=>{
+    const b=deriveBehaviour(p);
+    const rng=new RNG(hashSeed(p.id+"|"+variant.key+"|"+seedBase));
+    const sessions=[];
+    for(let i=0;i<perPersona;i++)sessions.push(simulateSession(rng,b,hz,labels));
+    sessions.forEach(s=>allSessions.push({...s,personaId:p.id}));
+    const n=sessions.length;
+    const cnt=o=>sessions.filter(s=>s.outcome===o).length;
+    const wins=cnt("success");
+    const [lo,hi]=wilson(wins,n);
+    const majority=["success","partial","failure","abandoned"].sort((a,b)=>cnt(b)-cnt(a))[0];
+    personaStats.push({persona:p,n,rate:wins/n,lo,hi,
+      outcomes:{success:wins,partial:cnt("partial"),failure:cnt("failure"),abandoned:cnt("abandoned")},
+      medianActions:med(sessions.map(s=>s.actions)),
+      backtrackRate:sessions.filter(s=>s.backtracks>0).length/n,
+      trapRate:sessions.filter(s=>s.trapHit).length/n,
+      helpRate:sessions.filter(s=>s.usedHelp).length/n,
+      transcript:(sessions.find(s=>s.outcome===majority)||sessions[0]).steps,
+      majority});
+  });
+  const N=allSessions.length;
+  const cntAll=o=>allSessions.filter(s=>s.outcome===o).length;
+  const wins=cntAll("success");
+  const trapStep=Math.max(2,Math.ceil(hz.optimalSteps*0.6));
+  const trapLabel=labels[trapStep-1]||("step "+trapStep);
+  const trapRate=allSessions.filter(s=>s.trapHit).length/N;
+  const backtrackRate=allSessions.filter(s=>s.backtracks>0).length/N;
+  const abandonRate=cntAll("abandoned")/N;
+  const helpRate=allSessions.filter(s=>s.usedHelp).length/N;
+  const issues=[];
+  const worstBy=metric=>{
+    const w=[...personaStats].sort((a,b)=>b[metric]-a[metric])[0];
+    return w?{name:w.persona.name,share:w[metric]}:null;
+  };
+  if(trapRate>0.05){
+    const w=worstBy("trapRate");
+    issues.push({sev:trapRate>0.35?"CRITICAL":trapRate>0.15?"HIGH":"MEDIUM",
+      title:`Comprehension: '${trapLabel}'`,
+      statement:`The critical option at '${trapLabel}' was misread by ${pct(trapRate)} of all participants; ${pct(helpRate)} needed Help to recover.`,
+      worst:w,affected:Math.round(trapRate*N),total:N,
+      fix:keyChanges.some(k=>k.tag==="label")?"Verify the renamed label with a comprehension test.":`Rename '${trapLabel}' to the words users actually say.`});
+  }
+  if(backtrackRate>0.25){
+    const w=worstBy("backtrackRate");
+    issues.push({sev:backtrackRate>0.55?"HIGH":"MEDIUM",
+      title:"Navigation uncertainty",
+      statement:`${pct(backtrackRate)} of sessions backtracked at least once before finding the right area.`,
+      worst:w,affected:Math.round(backtrackRate*N),total:N,
+      fix:"Surface the payment/setup entry point one level higher."});
+  }
+  if(abandonRate>0.1){
+    const w=worstBy("trapRate");
+    issues.push({sev:abandonRate>0.3?"CRITICAL":"HIGH",
+      title:"Abandonment before completion",
+      statement:`${pct(abandonRate)} of participants gave up before completing the task.`,
+      worst:w,affected:cntAll("abandoned"),total:N,
+      fix:"Add reassurance and an explicit undo path at the risky step."});
+  }
+  issues.sort((a,b)=>({CRITICAL:3,HIGH:2,MEDIUM:1,LOW:0}[b.sev]-{CRITICAL:3,HIGH:2,MEDIUM:1,LOW:0}[a.sev]));
+  return {n:N,rate:wins/N,ci:wilson(wins,N),
+    counts:{SUCCESS:wins,PARTIAL:cntAll("partial"),FAILURE:cntAll("failure"),ABANDONED:cntAll("abandoned")},
+    median:med(allSessions.map(s=>s.actions)),optimal:hz.optimalSteps,
+    backtrackRate,abandonRate,personaStats,issues};
+}
+
+/* ================================================================
+   RUN + RESULTS
+   ================================================================ */
+let STUDY=null,runCount=0,activeVariant=0,running=false;
+
+function variantDefs(){
+  const kc=appState.analysis.keyChanges;
+  if(flowMode==="single")return[{key:"baseline",label:"Current design",flow:"before",changes:[]}];
+  if(flowMode==="compare")return[
+    {key:"baseline",label:"Before — current design",flow:"before",changes:[]},
+    {key:"after",label:"After — redesign",flow:"after",changes:kc}];
+  return[
+    {key:"baseline",label:"A — current design",flow:"before",changes:[]},
+    {key:"after",label:"B — full redesign",flow:"after",changes:kc},
+    {key:"labels",label:"C — label fixes only",flow:"after",changes:kc.filter(k=>k.tag==="label")}];
+}
+function updateRunStats(){
+  const per=+document.getElementById("rp-n-slider").value;
+  document.getElementById("rp-n-val").textContent=per;
+  document.getElementById("rp-p").textContent=appState.personas.length;
+  document.getElementById("rp-m").textContent=selectedMethods.size||1;
+  document.getElementById("rp-f").textContent=flowModes[flowMode]||1;
+  document.getElementById("rp-c").textContent="~"+(per*appState.personas.length*(flowModes[flowMode]||1));
+  document.getElementById("rp-chips").innerHTML=appState.personas.map(p=>
+    `<div class="rpc"><div class="rpc-av" style="background:var(--cg);color:var(--c)">${esc(p.name.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase())}</div>${esc(p.name)}&nbsp;<small>· tech ${p.tech}/10 · ${p.exp}y domain</small></div>`).join("")
+    ||`<div style="font-size:10px;color:var(--a)">No personas yet — build your panel in step 3 first.</div>`;
+}
+function showRun(){
+  if(appState.personas.length===0){gs("personas");return}
+  gs("testing");
+  document.getElementById("run-panel").style.display="block";
+  updateRunStats();
+  document.getElementById("run-panel").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function startRun(){
+  if(running)return;
+  if(appState.personas.length===0){gs("personas");return}
+  running=true;
+  const btn=document.getElementById("start-btn");
+  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i>Running...';
+  const per=+document.getElementById("rp-n-slider").value;
+  const variants=variantDefs();
+  const total=per*appState.personas.length*variants.length;
+  const seq=[
+    ["Reading "+(appState.screens.before.length+appState.screens.after.length)+" screens with "+modelAssignments.vision+"...","ais-curr","ais-todo","ais-todo","ais-todo",15],
+    ["Simulating "+total+" participant sessions...","ais-done","ais-curr","ais-todo","ais-todo",48],
+    ["Measuring task success, backtracks, confidence...","ais-done","ais-done","ais-curr","ais-todo",76],
+    ["Aggregating issues across "+appState.personas.length+" persona panels...","ais-done","ais-done","ais-done","ais-curr",94],
+  ];
+  const lbl=document.getElementById("rp-lbl"),prog=document.getElementById("rp-prog"),chips=document.getElementById("rp-chips-inner");
+  let i=0;
+  function next(){
+    if(i>=seq.length){
+      const seedBase=7+runCount*13;runCount++;
+      STUDY=variants.map((v,idx)=>({...v,res:runVariant(v,per,seedBase+idx*101)}));
+      activeVariant=0;
+      bumpTotals();
+      lbl.innerHTML='All sessions complete — <span>opening KPI matrix</span>';
+      prog.style.width="100%";
+      chips.innerHTML='<span class="ais ais-done">reading</span><span class="ais ais-done">simulate</span><span class="ais ais-done">measure</span><span class="ais ais-done">aggregate</span>';
+      btn.innerHTML='<i class="ti ti-check"></i>Done';btn.disabled=false;running=false;
+      renderKPI();renderReport();renderStepnav();
+      setTimeout(()=>gs("kpi"),500);
+      return;
+    }
+    const s=seq[i];
+    lbl.textContent=s[0];prog.style.width=s[5]+"%";
+    chips.innerHTML=`<span class="ais ${s[1]}">reading</span><span class="ais ${s[2]}">simulate</span><span class="ais ${s[3]}">measure</span><span class="ais ${s[4]}">aggregate</span>`;
+    i++;setTimeout(next,800+Math.random()*400);
+  }
+  next();
+}
+
+/* ---------- KPI MATRIX ---------- */
+function outcomeBar(res){
+  const order=[["SUCCESS","seg-success","Completed"],["PARTIAL","seg-partial","Partial"],["FAILURE","seg-failed","Silent failure"],["ABANDONED","seg-abandoned","Gave up"]];
+  const segs=order.filter(([k])=>res.counts[k]>0).map(([k,cls])=>`<div class="sb-seg ${cls}" style="flex:${res.counts[k]} 0 0"></div>`).join("");
+  const legend=order.map(([k,cls,label])=>{
+    const col=cls==="seg-success"?"var(--g)":cls==="seg-partial"?"var(--y)":cls==="seg-failed"?"var(--r)":"var(--b3)";
+    return `<span><span class="sw" style="background:${col}"></span>${label} <b>${res.counts[k]}</b></span>`;}).join("");
+  return `<div class="stackbar">${segs}</div><div class="v-legend">${legend}</div>`;
+}
+function renderKPI(){
+  if(!STUDY)return;
+  const base=STUDY[0].res;
+  const bestIdx=STUDY.reduce((bi,v,i)=>v.res.rate>STUDY[bi].res.rate?i:bi,0);
+  const cards=STUDY.map((v,i)=>{
+    const r=v.res;const delta=i===0?null:r.rate-base.rate;
+    return `<div class="vcard${STUDY.length>1&&i===bestIdx?" best":""}">
+      <div class="v-label">${esc(v.label)}${STUDY.length>1&&i===bestIdx?' <span style="color:var(--g)">★ best</span>':""}</div>
+      <div class="v-hero-row"><span class="v-hero">${pct(r.rate)}</span><span class="v-hero-sub">task success</span>
+        ${delta!==null?`<span class="delta ${delta>0.001?"up":delta<-0.001?"down":"flat"}">${pp(delta)}</span>`:""}</div>
+      <div class="v-ci">95% CI ${pct(r.ci[0])}–${pct(r.ci[1])} · n=${r.n}</div>
+      ${outcomeBar(r)}
+      <div class="v-stats"><span>Median actions <b>${r.median}</b></span><span>Optimal <b>${r.optimal}</b></span>
+        <span>Backtracked <b>${pct(r.backtrackRate)}</b></span><span>Abandoned <b>${pct(r.abandonRate)}</b></span></div>
+    </div>`;}).join("");
+  const varCols=STUDY.map(v=>`<th>${esc(STUDY.length>1?v.label.split(" — ")[0]:"Success")}</th>`).join("");
+  const deltaCol=STUDY.length===2?"<th>Δ</th>":"";
+  const rows=appState.personas.map(p=>{
+    const cells=STUDY.map(v=>{
+      const c=v.res.personaStats.find(x=>x.persona.id===p.id);
+      if(!c)return "<td>—</td>";
+      return `<td><span class="cell-bar" style="width:${Math.round(c.rate*46)}px"></span>${pct(c.rate)}</td>`;}).join("");
+    let d="";
+    if(STUDY.length===2){
+      const a=STUDY[0].res.personaStats.find(x=>x.persona.id===p.id),b=STUDY[1].res.personaStats.find(x=>x.persona.id===p.id);
+      d=a&&b?`<td class="${b.rate-a.rate>0.001?"best-v":b.rate-a.rate<-0.001?"worst-v":""}">${pp(b.rate-a.rate)}</td>`:"<td>—</td>";
+    }
+    const c0=STUDY[0].res.personaStats.find(x=>x.persona.id===p.id);
+    return `<tr><td>${esc(p.name)}<div style="font-size:9px;color:var(--t3);font-weight:400">${esc(p.occupation||"—")} · tech ${p.tech}/10 · panel n=${c0?c0.n:0}</div></td>${cells}${d}
+      <td>${c0?c0.medianActions:"—"}</td><td>${c0?pct(c0.backtrackRate):"—"}</td></tr>`;}).join("");
+  document.getElementById("kpi-content").innerHTML=`
+    <div class="note-bar"><i class="ti ti-alert-triangle"></i><div><b>Synthetic study — model-predicted behaviour, not real users.</b> Every number below is measured from ${STUDY.reduce((a,v)=>a+v.res.n,0)} simulated sessions built from YOUR uploaded flow and YOUR persona panel (uncalibrated estimates).</div></div>
+    <div class="sec-label">Measured KPIs — ${esc(document.getElementById("su-name").value)}</div>
+    <div class="vgrid">${cards}</div>
+    <div class="kpi-panel">
+      <div class="kpi-panel-hd"><i class="ti ti-table"></i><span>Persona × KPI matrix</span><small>median actions &amp; backtracking from baseline flow</small></div>
+      <div class="kpi-table-wrap"><table class="kpi-table">
+        <thead><tr><th>Persona</th>${varCols}${deltaCol}<th>Median actions</th><th>Backtracked</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+    </div>
+    <div class="ia" style="border-top:none;margin-top:0">
+      <button class="btn" onclick="gs('testing')"><i class="ti ti-arrow-left"></i>Back to Testing</button>
+      <button class="btn primary" onclick="gs('report')">Open Full Report<i class="ti ti-arrow-right"></i></button>
+    </div>`;
+}
+
+/* ---------- REPORT ---------- */
+function renderReport(){
+  if(!STUDY)return;
+  const v=STUDY[activeVariant],r=v.res;
+  const tabs=STUDY.length>1?`<div class="variant-tabs">${STUDY.map((x,i)=>`<button class="vt${i===activeVariant?" active":""}" onclick="activeVariant=${i};renderReport()">${esc(x.label)}</button>`).join("")}</div>`:"";
+  const sevColor={CRITICAL:"var(--r)",HIGH:"var(--o)",MEDIUM:"var(--y)",LOW:"var(--b3)"};
+  const issues=r.issues.length?r.issues.map((iss,i)=>`
+    <div class="iss">
+      <div class="iss-hd"><span class="sevb sev-${iss.sev}">${iss.sev}</span>
+        <span class="iss-t">${i+1}. ${esc(iss.title)}</span>
+        <span class="iss-meta">${iss.affected}/${iss.total} sessions</span></div>
+      <div class="iss-meter"><div style="width:${(iss.affected/iss.total)*100}%;background:${sevColor[iss.sev]}"></div></div>
+      <div class="iss-s">${esc(iss.statement)}</div>
+      ${iss.worst?`<div class="iss-cohort">Hit hardest: <b>${esc(iss.worst.name)}</b> — ${pct(iss.worst.share)} of that panel.</div>`:""}
+      <div class="iss-fix"><i class="ti ti-bulb"></i><div><b>Recommended fix:</b> ${esc(iss.fix)}</div></div>
+    </div>`).join(""):'<div class="empty-state" style="padding:20px"><div>No measured issues in this variant — the flow tested clean.</div></div>';
+  const ptList=r.personaStats.map((c,i)=>`
+    <button class="ptr${i===0?" active":""}" onclick="showPanel(${i},this)">
+      <span class="ptr-id">${esc(c.persona.name)}</span>
+      <span class="ptr-cohort">${esc(c.persona.occupation||"—")}</span>
+      <span class="outb out-${c.majority==="success"?"SUCCESS":c.majority==="abandoned"?"ABANDONED":c.majority==="failure"?"FAILURE":"PARTIAL"}">${pct(c.rate)}</span>
+    </button>`).join("");
+  document.getElementById("report-content").innerHTML=`
+    <div class="note-bar"><i class="ti ti-alert-triangle"></i><div><b>Synthetic research report.</b> Findings ranked by measured severity; treat as predictions to verify with real users.</div></div>
+    ${tabs}
+    <div class="sec-label">Primary issues — ranked by measured severity</div>
+    ${issues}
+    <div class="sec-label" style="margin-top:18px">Persona panels — representative sessions</div>
+    <div class="pt-wrap"><div class="pt-grid2">
+      <div class="pt-list2">${ptList}</div>
+      <div class="tsc" id="tsc"></div>
+    </div></div>
+    <div class="ia" style="border-top:none;margin-top:0">
+      <button class="btn" onclick="gs('kpi')"><i class="ti ti-arrow-left"></i>KPI Matrix</button>
+      <button class="btn primary" onclick="showRun()"><i class="ti ti-refresh"></i>Re-run Tests</button>
+    </div>`;
+  showPanel(0,null);
+}
+function showPanel(i,el){
+  const c=STUDY[activeVariant].res.personaStats[i];
+  if(el){document.querySelectorAll(".ptr").forEach(x=>x.classList.remove("active"));el.classList.add("active")}
+  const o=c.outcomes;
+  const steps=c.transcript.map(x=>`
+    <div class="tstep"><span class="tstep-time">·</span>
+      <div><div class="tstep-act"><span class="tstep-scr">${esc(x.phase)}</span></div>
+        <div class="tstep-say">“${esc(x.said)}”</div>
+        <div class="tconf"><span class="tconf-track"><span class="tconf-fill" style="width:${x.conf*100}%"></span></span>
+        <span class="tconf-l">conf ${Math.round(x.conf*100)}%</span></div></div>
+    </div>`).join("");
+  document.getElementById("tsc").innerHTML=`
+    <div class="tsc-hd"><h3>${esc(c.persona.name)}</h3><span class="outb out-SUCCESS">${pct(c.rate)} success</span></div>
+    <div class="tsc-meta">panel n=${c.n} · 95% CI ${pct(c.lo)}–${pct(c.hi)} · ✓${o.success} ◐${o.partial} ✗${o.failure} ⊘${o.abandoned}
+      · median ${c.medianActions} actions · ${pct(c.backtrackRate)} backtracked · ${pct(c.helpRate)} used Help</div>
+    <div class="detail-title" style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Representative session (majority outcome: ${c.majority})</div>
+    ${steps}`;
+}
+
+/* ---------- modal (custom tests) ---------- */
+function openModal(){document.getElementById("modal").classList.add("open")}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+function addCT(){
+  const name=document.getElementById("ct-name").value.trim();
+  const desc=document.getElementById("ct-desc").value.trim();
+  const model=document.getElementById("ct-model").value;
+  if(!name)return;
+  const r=document.createElement("div");r.className="ct-row";
+  r.innerHTML=`<div class="ct-icon"><i class="ti ti-checklist"></i></div><div class="ct-info"><div class="ct-n">${esc(name)}</div><div class="ct-d">${esc(desc)||"Custom evaluation"}</div></div><div class="ct-model">${model}</div><i class="ti ti-trash ct-del" onclick="this.closest('.ct-row').remove()"></i>`;
+  document.getElementById("ct-list").appendChild(r);
+  document.getElementById("ct-name").value="";document.getElementById("ct-desc").value="";
+  closeModal();
+}
+
+/* ---------- workspace screens: dashboard / projects / library ---------- */
+/* Multi-project registry: every project keeps its own screens, analysis,
+   personas, and flow mode. Selecting a project switches the whole
+   workspace — sidebar "Active" label, topbar crumb, wizard state. */
+const R_KEY="uxkpi-registry-v1";
+const T_KEY="uxkpi-totals";
+function seedProjects(){
+  return {activeId:"pr1",projects:[
+    {id:"pr1",name:"HMC Dashboard Revamp",industry:"Enterprise Software",
+     desc:"Operators struggle to change equipment alert thresholds. The redesign renames the settings entry point, flattens the navigation, and adds a confirmation state.",
+     flowMode:"compare",archived:false,
+     screens:{before:[],after:[]},analysis:{status:"not_run",keyChanges:[]},personas:[]},
+    {id:"pr2",name:"KhetMitra Onboarding",industry:"Consumer / Utilities",
+     desc:"First-time farmer onboarding for the KhetMitra app: reduce drop-off between language selection and farm profile completion.",
+     flowMode:"compare",archived:false,
+     screens:{before:["Welcome","Language","Phone number","OTP","Farm details","Crop selection","Home"].map((l,i)=>({label:l,seq:i+1,img:null})),
+              after:["Welcome","Language & phone","OTP","Farm profile","Home"].map((l,i)=>({label:l,seq:i+1,img:null}))},
+     analysis:{status:"completed",keyChanges:[
+       {text:"Language and phone-number steps merged — one screen fewer before OTP",tag:"navigation"},
+       {text:"Crop names now use local plain-language terms instead of agronomy vocabulary",tag:"label"},
+       {text:"Progress indicator added across onboarding",tag:"feedback"}]},
+     personas:[
+       {id:"k1",name:"Bhairav S.",age:52,occupation:"Cotton farmer",location:"Wardha",tech:2,exp:20,a11y:"none"},
+       {id:"k2",name:"Savita D.",age:34,occupation:"Dairy farmer",location:"Anand",tech:5,exp:12,a11y:"none"},
+       {id:"k3",name:"Kiran P.",age:26,occupation:"Agri-input dealer",location:"Nashik",tech:8,exp:5,a11y:"none"}]},
+    {id:"pr3",name:"Billing Portal Audit",industry:"Enterprise Software",
+     desc:"Baseline audit of the vendor billing portal before any redesign work.",
+     flowMode:"single",archived:false,
+     screens:{before:[],after:[]},analysis:{status:"not_run",keyChanges:[]},personas:[]},
+    {id:"pr4",name:"Field App IA Study",industry:"Enterprise Software",
+     desc:"Archived: information-architecture study for the field service app.",
+     flowMode:"compare",archived:true,
+     screens:{before:["Jobs","Job detail","Parts","Checklist","Sign-off"].map((l,i)=>({label:l,seq:i+1,img:null})),after:[]},
+     analysis:{status:"not_run",keyChanges:[]},personas:[]},
+  ]};
+}
+let REG=null;
+function regLoad(){
+  try{REG=JSON.parse(localStorage.getItem(R_KEY)||"null")}catch{REG=null}
+  if(!REG||!REG.projects||!REG.projects.length){
+    REG=seedProjects();
+    // migrate any pre-registry single-project state into project 1
+    try{
+      const old=JSON.parse(localStorage.getItem("uxkpi-lab-v2")||"null");
+      if(old){
+        const p=REG.projects[0];
+        if(old.name)p.name=old.name;
+        if(old.screens)p.screens={before:(old.screens.before||[]).map(s=>({...s,img:null})),after:(old.screens.after||[]).map(s=>({...s,img:null}))};
+        if(old.analysis)p.analysis=old.analysis;
+        if(old.personas)p.personas=old.personas;
+      }
+    }catch{}
+    regSave();
+  }
+}
+function regSave(){try{localStorage.setItem(R_KEY,JSON.stringify(REG))}catch{}}
+function activeProject(){return REG.projects.find(p=>p.id===REG.activeId)||REG.projects[0]}
+function syncActiveFromWorkspace(){
+  const p=activeProject();
+  p.name=document.getElementById("su-name").value;
+  p.industry=document.getElementById("su-industry").value;
+  p.desc=document.getElementById("su-desc").value;
+  p.flowMode=flowMode;
+  p.screens={before:appState.screens.before.map(s=>({label:s.label,seq:s.seq,img:null})),
+             after:appState.screens.after.map(s=>({label:s.label,seq:s.seq,img:null}))};
+  p.analysis=appState.analysis;
+  p.personas=appState.personas;
+  regSave();
+}
+function hydrateWorkspace(){
+  const p=activeProject();
+  document.getElementById("su-name").value=p.name;
+  document.getElementById("su-industry").value=p.industry;
+  document.getElementById("su-desc").value=p.desc;
+  appState.screens={before:p.screens.before.map(s=>({...s})),after:p.screens.after.map(s=>({...s}))};
+  appState.analysis=p.analysis;
+  appState.personas=p.personas;
+  appState.sample=/PowerGrid|mandate/i.test((p.screens.before[3]||{}).label||"");
+  setFMQuiet(p.flowMode||"single");
+  renderShots("before");renderShots("after");renderAnalysis();uploadChangedQuiet();renderPersonas();
+  updateChrome();
+}
+function setFMQuiet(mode){
+  flowMode=mode;
+  ["single","compare","multi"].forEach(m=>document.getElementById("fm-"+m).classList.toggle("sel",m===mode));
+}
+function uploadChangedQuiet(){
+  const ok=appState.screens.before.length>0&&appState.screens.after.length>0;
+  document.getElementById("an-btn").disabled=!ok;
+  document.getElementById("up-next").disabled=appState.analysis.status!=="completed";
+}
+function updateChrome(){
+  const p=activeProject();
+  const short=p.name.length>18?p.name.slice(0,17)+"…":p.name;
+  document.getElementById("active-label").textContent="Active: "+(short||"Untitled");
+  document.getElementById("tb-project").textContent=p.name||"Untitled project";
+  const badge=document.getElementById("nav-projects").querySelector(".ni-b");
+  if(badge)badge.textContent=REG.projects.length;
+}
+function switchProject(id){
+  if(id===REG.activeId){gs(furthestStep());return}
+  syncActiveFromWorkspace();
+  REG.activeId=id;regSave();
+  STUDY=null;activeVariant=0;
+  document.getElementById("kpi-content").innerHTML='<div class="empty-state"><i class="ti ti-chart-bar"></i><div>No results yet in this project — run tests from the Testing Engine.</div></div>';
+  document.getElementById("report-content").innerHTML='<div class="empty-state"><i class="ti ti-file-analytics"></i><div>No report yet in this project — run tests first.</div></div>';
+  hydrateWorkspace();
+  gs("dashboard");
+}
+function projStatus(p,isActive){
+  if(p.archived)return["ARCHIVED","ch-grey"];
+  if(isActive&&STUDY)return["KPI READY","ch-green"];
+  if(p.personas.length)return["TESTING","ch-blue"];
+  if(p.analysis.status==="completed")return["PERSONAS","ch-blue"];
+  if(p.screens.before.length||p.screens.after.length)return["UPLOAD","ch-amber"];
+  return["SETUP","ch-amber"];
+}
+function totals(){try{return JSON.parse(localStorage.getItem(T_KEY)||'{"sessions":0,"lastDelta":null,"runs":0}')}catch{return{sessions:0,lastDelta:null,runs:0}}}
+function bumpTotals(){
+  const t=totals();
+  t.sessions+=STUDY.reduce((a,v)=>a+v.res.n,0);
+  t.runs++;
+  if(STUDY.length>1)t.lastDelta=STUDY[1].res.rate-STUDY[0].res.rate;
+  try{localStorage.setItem(T_KEY,JSON.stringify(t))}catch{}
+}
+function furthestStep(){
+  if(STUDY)return "kpi";
+  if(appState.personas.length)return "testing";
+  if(appState.analysis.status==="completed")return "personas";
+  if(appState.screens.before.length||appState.screens.after.length)return "upload";
+  return "setup";
+}
+function stepChips(){
+  const cur=furthestStep();
+  const curIdx=STEPS_DEF.findIndex(s=>s.key===cur);
+  return STEPS_DEF.map((s,i)=>`<span class="db-chip ${i<curIdx?"done":i===curIdx?"curr":""}">${s.label}</span>`).join("");
+}
+function projCard(p){
+  const isActive=p.id===REG.activeId;
+  const [st,cls]=projStatus(p,isActive);
+  const t=totals();
+  return `<div class="pj-card${isActive?" live":""}" onclick="switchProject('${p.id}')" title="${isActive?"Active project — click to resume":"Click to make this the active project"}">
+    <div class="pj-n">${esc(p.name)}</div>
+    <div class="pj-m">${esc(p.industry)} · ${p.personas.length} personas${isActive?" · active":""}</div>
+    <span class="chip ${cls}">${st}</span>
+    ${isActive&&t.lastDelta!==null&&t.lastDelta>0?`<span class="chip ch-green">Δ ${pp(t.lastDelta)}</span>`:""}
+  </div>`;
+}
+function renderDashboard(){
+  const t=totals();
+  const p=activeProject();
+  const h=new Date().getHours();
+  const greet=h<12?"Good morning":h<17?"Good afternoon":"Good evening";
+  const cur=furthestStep();
+  const curLabel=(STEPS_DEF.find(s=>s.key===cur)||{}).label||"Setup";
+  const activeCount=REG.projects.filter(x=>!x.archived).length;
+  const attention=[];
+  if(appState.analysis.status==="stale")attention.push({icon:"ti-alert-triangle",warn:true,html:"<b>Analysis is stale</b> — screens changed since the last run. Re-analyze.",go:"upload"});
+  if(STUDY)attention.push({icon:"ti-chart-bar",html:`<b>KPI matrix ready</b> — ${esc(p.name)}, success ${pct(STUDY[STUDY.length-1].res.rate)}${STUDY.length>1?" ("+pp(STUDY[STUDY.length-1].res.rate-STUDY[0].res.rate)+")":""}`,go:"kpi"});
+  if(!appState.personas.length)attention.push({icon:"ti-wand",html:"<b>Build your persona panel</b> — testing needs at least one persona.",go:"personas"});
+  if(appState.analysis.status==="not_run"&&!appState.screens.before.length)attention.push({icon:"ti-upload",html:"<b>Upload screens</b> — or load the sample flow to try the pipeline.",go:"upload"});
+  if(!attention.length)attention.push({icon:"ti-check",html:"<b>All caught up.</b> Re-run tests any time — each run is a fresh measured panel.",go:"testing"});
+  document.getElementById("db-content").innerHTML=`
+    <div class="db-wrap">
+      <div>
+        <div class="db-greet">${greet}, Anupam</div>
+        <div class="db-sub">${t.runs?`${t.sessions.toLocaleString()} measured sessions across ${t.runs} run${t.runs===1?"":"s"} on this device`:"No runs yet — the engine is warmed up and waiting"}</div>
+        <div class="db-stats">
+          <div class="db-stat"><div class="v">${activeCount}</div><div class="l">Active projects</div><div class="d">${REG.projects.length-activeCount} archived</div></div>
+          <div class="db-stat"><div class="v">${t.sessions.toLocaleString()}</div><div class="l">Panels simulated</div><div class="d ${t.sessions?"up":""}">${t.sessions?"measured, this device":"—"}</div></div>
+          <div class="db-stat"><div class="v" ${t.lastDelta>0?'style="color:var(--g)"':""}>${t.lastDelta===null?"—":pp(t.lastDelta)}</div><div class="l">Last UX delta</div><div class="d">${t.lastDelta===null?"run a Before vs After":"measured, latest run"}</div></div>
+          <div class="db-stat"><div class="v">62%</div><div class="l">Monthly quota</div><div class="db-meter"><div style="width:62%"></div></div></div>
+        </div>
+        <div class="db-cont">
+          <div class="db-cont-t">Continue where you left off</div>
+          <div class="db-cont-row">
+            <div style="flex:1;min-width:0">
+              <div class="db-cont-name">${esc(p.name)}</div>
+              <div class="db-cont-sub">${esc(p.industry)} · ${flowMode==="single"?"Single flow":flowMode==="compare"?"Before vs After":"Multi-variant"}</div>
+              <div class="db-chips">${stepChips()}</div>
+            </div>
+            <button class="btn primary" onclick="gs('${cur}')"><i class="ti ti-player-play"></i>Resume ${curLabel.toLowerCase()}</button>
+          </div>
+        </div>
+        <div class="sec-label">All projects — click one to make it active</div>
+        <div class="pj-grid">${REG.projects.map(projCard).join("")}</div>
+      </div>
+      <div>
+        <div class="rail-card">
+          <div class="rail-t">Needs your attention</div>
+          ${attention.map(a=>`<div class="rail-item${a.warn?" warn":""}" onclick="gs('${a.go}')"><i class="ti ${a.icon}"></i><div>${a.html}</div></div>`).join("")}
+        </div>
+        <div class="rail-card">
+          <div class="rail-t">Connected services</div>
+          <div class="svc-row">Simulation engine <span class="chip ch-green">LIVE</span></div>
+          <div class="svc-row">Supabase <span class="chip ch-grey">MOCK</span></div>
+          <div class="svc-row">Claude <span class="chip ch-grey">MOCK</span></div>
+          <div class="svc-row">Gemini vision <span class="chip ch-grey">MOCK</span></div>
+          <div style="font-size:9px;color:var(--t4);margin-top:6px">Prototype build — external services are mocked; the measured engine runs for real in your browser.</div>
+        </div>
+      </div>
+    </div>`;
+}
+function newProject(){
+  const name=prompt("Name the new project:","Untitled project");
+  if(name===null)return;
+  syncActiveFromWorkspace();
+  const id="pr"+Date.now().toString(36);
+  REG.projects.unshift({id,name:name.trim()||"Untitled project",industry:"Enterprise Software",desc:"",
+    flowMode:"single",archived:false,
+    screens:{before:[],after:[]},analysis:{status:"not_run",keyChanges:[]},personas:[]});
+  REG.activeId=id;regSave();
+  STUDY=null;
+  document.getElementById("kpi-content").innerHTML='<div class="empty-state"><i class="ti ti-chart-bar"></i><div>No results yet in this project — run tests from the Testing Engine.</div></div>';
+  document.getElementById("report-content").innerHTML='<div class="empty-state"><i class="ti ti-file-analytics"></i><div>No report yet in this project — run tests first.</div></div>';
+  hydrateWorkspace();
+  gs("setup");
+}
+function renderProjects(){
+  document.getElementById("pj-content").innerHTML=`
+    <div class="sec-label">Projects — click a card to switch the active project</div>
+    <div class="pj-grid">
+      <div class="pj-card pj-new" onclick="newProject()"><i class="ti ti-plus"></i><span>New project</span></div>
+      ${REG.projects.filter(p=>!p.archived).map(projCard).join("")}
+    </div>
+    <div class="sec-label">Archived</div>
+    <div class="pj-grid">${REG.projects.filter(p=>p.archived).map(projCard).join("")||'<div style="font-size:10.5px;color:var(--t3)">Nothing archived.</div>'}</div>
+    <div style="font-size:10px;color:var(--t3);margin-top:10px">Every project keeps its own screens, analysis, and persona panel. Run results live per session; re-run any project's tests after switching to it.</div>`;
+}
+const CL_KEY="uxkpi-custom-lib";
+function customLib(){try{return JSON.parse(localStorage.getItem(CL_KEY)||"[]")}catch{return[]}}
+function saveToLibrary(id){
+  const p=appState.personas.find(x=>x.id===id);if(!p)return;
+  const lib=customLib();
+  lib.push({name:p.name,age:p.age,occupation:p.occupation,location:p.location,tech:p.tech,exp:p.exp,a11y:p.a11y,note:"Saved from "+activeProject().name});
+  try{localStorage.setItem(CL_KEY,JSON.stringify(lib))}catch{}
+  if(currentScreen==="library")renderLibrary();
+}
+function dropFromLibrary(i){
+  const lib=customLib();lib.splice(i,1);
+  try{localStorage.setItem(CL_KEY,JSON.stringify(lib))}catch{}
+  renderLibrary();
+}
+function addFromLibraryObj(o){
+  appState.personas.push(mkPersona(o));
+  renderPersonas();gs("personas");
+}
+function libCard(l,actions){
+  const b=deriveBehaviour({tech:l.tech,exp:l.exp,age:l.age,a11y:l.a11y||"none"});
+  const bars=[["Digital literacy",b.lit],["Domain expertise",b.dom],["Patience",b.patience],["Help-seeking",b.help]];
+  return `<div class="libp-card">
+    <div class="libp-hd"><div class="pav">${esc(l.name.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase())}</div>
+      <div style="flex:1;min-width:0"><div class="libp-n">${esc(l.name)} · ${l.age}</div>
+      <div class="libp-d">${esc(l.occupation||"—")}${l.location?", "+esc(l.location):""}</div></div></div>
+    ${l.note?`<div class="libp-note">${esc(l.note)}</div>`:""}
+    <div class="libp-attrs">
+      <span class="chip ch-grey">tech ${l.tech}/10</span>
+      <span class="chip ch-grey">${l.exp}y domain</span>
+      ${l.a11y&&l.a11y!=="none"?`<span class="chip ch-amber">${l.a11y.replace("_"," ")}</span>`:""}
+    </div>
+    ${bars.map(([lab,v])=>`<div class="bhv-row"><label>${lab}</label>
+      <div class="bhv-track"><div class="bhv-fill" style="width:${v*100}%"></div></div>
+      <span class="bhv-val">${v.toFixed(2)}</span></div>`).join("")}
+    <div class="libp-foot">${actions}</div>
+  </div>`;
+}
+function renderLibrary(){
+  const saved=customLib();
+  document.getElementById("libp-content").innerHTML=`
+    <div class="sec-label">Persona library — built-in archetypes</div>
+    <div style="font-size:10.5px;color:var(--t2);margin-bottom:12px;max-width:76ch">Each card shows the <b>behaviour profile</b> the engine derives from the persona's attributes. Adding a persona copies it into the active project's panel (<b>${esc(activeProject().name)}</b>) — edits there never change the library original.</div>
+    <div class="libp-grid">
+      ${LIBRARY.map((l,i)=>libCard(l,`<button class="btn sm primary" onclick="addFromLibraryObj(LIBRARY[${i}])"><i class="ti ti-plus"></i>Add to panel</button>`)).join("")}
+    </div>
+    <div class="sec-label">Your saved personas</div>
+    ${saved.length?`<div class="libp-grid">${saved.map((l,i)=>libCard(l,
+      `<button class="btn sm primary" onclick="addFromLibraryObj(customLib()[${i}])"><i class="ti ti-plus"></i>Add to panel</button>
+       <button class="btn sm" onclick="dropFromLibrary(${i})"><i class="ti ti-trash"></i></button>`)).join("")}</div>`
+    :`<div class="empty-state" style="padding:26px"><i class="ti ti-stack"></i><div>Save personas you'd reuse — the <i class="ti ti-stack"></i> icon on any Persona Builder card puts them here.</div></div>`}`;
+}
+
+/* ---------- step nav + routing ---------- */
+const STEPS_DEF=[
+  {n:1,key:"setup",label:"Setup"},{n:2,key:"upload",label:"Upload"},{n:3,key:"personas",label:"Personas"},
+  {n:4,key:"testing",label:"Testing"},{n:5,key:"kpi",label:"KPI Matrix"},{n:6,key:"report",label:"Report"}];
+let currentScreen="setup";
+function stepDone(key){
+  if(key==="setup")return document.getElementById("su-name").value.trim().length>0;
+  if(key==="upload")return appState.analysis.status==="completed";
+  if(key==="personas")return appState.personas.length>0;
+  if(key==="testing"||key==="kpi")return !!STUDY;
+  if(key==="report")return !!STUDY&&currentScreen==="report";
+  return false;
+}
+function renderStepnav(){
+  document.getElementById("stepnav").innerHTML=STEPS_DEF.map((s,i)=>{
+    const done=stepDone(s.key)&&s.key!==currentScreen;
+    const curr=s.key===currentScreen;
+    const dot=curr?"sd-curr":done?"sd-done":"sd-todo";
+    const lbl=curr?"curr":done?"done":"todo";
+    const line=i<STEPS_DEF.length-1?`<div class="sline${stepDone(s.key)?" done":""}"></div>`:"";
+    return `<div class="sn" onclick="gs('${s.key}')"><div class="sdot ${dot}">${s.n}</div><div class="slbl ${lbl}">${s.label}</div></div>${line}`;
+  }).join("");
+}
+const SCREEN_META={
+  dashboard:["Dashboard","","nav-dashboard"],
+  projects:["Projects","","nav-projects"],
+  library:["Persona Library","","nav-library"],
+  setup:["Project Setup","· Step 1 of 6",null],
+  upload:["Upload Screens","· Step 2 of 6","nav-upload"],
+  personas:["Persona Builder","· Step 3 of 6","nav-personas"],
+  testing:["Testing Engine","· Step 4 of 6","nav-testing"],
+  kpi:["KPI Matrix","· Step 5 of 6","nav-kpi"],
+  report:["Report","· Step 6 of 6","nav-report"],
+  ph:["UX KPI Tool","",null],
+};
+function gs(id){
+  if(!SCREEN_META[id])id="ph";
+  currentScreen=id;
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("screen-"+id).classList.add("active");
+  const meta=SCREEN_META[id];
+  document.getElementById("tb-title").textContent=meta[0];
+  document.getElementById("tb-step").textContent=meta[1];
+  ["nav-dashboard","nav-projects","nav-library","nav-upload","nav-personas","nav-testing","nav-kpi","nav-report"].forEach(n=>
+    document.getElementById(n).classList.toggle("active",n===meta[2]));
+  if(id==="dashboard")renderDashboard();
+  if(id==="projects")renderProjects();
+  if(id==="library")renderLibrary();
+  renderStepnav();
+}
+
+/* ---------- upload wiring ---------- */
+["before","after"].forEach(side=>{
+  const dz=document.getElementById("dz-"+side);
+  const fi=document.getElementById("fi-"+side);
+  fi.addEventListener("change",()=>{addFiles(side,fi.files);fi.value=""});
+  dz.addEventListener("dragover",e=>{e.preventDefault();dz.classList.add("over")});
+  dz.addEventListener("dragleave",()=>dz.classList.remove("over"));
+  dz.addEventListener("drop",e=>{e.preventDefault();dz.classList.remove("over");addFiles(side,e.dataTransfer.files)});
+});
+
+/* ---------- init ---------- */
+renderModelGrid();
+renderMethods("all");
+loadState();
+gs("dashboard");
+
+</script>
+</body>
+</html>

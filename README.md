@@ -14,8 +14,10 @@ Live at: https://new-portfolio.ar-anupamsarkar.workers.dev/
 | `public/career-journey.html` | The 12-year arc, Faraka → IBM |
 | `public/case-*.html` | Case files: Smart Mining, #NextWork, KhetMitra, BART, Farm Pioneers |
 | `public/case.css` | Shared stylesheet for the case pages |
+| `public/uxkpi-lab.html` | UX KPI Tool · Testing Lab — synthetic usability testing prototype with a working simulation engine (KPI Matrix + Report powered by measured session data) |
 | `src/worker.js` | Cloudflare Worker: serves `/api/chat` (the AI chatbot) + static assets |
 | `wrangler.jsonc` | Cloudflare Workers configuration |
+| `synthux/` | SynthUX — Synthetic UX Research Engine (Python backend, not deployed with the site) |
 
 ## The AI chatbot
 

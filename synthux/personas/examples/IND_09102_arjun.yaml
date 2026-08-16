@@ -1,0 +1,42 @@
+# Example participant: expert-user contrast case.
+persona_id: IND_09102
+source:
+  dataset: nvidia/Nemotron-Personas-India
+  record_id: "nemotron-in-09102"
+  license: CC-BY-4.0
+demographics:
+  age: 29
+  gender: male
+  occupation: software developer
+  location: Bengaluru
+  education: master's degree
+  languages:
+    - { language: Kannada, proficiency: native }
+    - { language: English, proficiency: fluent }
+    - { language: Hindi, proficiency: moderate }
+cohorts: ["expert_users", "high_digital_literacy"]
+behaviour:
+  digital_literacy: 0.93
+  domain_expertise: 0.55
+  reading_patience: 0.30
+  exploration: 0.80
+  risk_tolerance: 0.72
+  memory_strength: 0.85
+  scanning_tendency: 0.88
+  help_seeking: 0.10
+  error_recovery: 0.90
+  trust: 0.75
+memory:
+  working_memory_items: 8
+  decay_per_step: 0.10
+perception:
+  viewport_only: true
+  reading_speed: fast
+  accessibility: []
+sampling:
+  seed: 91027
+  temperature: 0.6
+narrative: >-
+  Arjun builds mobile apps for a fintech startup and manages all household
+  bills himself. He skims aggressively, rarely reads instructions, and
+  expects settings to be where every other app puts them.

@@ -1,0 +1,26 @@
+/* Shared style for the fixture billing app ("PowerGrid"). */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:#f4f5f7; color:#1c2733; width:390px; }
+.top { background:#0f4c81; color:#fff; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+.top a { color:#fff; text-decoration:none; font-size:18px; }
+.top h1 { font-size:17px; font-weight:600; }
+.section { padding:16px; }
+.label { font-size:12px; color:#66727e; text-transform:uppercase; letter-spacing:.06em; margin:14px 0 8px; }
+.label:first-child { margin-top:0; }
+.card { background:#fff; border-radius:10px; border:1px solid #e2e6ea; overflow:hidden; }
+.row { display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:1px solid #eef1f4; text-decoration:none; color:inherit; }
+.row:last-child { border-bottom:none; }
+.ico { width:34px; height:34px; border-radius:8px; background:#e8f0f7; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.grow { flex:1; }
+.t { font-size:14.5px; font-weight:600; }
+.s { font-size:12px; color:#66727e; margin-top:2px; }
+.chev { color:#9aa5af; font-size:16px; }
+.badge { font-size:10.5px; background:#e6f4ea; color:#137333; border-radius:10px; padding:2px 8px; font-weight:600; }
+.primary { display:block; width:100%; background:#0f4c81; color:#fff; border:none; border-radius:9px; padding:14px; font-size:15px; font-weight:600; margin-top:16px; text-align:center; text-decoration:none; cursor:pointer; }
+.hero { background:#0f4c81; color:#fff; border-radius:12px; padding:18px 16px; margin-bottom:4px; }
+.hero .s { color:#b9cfe2; }
+.hero .amt { font-size:30px; font-weight:700; margin:6px 0 2px; }
+.help-link { display:block; text-align:center; padding:14px; font-size:13px; color:#0f4c81; text-decoration:none; }
+.ok-badge { width:64px; height:64px; border-radius:50%; background:#e6f4ea; color:#137333; font-size:30px; display:flex; align-items:center; justify-content:center; margin:26px auto 12px; }
+.center { text-align:center; }
+p.body { font-size:13.5px; color:#4a5560; line-height:1.55; margin:8px 0; }
