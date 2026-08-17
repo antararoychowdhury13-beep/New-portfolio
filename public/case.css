@@ -65,3 +65,8 @@ footer{padding:60px 0 50px;border-top:1px solid var(--line);margin-top:50px}
 header h1,.tstop h3,.timeline h3{font-weight:600;letter-spacing:-.02em}
 header h1 em{font-style:normal}
 .cell .n{font-weight:600}
+/* strict type scale — only three sizes: 32 header / 18 body / 12 label */
+.brand{font-size:18px}
+header h1,.cell .n{font-size:32px}
+body,header .sub,.tstop h3,.tstop p,.decision h4,.decision .row,.note p{font-size:18px}
+.mono,.back,header .tag,.rolebar .chip,.sec-label,.cell .l,.decision .row b,.tstop .yr,.note .nl,.actions a,.colophon{font-size:12px}

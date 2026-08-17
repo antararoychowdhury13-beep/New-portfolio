@@ -160,6 +160,11 @@ footer h2 em{font-style:italic;color:var(--accent)}
 
 /* all-Inter typography: solid weights, no narrow or thin display text */
 .hero h1,.sec-head h2,footer h2,.a-statement,.wcard h3,.field-readout h3{font-weight:600;letter-spacing:-.02em}
+/* strict type scale — only three sizes: 32 header / 18 body / 12 label */
+.brand{font-size:18px}
+.hero h1,.sec-head h2,footer h2,.a-statement,.field-readout h3,.a-cell .n,.wcard .m{font-size:32px}
+body,.hero .sub,.sec-head .lead,.field-readout p,.wcard h3,.a-ai p,.a-note,.a-prin .p .tx,.decision h4,.decision .row,.console-bar input,.console-bar .pr,.case-card h5,.case-card .cc-m{font-size:18px}
+.mono,.nav-links a,.nav-status,.sysbar .chip-sys,.console-label,.chips-lead,.nudge,.chip,.console-bar .send,.a-head .tag,.a-line,.a-cell .l,.a-prin .p .nm,.decision .row b,.a-actions a,.wcard .cli,.wcard .open,.wcard .role,.field-hint,.field-readout .tag,.foot-links a,.colophon,.case-card .cc-cli,.case-card .cc-btn{font-size:12px}
 .hero h1 em,.sec-head h2 em,footer h2 em,.a-statement em{font-style:normal}
 .wcard .m,.a-cell .n,.case-card h5,.case-card .cc-m{font-weight:600}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
@@ -515,7 +520,7 @@ dio.observe(cwrap);
     const g=document.createElementNS(NS,'g');g.style.cursor='pointer';
     const halo=document.createElementNS(NS,'circle');halo.setAttribute('r',46);halo.setAttribute('fill','rgba(196,245,66,0.05)');halo.setAttribute('stroke','rgba(196,245,66,0.4)');
     const core=document.createElementNS(NS,'circle');core.setAttribute('r',9);core.setAttribute('fill','#C4F542');
-    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-58);t.setAttribute('fill','#FAF9F5');t.setAttribute('font-family',"'Inter'");t.setAttribute('font-size','13');t.setAttribute('font-weight','600');t.textContent=m.label;
+    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-58);t.setAttribute('fill','#FAF9F5');t.setAttribute('font-family',"'Inter'");t.setAttribute('font-size','12');t.setAttribute('font-weight','600');t.textContent=m.label;
     g.appendChild(halo);g.appendChild(core);g.appendChild(t);g.setAttribute('transform',`translate(${m.x},${m.y})`);
     m.halo=halo;m.coreEl=core;
     g.onclick=()=>setActive(m.id);
@@ -525,12 +530,12 @@ dio.observe(cwrap);
   proj.forEach(p=>{
     const g=document.createElementNS(NS,'g');
     const c=document.createElementNS(NS,'circle');c.setAttribute('r',5);c.setAttribute('fill','#0E0E13');c.setAttribute('stroke','#7CA3FF');c.setAttribute('stroke-width','1.5');
-    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-12);t.setAttribute('fill','#82828C');t.setAttribute('font-family',"'Inter'");t.setAttribute('font-size','10');t.textContent=p.label;
+    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-12);t.setAttribute('fill','#82828C');t.setAttribute('font-family',"'Inter'");t.setAttribute('font-size','12');t.textContent=p.label;
     g.appendChild(c);g.appendChild(t);
     if(p.case){
       // openable case node: lime core dot + pointer + hover affordance + navigate
       const core=document.createElementNS(NS,'circle');core.setAttribute('r',1.8);core.setAttribute('fill','#C4F542');g.appendChild(core);
-      const arr=document.createElementNS(NS,'text');arr.setAttribute('text-anchor','middle');arr.setAttribute('y',-12);arr.setAttribute('x',0);arr.setAttribute('fill','#C4F542');arr.setAttribute('font-family',"'Inter'");arr.setAttribute('font-size','10');arr.setAttribute('dx',(p.label.length*5.4)+'');arr.textContent='↗';arr.style.opacity='0';g.appendChild(arr);
+      const arr=document.createElementNS(NS,'text');arr.setAttribute('text-anchor','middle');arr.setAttribute('y',-12);arr.setAttribute('x',0);arr.setAttribute('fill','#C4F542');arr.setAttribute('font-family',"'Inter'");arr.setAttribute('font-size','12');arr.setAttribute('dx',(p.label.length*5.4)+'');arr.textContent='↗';arr.style.opacity='0';g.appendChild(arr);
       g.style.cursor='pointer';
       g.addEventListener('mouseenter',()=>{c.setAttribute('r',7);c.setAttribute('stroke','#C4F542');arr.style.opacity='1';t.setAttribute('fill','#FAF9F5');});
       g.addEventListener('mouseleave',()=>{c.setAttribute('r',5);if(!(active&&p.links.includes(active)))c.setAttribute('stroke','#7CA3FF');arr.style.opacity='0';if(!active||p.links.includes(active)){}});
