@@ -338,33 +338,37 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
 <section id="agent"><div class="wrap">
   <div class="sec-head reveal">
     <p class="mono"><span class="hl">01</span> · Ask my portfolio</p>
-    <h2>Talk to my portfolio — <em>by voice.</em></h2>
-    <p class="lead">A voice agent that answers from my documented case studies. Ask about my leadership, results or a specific project.</p>
+    <h2>Ask my portfolio — <em>text or voice.</em></h2>
+    <p class="lead">A grounded agent that answers from my documented case studies. Type a question, or start a voice call and speak.</p>
   </div>
   <div class="console-wrap reveal">
-    <div class="console voice-console">
+    <div class="console voice-console" id="console">
       <div class="voice-head">
         <span class="voice-orb" aria-hidden="true"></span>
         <div>
-          <div class="console-label"><span class="live"></span>Voice agent · live</div>
-          <p class="voice-cue">Click <b>Start a call</b> and speak your question — allow microphone access when your browser asks.</p>
+          <div class="console-label"><span class="live"></span>Ask my portfolio · text or voice</div>
+          <p class="voice-cue">Type a question for a written answer, or start a voice call and speak — allow microphone access when asked.</p>
         </div>
+      </div>
+      <div class="console-bar">
+        <span class="pr" aria-hidden="true">›</span>
+        <input id="cinput" type="text" autocomplete="off" spellcheck="false" placeholder="Ask anything about my work…" aria-label="Ask a question about my work" aria-describedby="console-help">
+        <button class="send" id="csend">GO</button>
       </div>
       <div class="voice-controls">
         <button id="callBtn" class="voice-btn" type="button" aria-pressed="false"><span class="vb-dot"></span><span class="vb-label">Start a call</span></button>
-        <span id="callStatus" class="voice-status" role="status">Ready when you are</span>
+        <span id="callStatus" class="voice-status" role="status">Voice &middot; ElevenLabs</span>
       </div>
       <div id="callLog" class="voice-log" aria-live="polite" hidden></div>
-      <div class="chips-lead">Try asking aloud →</div>
-      <div class="chips">
-        <span class="chip chip-static">Show my leadership scope</span>
-        <span class="chip chip-static">Show measurable impact</span>
-        <span class="chip chip-static">Show a difficult trade-off</span>
-        <span class="chip chip-static">How I build design systems</span>
-        <span class="chip chip-static">Walk through my career</span>
-        <span class="chip chip-static">What is Intent-First UX?</span>
+      <p id="console-help" class="console-help">For example: &ldquo;Show my leadership scope.&rdquo;</p>
+      <div class="chips-lead">New here? Tap a question &rarr;</div>
+      <div class="chips" id="chips"></div>
+      <div class="answer empty" id="answer" role="region" aria-live="polite" aria-labelledby="atag">
+        <div class="a-head"><span class="tag" id="atag">RESOLVED</span></div>
+        <div class="a-line" id="aline"></div>
+        <div class="a-body" id="abody"></div>
       </div>
-      <p class="agent-note">Voice answers are generated from six documented case studies. Open a case study below to verify the full context.</p>
+      <p class="agent-note">Text answers use GPT-4o mini with an Ollama fallback; voice uses ElevenLabs. Both draw on six documented case studies &mdash; open a case to verify context.</p>
     </div>
   </div>
 </div></section>
@@ -634,6 +638,168 @@ themeBtn.onclick=()=>{
   syncThemeBtn(); if(window.__rebuildField)window.__rebuildField();
 };
 syncThemeBtn();
+
+/* ===== Agent console ===== */
+const CASELIB={
+  'ibm-power':{cli:'IBM · Power Systems',t:'Unified four squads around one design language.',m:'20% less UI drift',href:'case-ibm-power.html'},
+  'smart-mining':{cli:'Siemens · Smart Mining',t:'Reframed eight gaps into four fundable interventions.',m:'67% faster decisions',href:'case-smart-mining.html'},
+  'nextwork':{cli:'Siemens · #NextWork',t:'Built the operating system around the methodology.',m:'72% adoption',href:'case-nextwork.html'},
+  'khetmitra':{cli:'John Deere India · KhetMitra',t:'Showed the next move instead of the data.',m:'+17.3% pilot yield',href:'case-khetmitra.html'},
+  'deere-pioneers':{cli:'John Deere · Farm Pioneers',t:'A wordless interface a 7-year-old masters.',m:'91% task success',href:'case-deere-pioneers.html'},
+  'bart':{cli:'Microsoft Teams · BART',t:'The first five minutes of incident response, compressed.',m:'5→1 tools',href:'case-incident-bart.html'},
+  'career-journey':{cli:'Experience',t:'Twelve years across five industries, into IBM.',m:'5 industries',href:'career-journey.html',btn:'View experience'}
+};
+function caseCards(slugs){
+  const cards=(slugs||[]).map(s=>CASELIB[s]).filter(Boolean);
+  if(!cards.length)return '';
+  return '<div class="a-follow"><div class="fl">View all relevant work</div><div class="case-cards">'+cards.map(c=>
+    `<a class="case-card" href="${c.href}"><span class="cc-cli">${c.cli}</span><h5>${c.t}</h5><span class="cc-m">${c.m}</span><span class="cc-btn">${(c.btn||'Read case study').toUpperCase()}</span></a>`
+  ).join('')+'</div></div>';
+}
+const INTENTS={
+  leadershipScope:{label:'Show my leadership scope',tag:'TEAM & ORGANIZATIONAL LEADERSHIP',
+    line:'resolving → team & organizational leadership…',
+    body:()=>`<div class="a-statement">I build the conditions in which <em>design teams succeed</em> — and own the calls in between.</div>
+      <div class="a-grid">
+        <div class="a-cell"><div class="n">4</div><div class="l">direct reports coached across squads · IBM</div></div>
+        <div class="a-cell"><div class="n">4</div><div class="l">product squads supported without a central bottleneck</div></div>
+        <div class="a-cell cool"><div class="n">+35%</div><div class="l">first-pass approvals via 3-in-a-box governance</div></div>
+        <div class="a-cell green"><div class="n">3 layers</div><div class="l">exec framing → cross-functional → frontline · Siemens</div></div>
+      </div>
+      <p class="a-note">Leadership here means decision rights, coaching and cross-functional alignment — not only artifacts. Open a case to see how it played out.</p>
+      ${caseCards(['ibm-power','smart-mining'])}`},
+  impact:{label:'Show measurable impact',tag:'QUANTIFIED OUTCOMES',
+    line:'resolving → quantified outcomes across 5 industries…',
+    body:()=>`<div class="a-grid">
+        <div class="a-cell"><div class="n">20% less</div><div class="l">documented UI inconsistency · IBM Power Systems</div></div>
+        <div class="a-cell cool"><div class="n">60→85%</div><div class="l">prototype validation rate · Siemens</div></div>
+        <div class="a-cell warm"><div class="n">500K+</div><div class="l">business users served · BT billing</div></div>
+        <div class="a-cell green"><div class="n">+17.3%</div><div class="l">yield for pilot participants · KhetMitra</div></div>
+        <div class="a-cell"><div class="n">67% faster</div><div class="l">safety-decision completion · Smart Mining</div></div>
+        <div class="a-cell cool"><div class="n">5→1</div><div class="l">tools at incident triage · BART</div></div>
+      </div>
+      <p class="a-note">Outcomes are normalized to protect confidential business data; measurement method is retained. For KhetMitra, pilot participants recorded 17.3% higher yield — the design contribution was improved recommendation adoption. Open the linked case to verify context.</p>
+      ${caseCards(['ibm-power','smart-mining','khetmitra'])}`},
+  decision:{label:'Show a difficult trade-off',tag:'HIGHEST-COST TRADE-OFF',
+    line:'resolving → highest-cost trade-offs in the archive…',
+    body:()=>`<div class="decision"><h4>Killed a concept that tested well — Siemens Smart Mining</h4>
+        <div class="row"><b>Why</b><span>The alert-centric concept amplified the exact alert fatigue it was meant to cure.</span></div>
+        <div class="row"><b>Trade-off</b><span>Threw away a fast-validating concept and absorbed a timeline hit to pivot to a spatial canvas.</span></div>
+        <div class="row res"><b>Result</b><span>67% faster safety decisions · 240→18 daily alerts · SUS 92.</span></div></div>
+      <div class="decision"><h4>Overrode the brief — KhetMitra / John Deere India</h4>
+        <div class="row"><b>Why</b><span>Field research: no farmer consulted more than two data sources before deciding. A dashboard would add load.</span></div>
+        <div class="row"><b>Trade-off</b><span>Contradicted the stakeholder ask for a dashboard; had to re-sell leadership on a decision assistant.</span></div>
+        <div class="row res"><b>Result</b><span>41→87% task completion · +17.3% pilot yield · funded to phase 2.</span></div></div>
+      ${caseCards(['smart-mining','khetmitra'])}`},
+  systems:{label:'How I build design systems',tag:'DESIGN SYSTEMS & GOVERNANCE',
+    line:'resolving → design systems, governance and adoption…',
+    body:()=>`<div class="a-statement">A design system is an <em>operating model</em>, not a component library.</div>
+      <div class="a-prin">
+        <div class="p"><span class="nm">01</span><span class="tx">Standardise tokens, patterns and governance so four squads share one language.</span></div>
+        <div class="p"><span class="nm">02</span><span class="tx">Install decision rights and critique cadence so the system scales without a central bottleneck.</span></div>
+        <div class="p"><span class="nm">03</span><span class="tx">Measure drift and adoption, not just component counts.</span></div>
+      </div>
+      <p class="a-note">At IBM Power Systems this cut documented UI inconsistency ~20% while first-pass approvals rose ~35%.</p>
+      ${caseCards(['ibm-power','nextwork'])}`},
+  arc:{label:'Walk through my career',tag:'CAREER TRAJECTORY',
+    line:'resolving → trajectory, architecture → IBM…',
+    body:()=>`<div class="a-statement">Architecture → IIT design → TCS → John Deere → Siemens → BT → <em>IBM.</em></div>
+      <p class="a-note">Each industry switch built a durable capability the next role compounded — from shipping volume at TCS to decision design at Siemens to people leadership and governance at IBM.</p>
+      ${caseCards(['career-journey'])}`},
+  ifu:{label:'What is Intent-First UX?',tag:'ORIGINAL FRAMEWORK',
+    line:'resolving → original framework you are currently inside…',
+    body:()=>`<div class="a-statement">Every UI framework starts <em>after</em> intent. Intent-First UX starts before it.</div>
+      <p class="a-note">IFU pre-resolves the interface to the most probable user outcome before conscious action — four stages: <b style="color:var(--cream)">Sense → Morph → Confirm → Escape.</b> This portfolio's ask box is a small demonstration.</p>
+      <div class="a-actions"><a href="#capabilities">See the capability map</a></div>`},
+  fallback:{label:'I could not match that question',tag:'TRY ANOTHER QUESTION',
+    line:'I can answer from the six documented case studies…',
+    body:()=>`<p class="a-note">Try asking about team leadership, measurable impact, difficult decisions, design systems or career progression — or open a case study directly.</p>
+      ${caseCards(['ibm-power','smart-mining','bart'])}`}
+};
+const ORDER=['leadershipScope','impact','decision','systems','arc','ifu'];
+const KW={
+  leadershipScope:['lead','leader','manage','manager','team','report','mentor','coach','people','organization','organizational','scope','altitude'],
+  impact:['impact','metric','number','result','outcome','roi','data','measure','proof','yield'],
+  decision:['decision','hard','trade','trade-off','tradeoff','tough','difficult','kill','pivot','choice','call','override'],
+  systems:['system','systems','token','component','library','governance','pattern','standard','carbon'],
+  arc:['arc','journey','career','story','years','history','path','experience','trajectory'],
+  ifu:['intent','ifu','framework','gravity','invent','original','philosophy']
+};
+
+const chipsEl=document.getElementById('chips'), ansEl=document.getElementById('answer'),
+      tagEl=document.getElementById('atag'), lineEl=document.getElementById('aline'),
+      bodyEl=document.getElementById('abody'), input=document.getElementById('cinput');
+ORDER.forEach(k=>{const b=document.createElement('button');b.className='chip';b.textContent=INTENTS[k].label;b.onclick=()=>resolve(k);chipsEl.appendChild(b);});
+
+function route(q){
+  q=(q||'').toLowerCase().trim();
+  if(!q)return 'fallback';
+  for(const k of ORDER){if(KW[k].some(w=>q.includes(w)))return k;}
+  return 'fallback';
+}
+const reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let typing=null;
+function resolve(k,opts){
+  opts=opts||{};
+  const it=INTENTS[k]||INTENTS.fallback;
+  ansEl.classList.remove('empty');
+  ansEl.setAttribute('aria-busy','true');
+  tagEl.textContent=it.tag;
+  bodyEl.innerHTML='';
+  if(typing)clearInterval(typing);
+  const txt='› '+it.line;
+  if(reduceM){lineEl.textContent=txt;show(it);}
+  else{
+    lineEl.innerHTML='<span class="cursor"></span>'; let i=0;
+    typing=setInterval(()=>{
+      i++; lineEl.innerHTML=txt.slice(0,i)+'<span class="cursor"></span>';
+      if(i>=txt.length){clearInterval(typing);lineEl.innerHTML=txt;setTimeout(()=>show(it),140);}
+    },14);
+  }
+  if(opts.scroll!==false) ansEl.scrollIntoView({behavior:reduceM?'auto':'smooth',block:'nearest'});
+}
+function show(it){bodyEl.innerHTML=it.body();ansEl.setAttribute('aria-busy','false');}
+
+/* live AI chat — /api/chat via gpt-4o-mini (primary) or Ollama (secondary);
+   on any failure we fall back to the local keyword index */
+const chatHist=[];
+function escTx(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function aiHtml(s){
+  let h=escTx(s).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/^[-*] (.*)$/gm,'&bull; $1');
+  return h.split(/\n{2,}/).map(p=>'<p>'+p.replace(/\n/g,'<br>')+'</p>').join('');
+}
+async function ask(q){
+  q=(q||'').trim();
+  if(!q){resolve('fallback');return;}
+  ansEl.classList.remove('empty');
+  ansEl.setAttribute('aria-busy','true');
+  if(typing)clearInterval(typing);
+  tagEl.textContent='LIVE AGENT';
+  bodyEl.innerHTML='';
+  lineEl.innerHTML='&rsaquo; resolving &rarr; querying the live agent&hellip;<span class="cursor"></span>';
+  ansEl.scrollIntoView({behavior:reduceM?'auto':'smooth',block:'nearest'});
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({messages:[...chatHist,{role:'user',content:q}]}),
+      signal:AbortSignal.timeout(30000)});
+    if(!r.ok)throw new Error('api '+r.status);
+    const d=await r.json();
+    if(!d.answer)throw new Error('empty answer');
+    chatHist.push({role:'user',content:q},{role:'assistant',content:d.answer});
+    while(chatHist.length>8)chatHist.shift();
+    tagEl.textContent=d.provider==='openai'?'GPT-4O MINI':d.provider==='ollama'?'OLLAMA':'LIVE AGENT';
+    lineEl.textContent='› '+q;
+    bodyEl.innerHTML='<div class="a-body"><div class="a-ai">'+aiHtml(d.answer)+'</div>'+caseCards(d.cases)+'</div>';
+    ansEl.setAttribute('aria-busy','false');
+    input.value='';
+  }catch(e){
+    const k=route(q);
+    resolve(k,{scroll:false});
+    tagEl.textContent=INTENTS[k].tag+' · LOCAL INDEX';
+  }
+}
+document.getElementById('csend').onclick=()=>ask(input.value);
+input.addEventListener('keydown',e=>{if(e.key==='Enter')ask(input.value);});
 
 /* in-panel voice call via the ElevenLabs SDK */
 (function(){
