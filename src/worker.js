@@ -50,7 +50,10 @@ async function callOpenAI(env, messages) {
     }),
     signal: AbortSignal.timeout(20000),
   });
-  if (!r.ok) throw new Error(`openai: HTTP ${r.status}`);
+  if (!r.ok) {
+    const detail = await r.text().catch(() => "");
+    throw new Error(`openai: HTTP ${r.status} ${detail.slice(0, 300)}`);
+  }
   const d = await r.json();
   const text = d.choices?.[0]?.message?.content?.trim();
   if (!text) throw new Error("openai: empty completion");
@@ -71,7 +74,10 @@ async function callOllama(env, messages) {
     }),
     signal: AbortSignal.timeout(25000),
   });
-  if (!r.ok) throw new Error(`ollama: HTTP ${r.status}`);
+  if (!r.ok) {
+    const detail = await r.text().catch(() => "");
+    throw new Error(`ollama: HTTP ${r.status} ${detail.slice(0, 300)}`);
+  }
   const d = await r.json();
   const text = d.message?.content?.trim();
   if (!text) throw new Error("ollama: empty completion");
