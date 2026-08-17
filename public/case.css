@@ -70,3 +70,22 @@ header h1 em{font-style:normal}
 header h1,.cell .n{font-size:32px}
 body,header .sub,.tstop h3,.tstop p,.decision h4,.decision .row,.note p{font-size:18px}
 .mono,.back,header .tag,.rolebar .chip,.sec-label,.cell .l,.decision .row b,.tstop .yr,.note .nl,.actions a,.colophon{font-size:12px}
+
+/* ===== light mode ===== */
+.theme-toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;background:none;border:none;padding:0}
+.theme-toggle .tt-ico{font-size:13px;line-height:1;color:var(--muted)}
+.theme-toggle .tt-track{position:relative;width:42px;height:22px;border-radius:99px;background:var(--ink-4);border:1px solid var(--line-2);transition:background .25s,border-color .25s}
+.theme-toggle .tt-thumb{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--accent);transition:transform .25s;box-shadow:0 0 10px -1px var(--accent)}
+.nav-in .nav-right{display:flex;align-items:center;gap:18px}
+html.light{
+  --ink:#FFFFFF; --ink-2:#F8F8F6; --ink-3:#F3F3F0; --ink-4:#EBEBE7;
+  --cream:#1A1A1A; --muted:#626262; --muted-2:#8A8A8A;
+  --accent:#6FA300; --cool:#3F6BD0; --warm:#D9532F; --green:#55901F;
+  --line:rgba(0,0,0,0.10); --line-2:rgba(0,0,0,0.20);
+}
+html.light nav{background:rgba(255,255,255,.72)}
+html.light .note{background:linear-gradient(180deg,#FBFDF4,#F3F8E7);border-color:rgba(111,163,0,.4)}
+html.light .actions a:hover{background:rgba(111,163,0,.06)}
+html.light .actions a.primary{color:#FFFFFF}
+html.light .theme-toggle .tt-track{background:rgba(111,163,0,.18)}
+html.light .theme-toggle .tt-thumb{transform:translateX(20px)}
