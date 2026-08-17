@@ -97,13 +97,20 @@ section{padding:88px 0;position:relative;z-index:2}
 .leadership-grid strong{display:block;font-size:18px;font-weight:600;margin-bottom:8px}
 .leadership-grid p{font-size:18px;color:var(--muted);line-height:1.5}
 .comp{margin-top:56px}
-.comp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:26px}
-.comp-col{display:flex;flex-direction:column;gap:22px}
-.comp-cat{font-size:18px;font-weight:600;color:var(--accent);line-height:1.25;padding-bottom:10px;border-bottom:1px solid var(--line-2)}
-.comp-group .cg-t{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);margin-bottom:10px}
-.comp-item{margin-bottom:11px}
+.comp-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.comp-tab{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted);background:var(--ink-3);border:1px solid var(--line-2);border-radius:99px;padding:11px 16px;min-height:44px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:9px}
+.comp-tab .tn{font-variant-numeric:tabular-nums;color:var(--accent);opacity:.7}
+.comp-tab:hover{color:var(--cream);border-color:var(--accent)}
+.comp-tab.active{color:var(--ink);background:var(--accent);border-color:var(--accent);font-weight:700}
+.comp-tab.active .tn{color:var(--ink);opacity:.7}
+.comp-panel{display:none}
+.comp-panel.active{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;animation:rise .4s ease}
+.comp-card{background:var(--ink-3);border:1px solid var(--line);border-radius:14px;padding:22px;transition:border-color .2s,transform .2s}
+.comp-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.comp-card .cg-t{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.comp-item{margin-bottom:13px}
 .comp-item:last-child{margin-bottom:0}
-.comp-item .ci-l{font-size:12px;font-weight:600;color:var(--cream);display:block}
+.comp-item .ci-l{font-size:12px;font-weight:600;color:var(--cream);display:block;margin-bottom:2px}
 .comp-item .ci-d{font-size:12px;color:var(--muted);line-height:1.5}
 
 /* agent console */
@@ -404,8 +411,9 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
   </div>
   <div class="comp reveal">
     <p class="mono" style="margin-bottom:6px"><span class="hl">◆</span> Competencies</p>
-    <p class="lead" style="margin-bottom:32px">The full span of what I lead on — across process, craft, people, clients and strategy.</p>
-    <div class="comp-grid" id="compgrid"></div>
+    <p class="lead" style="margin-bottom:28px">The full span of what I lead on — tap a pillar to explore its focus areas.</p>
+    <div class="comp-tabs" id="comptabs" role="tablist" aria-label="Competency areas"></div>
+    <div id="comppanels"></div>
   </div>
 </div></section>
 
@@ -716,14 +724,29 @@ const COMPETENCIES=[
       ['Market analysis','Conducted [X] market analyses to guide design strategies.']]}
   ]}
 ];
-const cg=document.getElementById('compgrid');
-if(cg){COMPETENCIES.forEach(col=>{
-  const c=document.createElement('div');c.className='comp-col';
-  c.innerHTML=`<div class="comp-cat">${col.cat}</div>`+col.groups.map(g=>
-    `<div class="comp-group"><div class="cg-t">${g.t}</div>`+
-    g.items.map(it=>`<div class="comp-item"><span class="ci-l">${it[0]}</span><span class="ci-d">${it[1]}</span></div>`).join('')+
-    `</div>`).join('');
-  cg.appendChild(c);
+const ct=document.getElementById('comptabs'), cpan=document.getElementById('comppanels');
+if(ct&&cpan){COMPETENCIES.forEach((col,i)=>{
+  const tab=document.createElement('button');
+  tab.className='comp-tab'+(i===0?' active':'');
+  tab.type='button';tab.setAttribute('role','tab');tab.setAttribute('aria-selected',i===0?'true':'false');
+  tab.innerHTML=`<span class="tn">0${i+1}</span> ${col.cat}`;
+  const panel=document.createElement('div');
+  panel.className='comp-panel'+(i===0?' active':'');panel.setAttribute('role','tabpanel');
+  panel.innerHTML=col.groups.map(g=>`<div class="comp-card"><div class="cg-t">${g.t}</div>`+
+    g.items.map(it=>`<div class="comp-item"><span class="ci-l">${it[0]}</span><span class="ci-d">${it[1]}</span></div>`).join('')+`</div>`).join('');
+  tab.addEventListener('click',()=>{
+    ct.querySelectorAll('.comp-tab').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false');});
+    cpan.querySelectorAll('.comp-panel').forEach(x=>x.classList.remove('active'));
+    tab.classList.add('active');tab.setAttribute('aria-selected','true');panel.classList.add('active');
+  });
+  tab.addEventListener('keydown',e=>{
+    if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+    e.preventDefault();
+    const tabs=[...ct.querySelectorAll('.comp-tab')];const idx=tabs.indexOf(tab);
+    const n=tabs[(idx+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];
+    n.focus();n.click();
+  });
+  ct.appendChild(tab);cpan.appendChild(panel);
 });}
 
 /* theme toggle */
