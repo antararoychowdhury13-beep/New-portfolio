@@ -96,6 +96,15 @@ section{padding:88px 0;position:relative;z-index:2}
 .leadership-grid article{background:var(--ink-3);border:1px solid var(--line);border-radius:14px;padding:24px}
 .leadership-grid strong{display:block;font-size:18px;font-weight:600;margin-bottom:8px}
 .leadership-grid p{font-size:18px;color:var(--muted);line-height:1.5}
+.comp{margin-top:56px}
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:26px}
+.comp-col{display:flex;flex-direction:column;gap:22px}
+.comp-cat{font-size:18px;font-weight:600;color:var(--accent);line-height:1.25;padding-bottom:10px;border-bottom:1px solid var(--line-2)}
+.comp-group .cg-t{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);margin-bottom:10px}
+.comp-item{margin-bottom:11px}
+.comp-item:last-child{margin-bottom:0}
+.comp-item .ci-l{font-size:12px;font-weight:600;color:var(--cream);display:block}
+.comp-item .ci-d{font-size:12px;color:var(--muted);line-height:1.5}
 
 /* agent console */
 .agent-intro{max-width:640px;margin-bottom:24px}
@@ -393,6 +402,11 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
     <article><strong>Cross-functional leadership</strong><p>Product, engineering, research and executive stakeholders.</p></article>
     <article><strong>Design operations</strong><p>Decision rights, critique systems and reusable product standards.</p></article>
   </div>
+  <div class="comp reveal">
+    <p class="mono" style="margin-bottom:6px"><span class="hl">◆</span> Competencies</p>
+    <p class="lead" style="margin-bottom:32px">The full span of what I lead on — across process, craft, people, clients and strategy.</p>
+    <div class="comp-grid" id="compgrid"></div>
+  </div>
 </div></section>
 
 
@@ -628,6 +642,89 @@ MORE.forEach((w,i)=>{
     `<span class="wcta">Read case study ↗</span></div>`;
   mg.appendChild(a);
 });
+
+/* ===== Competencies ===== */
+const COMPETENCIES=[
+  {cat:'Project & Process Management',groups:[
+    {t:'Agile & Lean Practices',items:[
+      ['Agile methodology','Led [X] projects using Agile methodology, improving project agility by [Y]%.'],
+      ['Lean design techniques','Implemented Lean UX techniques, reducing unnecessary workflows by [X]%.']]},
+    {t:'Quality Assurance',items:[
+      ['Design quality metrics','Achieved [X]% in design quality assessments.'],
+      ['Continuous improvement','Implemented [X] continuous improvement processes.']]},
+    {t:'Risk Management',items:[
+      ['Risk identification','Identified and mitigated [X] potential project risks.'],
+      ['Crisis management','Successfully navigated [X] design crises with minimal impact.']]},
+    {t:'Design Management',items:[
+      ['Project completion rate','Successfully completed 20 projects on time; reduced turnaround time by 20%.'],
+      ['Budget management','Maintained 100% budget accuracy across projects.']]},
+    {t:'Project KPIs',items:[
+      ['User satisfaction','Achieved an average user satisfaction score of 8/10.'],
+      ['Error reduction','Reduced design errors by 30% through rigorous testing protocols.']]},
+    {t:'Operational Efficiency',items:[
+      ['Process optimization','Streamlined design processes, increasing efficiency by [X]%.'],
+      ['Cost reduction','Reduced operational costs by [X]% through strategic resource management.']]}
+  ]},
+  {cat:'Design & Innovation',groups:[
+    {t:'Design Excellence',items:[
+      ['Innovative design solutions','Won Best UX Team Award at Siemens Advanta; increased user engagement 30% through intuitive layouts.'],
+      ['Design consistency','Achieved 60% consistency across 15 projects.']]},
+    {t:'Sustainability in Design',items:[
+      ['Eco-friendly designs','Implemented sustainable design practices in [X] projects.'],
+      ['Awareness campaigns','Led [X] sustainability initiatives within the company.']]},
+    {t:'Technology Integration',items:[
+      ['New tools adoption','Integrated [X] new design tools into the workflow.'],
+      ['Tech-driven solutions','Developed [X] technology-driven design solutions.']]},
+    {t:'Innovation & Research',items:[
+      ['Trend adoption','Integrated [X] new design trends into projects.'],
+      ['Research contributions','Published [X] articles in design journals.']]},
+    {t:'User-Centric Design',items:[
+      ['Feedback implementation','Implemented [X]% of user feedback into design revisions.'],
+      ['Accessibility improvements','Enhanced accessibility features in [X] projects.']]}
+  ]},
+  {cat:'Team & People Management',groups:[
+    {t:'Cultural Impact',items:[
+      ['Team culture','Fostered a positive team culture, resulting in [X]% lower turnover.'],
+      ['Diversity & inclusion','Enhanced team diversity by [X]% through inclusive hiring.']]},
+    {t:'Mentorship & Training',items:[
+      ['Mentoring','Mentored [X] junior designers, with [Y]% advancing to senior roles.'],
+      ['Training programs','Initiated [X] training programs to upskill team members.']]},
+    {t:'Personal Development',items:[
+      ['Continuous learning','Completed [X] professional development courses.'],
+      ['Industry recognition','Received [X] awards / recognition in the UX design industry.']]},
+    {t:'Team Management',items:[
+      ['Team growth','Expanded the design team from 5 to 15 members.'],
+      ['Employee development','80% of team members achieved their personal KPIs.']]}
+  ]},
+  {cat:'Client & Stakeholder Relations',groups:[
+    {t:'Client Relations',items:[
+      ['Client retention','Maintained a 100% client retention rate.'],
+      ['New business','Acquired 5 new clients through effective pitching and presentations.']]},
+    {t:'Feedback & Reviews',items:[
+      ['Peer reviews','Conducted [X] peer reviews, enhancing team collaboration.'],
+      ['Client feedback','Received an average feedback score of [X]/10 from clients.']]},
+    {t:'Stakeholder Management',items:[
+      ['Stakeholder satisfaction','Achieved [X]% satisfaction rate among stakeholders.'],
+      ['Effective communication','Conducted [X] stakeholder meetings with positive feedback.']]}
+  ]},
+  {cat:'Strategic Leadership',groups:[
+    {t:'Global Outreach',items:[
+      ['International projects','Managed [X] international design projects.'],
+      ['Cross-cultural designs','Created designs for diverse cultural contexts in [X] projects.']]},
+    {t:'Strategic Planning',items:[
+      ['Vision & strategy','Developed a [X]-year strategic plan for the design department.'],
+      ['Market analysis','Conducted [X] market analyses to guide design strategies.']]}
+  ]}
+];
+const cg=document.getElementById('compgrid');
+if(cg){COMPETENCIES.forEach(col=>{
+  const c=document.createElement('div');c.className='comp-col';
+  c.innerHTML=`<div class="comp-cat">${col.cat}</div>`+col.groups.map(g=>
+    `<div class="comp-group"><div class="cg-t">${g.t}</div>`+
+    g.items.map(it=>`<div class="comp-item"><span class="ci-l">${it[0]}</span><span class="ci-d">${it[1]}</span></div>`).join('')+
+    `</div>`).join('');
+  cg.appendChild(c);
+});}
 
 /* theme toggle */
 const themeBtn=document.getElementById('themeBtn');
