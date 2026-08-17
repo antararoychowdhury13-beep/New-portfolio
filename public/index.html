@@ -574,7 +574,7 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')ask(input.value);});
 
 /* ===== Work cards ===== */
 const WORK=[
-  {cli:'Siemens · Smart Mining',h:'Clustered eight operational gaps into four interventions — instead of fixing them one by one.',role:'Design Lead',m:'+67%',href:'case-smart-mining.html',motif:'nodes',tint:'#7CA3FF'},
+  {cli:'Siemens · Smart Mining',h:'Clustered eight operational gaps into four interventions — instead of fixing them one by one.',role:'Design Lead',m:'+67%',href:'case-smart-mining.html',motif:'nodes',tint:'#7CA3FF',img:'assets/smart-mining.jpg',imgpos:'center'},
   {cli:'Siemens · #NextWork',h:'Built the operating system around the methodology — without rebuilding the methodology.',role:'Lead Product Designer',m:'72%',href:'case-nextwork.html',motif:'orbit',tint:'#C4F542'},
   {cli:'John Deere · 0→1',h:'A wordless interface a 7-year-old masters, wrapped in a layer a parent can audit.',role:'Lead Product / UX',m:'91%',href:'case-deere-pioneers.html',motif:'play',tint:'#FF7A5C'},
   {cli:'Microsoft Teams · BART',h:'Compressed the first five minutes of incident response — five tools into one.',role:'Lead Product Designer',m:'5→1',href:'case-incident-bart.html',motif:'converge',tint:'#7CA3FF'},
@@ -596,7 +596,7 @@ function thumbSVG(motif,c){
 }
 const wg=document.getElementById('workgrid');
 WORK.forEach((w,i)=>{const a=document.createElement('a');a.className='wcard reveal';a.href=w.href;
-  a.innerHTML=`<div class="wthumb" style="background:radial-gradient(130% 170% at 18% 0%,${w.tint}26,transparent 55%),linear-gradient(160deg,#171720,#0c0c11)">${w.img?`<img src="${w.img}" alt="${w.cli}" loading="lazy">`:thumbSVG(w.motif,w.tint)}<span class="wtag">Case file ${String(i+1).padStart(2,'0')}</span><span class="open">OPEN ↗</span></div><div class="wbody"><span class="cli">${w.cli}</span><h3>${w.h}</h3><div class="meta"><span class="role">${w.role}</span><span class="m">${w.m}</span></div></div>`;
+  a.innerHTML=`<div class="wthumb" style="background:radial-gradient(130% 170% at 18% 0%,${w.tint}26,transparent 55%),linear-gradient(160deg,#171720,#0c0c11)">${thumbSVG(w.motif,w.tint)}${w.img?`<img src="${w.img}" alt="${w.cli}" loading="lazy" style="object-position:${w.imgpos||'center'}" onerror="this.remove()">`:''}<span class="wtag">Case file ${String(i+1).padStart(2,'0')}</span><span class="open">OPEN ↗</span></div><div class="wbody"><span class="cli">${w.cli}</span><h3>${w.h}</h3><div class="meta"><span class="role">${w.role}</span><span class="m">${w.m}</span></div></div>`;
   wg.appendChild(a);});
 
 /* theme toggle */
