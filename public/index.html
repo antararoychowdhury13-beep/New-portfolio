@@ -192,12 +192,15 @@ body,.hero .sub,.sec-head .lead,.field-readout p,.wcard h3,.a-ai p,.a-note,.a-pr
 }
 
 /* ===== light mode ===== */
-.theme-toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
-.theme-toggle .tt-ico{font-size:13px;line-height:1}
-.theme-toggle .tt-track{position:relative;width:42px;height:22px;border-radius:99px;background:var(--ink-4);border:1px solid var(--line-2);transition:background .25s,border-color .25s}
-.theme-toggle .tt-thumb{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--accent);transition:transform .25s;box-shadow:0 0 10px -1px var(--accent)}
-html.light .theme-toggle .tt-track{background:rgba(111,163,0,.18)}
-html.light .theme-toggle .tt-thumb{transform:translateX(20px)}
+.theme-toggle{-webkit-appearance:none;appearance:none;position:relative;width:46px;height:24px;flex:none;border-radius:99px;background:var(--ink-4);border:1px solid var(--line-2);cursor:pointer;padding:0;outline:none;transition:background .3s ease,border-color .3s ease}
+.theme-toggle .tt-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;line-height:1;color:var(--ink);transition:transform .3s cubic-bezier(.4,0,.2,1),background .3s;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.theme-toggle .tt-thumb::after{content:"\263E"}
+html.light .theme-toggle{background:rgba(111,163,0,.16);border-color:rgba(111,163,0,.3)}
+html.light .theme-toggle .tt-thumb{transform:translateX(22px)}
+html.light .theme-toggle .tt-thumb::after{content:"\2600"}
+.theme-toggle:focus-visible{box-shadow:0 0 0 3px rgba(111,163,0,.3)}
+/* seamless theme cross-fade */
+body,nav,.wcard,.wbody,.wthumb,.a-cell,.console,.console-bar,.field-stage,.field-readout,.decision,.note,.case-card,.chip{transition:background-color .3s ease,border-color .3s ease,color .3s ease}
 html.light{
   --ink:#FFFFFF; --ink-2:#F8F8F6; --ink-3:#F3F3F0; --ink-4:#EBEBE7;
   --cream:#1A1A1A; --muted:#626262; --muted-2:#8A8A8A;
@@ -215,6 +218,9 @@ html.light .chip:hover{background:rgba(111,163,0,.07)}
 html.light .a-actions a:hover{background:rgba(111,163,0,.06)}
 html.light .case-card:hover{background:rgba(111,163,0,.05)}
 html.light .case-card .cc-btn:hover{box-shadow:0 6px 16px -6px rgba(111,163,0,.6)}
+html.light .wcard{background:#FFFFFF}
+html.light .wbody{background:#FFFFFF}
+html.light .wthumb{border-bottom-color:rgba(0,0,0,.08)}
 html.light .wtag{color:#FAF9F5}
 html.light .wcard:hover{box-shadow:0 24px 50px -30px rgba(0,0,0,.35)}
 html.light .field-stage{background:linear-gradient(180deg,#FDFDFC,#F7F7F4)}
@@ -229,7 +235,7 @@ html.light .field-stage{background:linear-gradient(180deg,#FDFDFC,#F7F7F4)}
   <div class="nav-links">
     <a href="#top">Console</a><a href="#gravity">Field</a><a href="#work">Work</a><a href="#contact">Contact</a>
   </div>
-  <button id="themeBtn" class="theme-toggle" role="switch" aria-label="Toggle light and dark mode"><span class="tt-ico">☾</span><span class="tt-track"><span class="tt-thumb"></span></span><span class="tt-ico">☀</span></button>
+  <button id="themeBtn" class="theme-toggle" role="switch" aria-label="Toggle light and dark mode"><span class="tt-thumb"></span></button>
   <div class="nav-status">● AVAILABLE · Q1 2026</div>
 </div></nav>
 
