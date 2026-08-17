@@ -135,8 +135,9 @@ section{padding:100px 0;position:relative;z-index:2}
 .wcard{background:linear-gradient(180deg,rgba(20,20,27,.6),rgba(14,14,19,.6));border:1px solid var(--line);border-radius:16px;display:block;position:relative;transition:all .25s;overflow:hidden}
 .wcard:hover{border-color:var(--line-2);transform:translateY(-3px);box-shadow:0 24px 60px -30px rgba(0,0,0,.8)}
 .wthumb{position:relative;aspect-ratio:5/2;overflow:hidden;border-bottom:1px solid var(--line)}
-.wthumb svg{position:absolute;inset:0;width:100%;height:100%;transition:transform .5s ease}
-.wcard:hover .wthumb svg{transform:scale(1.05)}
+.wthumb svg,.wthumb img{position:absolute;inset:0;width:100%;height:100%;transition:transform .5s ease}
+.wthumb img{object-fit:cover}
+.wcard:hover .wthumb svg,.wcard:hover .wthumb img{transform:scale(1.05)}
 .wthumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(7,7,10,.55))}
 .wtag{position:absolute;top:14px;left:16px;z-index:2;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--cream);opacity:.6}
 .wcard .open{position:absolute;top:12px;right:14px;z-index:2;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--ink);background:var(--accent);border-radius:8px;padding:5px 10px;font-weight:700;opacity:0;transform:translateY(-4px);transition:all .25s}
@@ -555,7 +556,7 @@ function thumbSVG(motif,c){
 }
 const wg=document.getElementById('workgrid');
 WORK.forEach((w,i)=>{const a=document.createElement('a');a.className='wcard reveal';a.href=w.href;
-  a.innerHTML=`<div class="wthumb" style="background:radial-gradient(130% 170% at 18% 0%,${w.tint}26,transparent 55%),linear-gradient(160deg,#171720,#0c0c11)">${thumbSVG(w.motif,w.tint)}<span class="wtag">Case file ${String(i+1).padStart(2,'0')}</span><span class="open">OPEN ↗</span></div><div class="wbody"><span class="cli">${w.cli}</span><h3>${w.h}</h3><div class="meta"><span class="role">${w.role}</span><span class="m">${w.m}</span></div></div>`;
+  a.innerHTML=`<div class="wthumb" style="background:radial-gradient(130% 170% at 18% 0%,${w.tint}26,transparent 55%),linear-gradient(160deg,#171720,#0c0c11)">${w.img?`<img src="${w.img}" alt="${w.cli}" loading="lazy">`:thumbSVG(w.motif,w.tint)}<span class="wtag">Case file ${String(i+1).padStart(2,'0')}</span><span class="open">OPEN ↗</span></div><div class="wbody"><span class="cli">${w.cli}</span><h3>${w.h}</h3><div class="meta"><span class="role">${w.role}</span><span class="m">${w.m}</span></div></div>`;
   wg.appendChild(a);});
 
 /* reveals */
