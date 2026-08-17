@@ -122,6 +122,20 @@ section{padding:88px 0;position:relative;z-index:2}
 .voice-orb{width:46px;height:46px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,var(--accent),rgba(196,245,66,.2));box-shadow:0 0 26px -4px rgba(196,245,66,.6);animation:pulse 2s infinite}
 .voice-cue{font-size:18px;color:var(--muted);margin-top:6px;max-width:560px}
 .voice-cue b{color:var(--cream);font-weight:600}
+.voice-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:16px 4px 2px}
+.voice-btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink);background:var(--accent);border:none;border-radius:10px;padding:14px 22px;min-height:48px;cursor:pointer;transition:transform .15s,box-shadow .2s,background .2s;box-shadow:0 0 24px -6px rgba(196,245,66,.6)}
+.voice-btn:hover{transform:translateY(-1px);box-shadow:0 0 30px -4px rgba(196,245,66,.85)}
+.voice-btn .vb-dot{width:9px;height:9px;border-radius:50%;background:var(--ink);opacity:.7}
+.voice-btn.live{background:#E5484D;color:#fff;box-shadow:0 0 26px -6px rgba(229,72,77,.7)}
+.voice-btn.live .vb-dot{background:#fff;opacity:1;animation:pulse 1s infinite}
+.voice-btn.connecting{opacity:.75;pointer-events:none}
+.voice-status{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.voice-log{margin:14px 4px 0;display:flex;flex-direction:column;gap:8px;max-height:240px;overflow:auto}
+.voice-log .vl{font-size:18px;line-height:1.45;padding:10px 14px;border-radius:12px;max-width:88%}
+.voice-log .vl.you{align-self:flex-end;background:var(--ink-4);color:var(--cream)}
+.voice-log .vl.agent{align-self:flex-start;background:var(--ink-3);border:1px solid var(--line);color:var(--cream)}
+.voice-console.speaking .voice-orb{box-shadow:0 0 36px -2px rgba(196,245,66,.9)}
+html.light .voice-btn.live{background:#D9432F}
 .chip-static{cursor:default}
 .chip-static:hover{color:var(--muted);border-color:var(--line-2);background:var(--ink-3)}
 
@@ -218,8 +232,6 @@ footer h2 em{font-style:normal;color:var(--accent)}
 .colophon{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--muted-2);flex-wrap:wrap;gap:10px}
 
 
-/* ElevenLabs voice widget — sit above the sticky dock */
-elevenlabs-convai{position:fixed;z-index:60}
 
 /* reveals + motion */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
@@ -335,9 +347,14 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
         <span class="voice-orb" aria-hidden="true"></span>
         <div>
           <div class="console-label"><span class="live"></span>Voice agent · live</div>
-          <p class="voice-cue">Tap <b>Start a call</b> in the corner and speak your question — allow microphone access when your browser asks.</p>
+          <p class="voice-cue">Click <b>Start a call</b> and speak your question — allow microphone access when your browser asks.</p>
         </div>
       </div>
+      <div class="voice-controls">
+        <button id="callBtn" class="voice-btn" type="button" aria-pressed="false"><span class="vb-dot"></span><span class="vb-label">Start a call</span></button>
+        <span id="callStatus" class="voice-status" role="status">Ready when you are</span>
+      </div>
+      <div id="callLog" class="voice-log" aria-live="polite" hidden></div>
       <div class="chips-lead">Try asking aloud →</div>
       <div class="chips">
         <span class="chip chip-static">Show my leadership scope</span>
@@ -424,9 +441,6 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
 </div></footer>
 
 
-<!-- ElevenLabs Conversational AI (voice) widget -->
-<elevenlabs-convai agent-id="agent_3001kzzbtvkzfsgtmftsfr3zgmd2"></elevenlabs-convai>
-<script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 
 <script>
 /* ===== Ambient background field ===== */
@@ -620,6 +634,37 @@ themeBtn.onclick=()=>{
   syncThemeBtn(); if(window.__rebuildField)window.__rebuildField();
 };
 syncThemeBtn();
+
+/* in-panel voice call via the ElevenLabs SDK */
+(function(){
+  const AGENT_ID='agent_3001kzzbtvkzfsgtmftsfr3zgmd2';
+  const btn=document.getElementById('callBtn'), statusEl=document.getElementById('callStatus'),
+        log=document.getElementById('callLog'), panel=document.querySelector('.voice-console');
+  if(!btn)return;
+  let convo=null;
+  const setLabel=t=>{btn.querySelector('.vb-label').textContent=t;};
+  function addLine(who,text){ if(!text)return; log.hidden=false; const d=document.createElement('div'); d.className='vl '+(who==='agent'?'agent':'you'); d.textContent=text; log.appendChild(d); log.scrollTop=log.scrollHeight; }
+  function reset(msg){ convo=null; btn.classList.remove('live','connecting'); btn.setAttribute('aria-pressed','false'); setLabel('Start a call'); if(panel)panel.classList.remove('speaking'); if(msg)statusEl.textContent=msg; }
+  async function start(){
+    btn.classList.add('connecting'); statusEl.textContent='Connecting…';
+    try{
+      await navigator.mediaDevices.getUserMedia({audio:true});
+      const mod=await import('https://cdn.jsdelivr.net/npm/@elevenlabs/client/+esm');
+      convo=await mod.Conversation.startSession({
+        agentId:AGENT_ID, connectionType:'webrtc',
+        onConnect:()=>{btn.classList.remove('connecting');btn.classList.add('live');btn.setAttribute('aria-pressed','true');setLabel('End call');statusEl.textContent='Connected — listening';},
+        onDisconnect:()=>reset('Call ended'),
+        onError:(e)=>{statusEl.textContent='Error: '+((e&&e.message)||e);btn.classList.remove('connecting');},
+        onModeChange:(m)=>{const sp=m&&m.mode==='speaking';statusEl.textContent=sp?'Agent speaking…':'Listening…';if(panel)panel.classList.toggle('speaking',sp);},
+        onMessage:(m)=>{ if(m&&m.message)addLine(m.source==='ai'?'agent':'you', m.message); }
+      });
+    }catch(e){
+      reset((e&&e.name==='NotAllowedError')?'Microphone blocked — allow mic access and try again':'Could not start the call: '+((e&&e.message)||e));
+    }
+  }
+  async function end(){ try{ if(convo)await convo.endSession(); }catch(e){} reset('Call ended'); }
+  btn.addEventListener('click',()=>{ convo?end():start(); });
+})();
 
 /* reveals */
 const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{threshold:.08});
