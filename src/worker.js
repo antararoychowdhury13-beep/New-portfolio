@@ -29,10 +29,42 @@ FACTS YOU MAY USE (never invent numbers or clients beyond these):
 - TCS: 30+ MVPs shipped.
 - Original frameworks: Intent-First UX (Sense → Morph → Confirm → Escape) — the framework this portfolio runs on — and GRAVITY, a spatial UI paradigm he is prototyping.
 
+CASE PAGES (slugs): smart-mining (Siemens Smart Mining), nextwork (Siemens #NextWork), khetmitra (John Deere KhetMitra), deere-pioneers (John Deere Farm Pioneers), bart (Microsoft Teams BART), career-journey (the 12-year career arc).
+
 RULES:
 - Keep answers under 120 words unless the visitor explicitly asks for depth.
 - Never fabricate metrics, employers, or dates. If asked something outside these facts, say the detail isn't in the public index and invite them to email ar.anupamsarkar@gmail.com for a live walk-through (deeper figures are shared under NDA).
-- Plain text or minimal markdown (bold, short bullet lists). No headings, no code blocks.`;
+- Plain text or minimal markdown (bold, short bullet lists). No headings, no code blocks. Do not include links — case links are attached separately via the CASES line.
+- After every answer, end with one final line of exactly this form: "CASES: slug1, slug2" — listing the 1-3 case slugs most relevant to your answer, or "CASES: none" if none apply. This line is machine-parsed and stripped before display; never refer to it in your prose.`;
+
+const CASE_SLUGS = ["smart-mining", "nextwork", "khetmitra", "deere-pioneers", "bart", "career-journey"];
+
+/** Split a model reply into display text and referenced case slugs. */
+function extractCases(text) {
+  let answer = text;
+  let cases = [];
+  const m = text.match(/\n?\s*CASES:\s*(.*)\s*$/i);
+  if (m) {
+    answer = text.slice(0, m.index).trim();
+    cases = m[1]
+      .split(/[,\s]+/)
+      .map((s) => s.trim().toLowerCase())
+      .filter((s) => CASE_SLUGS.includes(s));
+  }
+  if (!cases.length) {
+    // fallback: infer from mentions in the answer itself
+    const probes = {
+      "smart-mining": /smart mining/i,
+      nextwork: /nextwork/i,
+      khetmitra: /khetmitra/i,
+      "deere-pioneers": /farm pioneers|wordless/i,
+      bart: /\bbart\b|incident response/i,
+      "career-journey": /12[- ]year|career (arc|journey|path)|faraka/i,
+    };
+    cases = CASE_SLUGS.filter((s) => probes[s].test(answer));
+  }
+  return { answer, cases: cases.slice(0, 3) };
+}
 
 async function callOpenAI(env, messages) {
   if (!env.OPENAI_API_KEY) throw new Error("openai: no API key configured");
@@ -118,12 +150,12 @@ export default {
       const messages = [{ role: "system", content: SYSTEM_PROMPT }, ...msgs];
       const errors = [];
       try {
-        return json({ answer: await callOpenAI(env, messages), provider: "openai" });
+        return json({ ...extractCases(await callOpenAI(env, messages)), provider: "openai" });
       } catch (e) {
         errors.push(String(e.message || e));
       }
       try {
-        return json({ answer: await callOllama(env, messages), provider: "ollama" });
+        return json({ ...extractCases(await callOllama(env, messages)), provider: "ollama" });
       } catch (e) {
         errors.push(String(e.message || e));
       }

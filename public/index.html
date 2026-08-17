@@ -102,6 +102,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:40;backdrop-filter:blur(16px);-w
 .a-ai p{font-size:15.5px;margin-bottom:12px}
 .a-ai p:last-child{margin-bottom:0}
 .a-ai b{color:var(--accent);font-weight:600}
+.case-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:20px}
+.case-card{background:var(--ink-3);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px;transition:all .2s}
+.case-card:hover{border-color:var(--accent);transform:translateY(-2px);background:rgba(196,245,66,.04)}
+.case-card .cc-cli{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.case-card h5{font-family:var(--serif);font-weight:400;font-size:18px;line-height:1.2}
+.case-card .cc-m{font-family:var(--serif);font-size:21px;color:var(--accent)}
+.case-card .cc-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;font-weight:700;color:var(--ink);background:var(--accent);border-radius:8px;padding:9px 13px;margin-top:auto;align-self:flex-start;transition:box-shadow .2s}
+.case-card .cc-btn::after{content:" ↗"}
+.case-card .cc-btn:hover{box-shadow:0 0 20px -4px rgba(196,245,66,.8)}
 .a-prin{display:flex;flex-direction:column;gap:14px;margin-top:8px}
 .a-prin .p{display:flex;gap:14px;align-items:baseline}
 .a-prin .p .nm{font-family:var(--mono);color:var(--accent);font-size:12px}
@@ -270,6 +279,21 @@ footer h2 em{font-style:italic;color:var(--accent)}
 })();
 
 /* ===== Agent console ===== */
+const CASELIB={
+  'smart-mining':{cli:'Siemens · Smart Mining',t:'Clustered eight operational gaps into four interventions.',m:'67% faster',href:'case-smart-mining.html'},
+  'nextwork':{cli:'Siemens · #NextWork',t:'Built the operating system around the methodology.',m:'72% adoption',href:'case-nextwork.html'},
+  'khetmitra':{cli:'John Deere India · KhetMitra',t:'Stopped showing data and showed the next move.',m:'+17.3% yield',href:'case-khetmitra.html'},
+  'deere-pioneers':{cli:'John Deere · Farm Pioneers',t:'A wordless interface a 7-year-old masters.',m:'91% success',href:'case-deere-pioneers.html'},
+  'bart':{cli:'Microsoft Teams · BART',t:'The first five minutes of incident response, compressed.',m:'5→1 tools',href:'case-incident-bart.html'},
+  'career-journey':{cli:'12-year trajectory',t:'A drawing class in Faraka → the system level at IBM.',m:'5 industries',href:'career-journey.html',btn:'Walk the journey'}
+};
+function caseCards(slugs){
+  const cards=(slugs||[]).map(s=>CASELIB[s]).filter(Boolean);
+  if(!cards.length)return '';
+  return '<div class="case-cards">'+cards.map(c=>
+    `<a class="case-card" href="${c.href}"><span class="cc-cli">${c.cli}</span><h5>${c.t}</h5><span class="cc-m">${c.m}</span><span class="cc-btn">${(c.btn||'View detailed case study').toUpperCase()}</span></a>`
+  ).join('')+'</div>';
+}
 const INTENTS={
   leadership:{label:'Prove leadership altitude',tag:'LEADERSHIP ALTITUDE',
     line:'resolving → organizational reach + decision ownership…',
@@ -280,7 +304,7 @@ const INTENTS={
         <div class="a-cell cool"><div class="n">95%</div><div class="l">cross-functional workshop alignment · BT</div></div>
         <div class="a-cell green"><div class="n">3 layers</div><div class="l">Ministry leadership → mine floor · Siemens</div></div>
       </div>
-      <div class="a-actions"><a href="case-smart-mining.html">Open Smart Mining org map</a><a href="case-nextwork.html">Open #NextWork reach</a></div>`},
+      ${caseCards(['smart-mining','nextwork'])}`},
   impact:{label:'Show measurable impact',tag:'QUANTIFIED OUTCOMES',
     line:'resolving → quantified outcomes across 5 industries…',
     body:()=>`<div class="a-grid">
@@ -293,7 +317,8 @@ const INTENTS={
         <div class="a-cell warm"><div class="n">30+</div><div class="l">MVPs shipped · TCS</div></div>
         <div class="a-cell green"><div class="n">+40%</div><div class="l">GTM acceleration · John Deere</div></div>
       </div>
-      <p class="a-note">Numbers are role-real and reshaped, never invented. Tier-2 figures are walked through live under NDA.</p>`},
+      <p class="a-note">Numbers are role-real and reshaped, never invented. Tier-2 figures are walked through live under NDA.</p>
+      ${caseCards(['smart-mining','khetmitra','deere-pioneers'])}`},
   decision:{label:'Show the hardest decision',tag:'HIGHEST-COST TRADE-OFF',
     line:'resolving → highest-cost trade-offs in the archive…',
     body:()=>`<div class="decision"><h4>Killed a concept that tested well — Siemens Smart Mining</h4>
@@ -304,12 +329,12 @@ const INTENTS={
         <div class="row"><b>Why</b><span>Field truth: not one farmer opened more than two data sources before deciding. A dashboard would add load.</span></div>
         <div class="row"><b>Trade-off</b><span>Contradicted the stakeholder ask for a dashboard; had to re-sell leadership on a decision assistant.</span></div>
         <div class="row res"><b>Result</b><span>41→87% task completion · +17.3% yield · funded to phase 2.</span></div></div>
-      <div class="a-actions"><a href="case-smart-mining.html">Open the pivot</a><a href="case-khetmitra.html">Open the override</a></div>`},
+      ${caseCards(['smart-mining','khetmitra'])}`},
   arc:{label:'Walk the 12-year arc',tag:'CAREER TRAJECTORY',
     line:'resolving → trajectory, Faraka → IBM…',
     body:()=>`<div class="a-statement">A drawing class in Faraka → architecture → IIT gold → TCS → Deere → Siemens → BT → <em>IBM.</em></div>
       <p class="a-note">No year of the twelve dead-ends — each industry switch fed a durable capability the next role compounded. The line only rises.</p>
-      <div class="a-actions"><a href="career-journey.html">Walk the interactive journey</a></div>`},
+      ${caseCards(['career-journey'])}`},
   vp:{label:'Why VP-ready?',tag:'READINESS SYNTHESIS',
     line:'resolving → readiness synthesis…',
     body:()=>`<div class="a-statement">Thinks in <em>decisions, not deliverables.</em> Designs how teams operate, not just what they ship.</div>
@@ -318,7 +343,8 @@ const INTENTS={
         <div class="p"><span class="nm">02</span><span class="tx">Design the operating system — governance, critique, decision rights — not only the screens.</span></div>
         <div class="p"><span class="nm">03</span><span class="tx">Reach two layers up and one down — exec framing, cross-functional alignment, frontline evidence.</span></div>
       </div>
-      <p class="a-note">Available Q1 2026 for VP of Design / Head of Product Design / Director-level mandates.</p>`},
+      <p class="a-note">Available Q1 2026 for VP of Design / Head of Product Design / Director-level mandates.</p>
+      ${caseCards(['smart-mining','nextwork','career-journey'])}`},
   ifu:{label:'What is Intent-First UX?',tag:'ORIGINAL FRAMEWORK',
     line:'resolving → original framework you are currently inside…',
     body:()=>`<div class="a-statement">Every UI framework starts <em>after</em> intent. Intent-First UX starts before it.</div>
@@ -392,7 +418,7 @@ async function ask(q){
     while(chatHist.length>8)chatHist.shift();
     tagEl.textContent=d.provider==='openai'?'GPT-4O MINI':d.provider==='ollama'?'OLLAMA':'LIVE AGENT';
     lineEl.textContent='› '+q;
-    bodyEl.innerHTML='<div class="a-body"><div class="a-ai">'+aiHtml(d.answer)+'</div></div>';
+    bodyEl.innerHTML='<div class="a-body"><div class="a-ai">'+aiHtml(d.answer)+'</div>'+caseCards(d.cases)+'</div>';
     input.value='';
   }catch(e){
     const k=route(q);
