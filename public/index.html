@@ -7,14 +7,14 @@
 <meta name="description" content="An intent-first portfolio. Express what you want to know; it resolves.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#07070A; --ink-2:#0E0E13; --ink-3:#16161D; --ink-4:#1E1E27;
   --cream:#FAF9F5; --muted:#82828C; --muted-2:#5A5A63;
   --accent:#C4F542; --cool:#7CA3FF; --warm:#FF7A5C; --green:#9DD46A;
   --line:rgba(255,255,255,0.07); --line-2:rgba(255,255,255,0.12);
-  --serif:'Instrument Serif',Georgia,serif; --sans:'Inter',-apple-system,sans-serif; --mono:'IBM Plex Mono',monospace;
+  --serif:'Inter',-apple-system,sans-serif; --sans:'Inter',-apple-system,sans-serif; --mono:'Inter',-apple-system,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:80px}
@@ -521,12 +521,12 @@ dio.observe(cwrap);
   proj.forEach(p=>{
     const g=document.createElementNS(NS,'g');
     const c=document.createElementNS(NS,'circle');c.setAttribute('r',5);c.setAttribute('fill','#0E0E13');c.setAttribute('stroke','#7CA3FF');c.setAttribute('stroke-width','1.5');
-    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-12);t.setAttribute('fill','#82828C');t.setAttribute('font-family',"'IBM Plex Mono'");t.setAttribute('font-size','10');t.textContent=p.label;
+    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('y',-12);t.setAttribute('fill','#82828C');t.setAttribute('font-family',"'Inter'");t.setAttribute('font-size','10');t.textContent=p.label;
     g.appendChild(c);g.appendChild(t);
     if(p.case){
       // openable case node: lime core dot + pointer + hover affordance + navigate
       const core=document.createElementNS(NS,'circle');core.setAttribute('r',1.8);core.setAttribute('fill','#C4F542');g.appendChild(core);
-      const arr=document.createElementNS(NS,'text');arr.setAttribute('text-anchor','middle');arr.setAttribute('y',-12);arr.setAttribute('x',0);arr.setAttribute('fill','#C4F542');arr.setAttribute('font-family',"'IBM Plex Mono'");arr.setAttribute('font-size','10');arr.setAttribute('dx',(p.label.length*5.4)+'');arr.textContent='↗';arr.style.opacity='0';g.appendChild(arr);
+      const arr=document.createElementNS(NS,'text');arr.setAttribute('text-anchor','middle');arr.setAttribute('y',-12);arr.setAttribute('x',0);arr.setAttribute('fill','#C4F542');arr.setAttribute('font-family',"'Inter'");arr.setAttribute('font-size','10');arr.setAttribute('dx',(p.label.length*5.4)+'');arr.textContent='↗';arr.style.opacity='0';g.appendChild(arr);
       g.style.cursor='pointer';
       g.addEventListener('mouseenter',()=>{c.setAttribute('r',7);c.setAttribute('stroke','#C4F542');arr.style.opacity='1';t.setAttribute('fill','#FAF9F5');});
       g.addEventListener('mouseleave',()=>{c.setAttribute('r',5);if(!(active&&p.links.includes(active)))c.setAttribute('stroke','#7CA3FF');arr.style.opacity='0';if(!active||p.links.includes(active)){}});

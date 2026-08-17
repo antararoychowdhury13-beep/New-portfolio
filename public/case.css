@@ -3,7 +3,7 @@
   --cream:#FAF9F5; --muted:#82828C; --muted-2:#5A5A63;
   --accent:#C4F542; --cool:#7CA3FF; --warm:#FF7A5C; --green:#9DD46A;
   --line:rgba(255,255,255,0.07); --line-2:rgba(255,255,255,0.12);
-  --serif:'Instrument Serif',Georgia,serif; --sans:'Inter',-apple-system,sans-serif; --mono:'IBM Plex Mono',monospace;
+  --serif:'Inter',-apple-system,sans-serif; --sans:'Inter',-apple-system,sans-serif; --mono:'Inter',-apple-system,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
