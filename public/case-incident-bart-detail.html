@@ -4,256 +4,1287 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Incident Management in Teams — Detailed Case Study — Anupam Sarkar</title>
-<meta name="description" content="Microsoft Teams · BART: compressing the first five minutes of incident response — five tools into one Teams conversation, with ServiceNow as the invisible system of record.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
 <script>if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light");</script>
 <style>
+/* ============================================================
+   DESIGN SYSTEM
+   Swiss-editorial · light + dark · ONE typeface (Inter)
+   8pt grid · one indigo accent + 4 semantic signals
+   Minimum font-size enforced at 12px. Tabular numerals.
+   ============================================================ */
 :root{
-  --ink:#07070A; --ink-2:#0E0E13; --ink-3:#16161D; --ink-4:#1E1E27;
-  --cream:#FAF9F5; --muted:#A7A7B2; --muted-2:#858591;
-  --accent:#C4F542; --cool:#7CA3FF; --warm:#FF7A5C; --green:#9DD46A; --danger:#E85A4F;
-  --line:rgba(255,255,255,0.08); --line-2:rgba(255,255,255,0.14);
-  --sans:'Inter',-apple-system,sans-serif;
+  --bg:#08080a; --bg-1:#0e0e11; --bg-2:#141418; --bg-3:#1b1b21;
+  --line:#26262d; --line-2:#37373f;
+  --ink:#f5f5f4; --ink-2:#a8a8b0; --ink-3:#6f6f78; --ink-4:#4a4a52;
+  --accent:#C4F542;
+  --accent-d:#9DD46A;
+  --cyan:#54c8e8;        /* secondary / "after" */
+  --red:#f0584f;         /* problem / incident / high priority */
+  --amber:#f2a93a;       /* friction / suspended */
+  --green:#3ed492;       /* resolved / delivered */
+  --soft:rgba(196,245,66,.12);
+  --maxw:1180px;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:84px}
-body{background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased}
-::selection{background:var(--accent);color:var(--ink)}
-a{color:inherit;text-decoration:none}
-svg{display:block;max-width:100%}
-.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
-a:focus-visible,button:focus-visible{outline:3px solid var(--cool);outline-offset:4px;border-radius:6px}
-.eyebrow{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'Inter',-apple-system,sans-serif;
+  font-size:15px; line-height:1.62; letter-spacing:.004em;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+body::before{ /* atmosphere */
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1000px 640px at 80% -8%,rgba(125,128,240,.11),transparent 60%),
+    radial-gradient(720px 520px at 2% 10%,rgba(84,200,232,.05),transparent 55%);
+}
+body::after{ /* grain */
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;position:relative;z-index:1}
 
-/* nav (matches portfolio) */
-nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(7,7,10,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);transition:background .3s}
-.nav-in{max-width:1180px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.logo{font-weight:700;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:12px}
-.logo .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
-.nav-right{display:flex;align-items:center;gap:18px}
-.back{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px;transition:color .2s}
-.back:hover{color:var(--accent)}
-.theme-toggle{-webkit-appearance:none;appearance:none;position:relative;width:46px;height:24px;flex:none;border-radius:99px;background:var(--ink-4);border:1px solid var(--line-2);cursor:pointer;padding:0;outline:none;transition:background .3s ease,border-color .3s ease}
-.theme-toggle .tt-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.35)}
+/* ---- Type ---- */
+h1,h2,h3,h4{font-weight:700;letter-spacing:-.02em;line-height:1.06}
+.display{font-size:clamp(50px,8.6vw,104px);font-weight:700;letter-spacing:-.045em;line-height:.92}
+h2{font-size:clamp(27px,4vw,40px);letter-spacing:-.03em;color:var(--ink)}
+h3{font-size:19px;letter-spacing:-.01em;line-height:1.22}
+h4{font-size:14px;letter-spacing:.01em}
+p{color:var(--ink-2);max-width:66ch}
+.lead{font-size:clamp(17px,2.1vw,20px);line-height:1.5;color:var(--ink);max-width:42ch;font-weight:500;letter-spacing:-.01em}
+strong,b{color:var(--ink);font-weight:700}
+em{color:var(--ink);font-style:normal;border-bottom:1px solid var(--accent-d);padding-bottom:1px}
+.mono{font-variant-numeric:tabular-nums;letter-spacing:0}
+.small{font-size:13px} .xs{font-size:12px}
+
+.kicker{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink-3);display:flex;align-items:center;gap:12px}
+.kicker .num{color:var(--accent)}
+.kicker::before{content:"";width:26px;height:1px;background:var(--line-2)}
+
+/* ---- Layout ---- */
+section{padding:100px 0;border-top:1px solid var(--line);position:relative}
+.act-head{display:grid;gap:16px;margin-bottom:52px;max-width:780px}
+.grid{display:grid;gap:22px}
+.g2{grid-template-columns:1fr 1fr} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:880px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.span2{grid-column:span 2}@media(max-width:880px){.span2{grid-column:auto}}
+
+.tag{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;
+  letter-spacing:.03em;padding:5px 11px;border:1px solid var(--line-2);border-radius:100px;
+  color:var(--ink-2);background:var(--bg-2);white-space:nowrap}
+.tag.ghost{border-style:dashed;color:var(--ink-3)}
+.tag .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.tag.red .dot{background:var(--red)} .tag.amber .dot{background:var(--amber)}
+.tag.green .dot{background:var(--green)} .tag.cyan .dot{background:var(--cyan)}
+
+.card{background:var(--bg-1);border:1px solid var(--line);border-radius:14px;padding:24px}
+.card.flush{padding:0;overflow:hidden}
+.card .hd{padding:22px 24px 0}
+figure{margin:0}
+figcaption{font-size:12px;color:var(--ink-3);margin-top:13px;line-height:1.55}
+figcaption b{color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-3)}
+.svgwrap{width:100%;display:block}
+.svgwrap svg{width:100%;height:auto;display:block}
+.divider{height:1px;background:var(--line);border:0;margin:0}
+
+/* stat / BAN */
+.stat .v{font-size:clamp(38px,5.6vw,62px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.stat .l{font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.12em;margin-top:11px;font-weight:600}
+.stat .s{font-size:13px;color:var(--ink-2);margin-top:8px;max-width:34ch}
+.accent{color:var(--accent)} .c-red{color:var(--red)} .c-green{color:var(--green)}
+.c-amber{color:var(--amber)} .c-cyan{color:var(--cyan)}
+
+/* icons */
+.ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.sm{width:14px;height:14px} .ic.lg{width:24px;height:24px}
+
+/* meta */
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.meta div{background:var(--bg-1);padding:17px 19px}
+.meta dt{font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.11em;font-weight:600;display:flex;gap:7px;align-items:center}
+.meta dd{font-size:14px;color:var(--ink);margin-top:6px;font-weight:500}
+@media(max-width:880px){.meta{grid-template-columns:1fr 1fr}}
+
+/* nav */
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);
+  background:rgba(8,8,10,.74);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700}
+.brand .glyph{width:22px;height:22px;border-radius:6px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-d));
+  display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800}
+.navlinks{display:flex;gap:6px}
+.navlinks a{font-size:12px;color:var(--ink-3);text-decoration:none;padding:6px 10px;border-radius:7px;font-weight:600;letter-spacing:.02em}
+.navlinks a:hover{color:var(--ink);background:var(--bg-2)}
+@media(max-width:820px){.navlinks{display:none}}
+
+/* hook */
+.hero{padding:120px 0 92px;border-top:0}
+.hero .ey{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px}
+.hero .lead{margin:30px 0 0;max-width:54ch;font-size:clamp(18px,2.3vw,23px)}
+.herostats{display:grid;grid-template-columns:repeat(3,auto);gap:54px;margin-top:56px;flex-wrap:wrap}
+@media(max-width:680px){.herostats{grid-template-columns:1fr 1fr;gap:32px}}
+.herostats .v{font-size:clamp(34px,5vw,52px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.herostats .l{font-size:12px;color:var(--ink-3);margin-top:9px;max-width:20ch;line-height:1.45}
+
+/* principle */
+.principle{display:flex;gap:16px;align-items:flex-start;padding:20px 0;border-bottom:1px solid var(--line)}
+.principle:last-child{border-bottom:0}
+.principle .n{font-size:12px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;
+  border:1px solid var(--line-2);border-radius:7px;width:30px;height:30px;display:grid;place-items:center;flex:none;background:var(--bg-2)}
+.principle p{font-size:13px;margin-top:3px}
+
+/* finding row (lollipop legend support) */
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);margin-top:6px}
+.legend i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:middle}
+
+/* quote */
+.quote{border-left:2px solid var(--accent-d);padding:4px 0 4px 20px;color:var(--ink);font-size:15px;line-height:1.55}
+.quote cite{display:block;margin-top:9px;font-size:12px;color:var(--ink-3);font-style:normal}
+
+/* phase */
+.phase{position:relative;padding:20px 22px;background:var(--bg-1);border:1px solid var(--line);border-radius:12px}
+.phase .ph{font-size:12px;color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.phase h4{margin:8px 0 7px;font-size:15px;color:var(--ink)}
+.phase p{font-size:13px}
+.phase .d{position:absolute;top:18px;right:20px;font-size:12px;color:var(--accent);font-weight:700}
+
+/* screens */
+.screens{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:980px){.screens{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){.screens{grid-template-columns:1fr}}
+.screen{background:var(--bg-1);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.screen .cap{padding:9px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);background:var(--bg-2)}
+.screen .cap .n{font-size:12px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.screen .cap .t{font-size:12px;font-weight:600;color:var(--ink)}
+.screen .body{padding:14px}
+.screen .desc{padding:0 14px 15px;font-size:12px;color:var(--ink-3);line-height:1.5}
+.screen .desc b{color:var(--ink-2)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:64px 0 80px}
+.fcred{font-size:12px;color:var(--ink-3);line-height:1.7}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink);
+  border:1px solid var(--line-2);border-radius:9px;padding:11px 16px;text-decoration:none;background:var(--bg-2)}
+.btn:hover{border-color:var(--accent-d);color:var(--accent)}
+
+/* small helpers */
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--ink-3);display:flex;align-items:center;gap:8px;margin-bottom:14px}
+ul.clean{list-style:none;display:flex;flex-direction:column;gap:11px}
+ul.clean li{display:flex;gap:11px;align-items:flex-start;font-size:13px;color:var(--ink-2);line-height:1.5}
+ul.clean li .ic{margin-top:1px;color:var(--accent)}
+.kbd{font-size:12px;background:var(--bg-3);border:1px solid var(--line-2);border-radius:5px;padding:1px 6px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+/* ===== portfolio alignment: nav toggle, light/dark, accent remap ===== */
+.nav-right{display:flex;align-items:center;gap:14px}
+.npf{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-3);text-decoration:none;white-space:nowrap}
+.npf:hover{color:var(--accent)}
+.theme-toggle{-webkit-appearance:none;appearance:none;position:relative;width:46px;height:24px;flex:none;border-radius:99px;background:var(--bg-3);border:1px solid var(--line-2);cursor:pointer;padding:0;outline:none;transition:background .3s,border-color .3s}
+.theme-toggle .tt-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;color:#08080a;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.35)}
 .theme-toggle .tt-thumb::after{content:"\263E"}
 html.light .theme-toggle{background:rgba(111,163,0,.16);border-color:rgba(111,163,0,.3)}
 html.light .theme-toggle .tt-thumb{transform:translateX(22px)}
 html.light .theme-toggle .tt-thumb::after{content:"\2600"}
+.theme-toggle:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 
-/* hero (theme-aware) */
-.case-hero{padding:150px 0 56px}
-.hero-eyebrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:22px}
-.tagpill{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:7px 14px;border-radius:99px}
-.tagpill.role{color:var(--accent);border-color:rgba(196,245,66,.35)}
-.case-hero h1{font-weight:600;font-size:32px;line-height:1.1;letter-spacing:-.02em;max-width:900px}
-.case-hero h1 em{font-style:normal;color:var(--accent)}
-.case-hero .lede{margin-top:24px;max-width:660px;font-size:18px;color:var(--muted)}
-.case-hero .lede b{color:var(--cream);font-weight:600}
-.metric-strip{margin-top:48px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
-.metric-cell{padding:24px 22px 4px 0;border-right:1px solid var(--line)}
-.metric-cell:last-child{border-right:none}
-.metric-cell .n{font-size:32px;font-weight:600;line-height:1;color:var(--accent)}
-.metric-cell .l{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+/* indigo → portfolio lime/green in every SVG (both themes) */
+[fill="#7d80f0"]{fill:var(--accent)} [stroke="#7d80f0"]{stroke:var(--accent)}
+[fill="#5b5fc7"]{fill:var(--accent-d)} [stroke="#5b5fc7"]{stroke:var(--accent-d)}
+[fill="#cfcffa"]{fill:var(--ink)}
+[fill="rgba(125,128,240,.1)"]{fill:var(--soft)}
+[fill="rgba(125,128,240,.12)"]{fill:var(--soft)}
+[fill="rgba(125,128,240,.18)"]{fill:var(--soft)}
+[fill="rgba(125,128,240,.08)"]{fill:var(--soft)}
 
-/* ===== case card — data panels stay on a dark canvas in both themes ===== */
-.case-card{background:#12121A;border:1px solid rgba(255,255,255,0.09);border-radius:16px;overflow:hidden;margin-bottom:80px;color:#FAF9F5}
-.case-card .eyebrow{color:#8B8A85}
-.case-intro{padding:40px 40px 0}
-.case-intro h2{font-weight:600;font-size:18px;line-height:1.3;max-width:780px;color:#FAF9F5}
-.case-intro h2 em{font-style:normal;color:#C4F542}
-.case-intro p{margin-top:14px;color:#8B8A85;font-size:18px;max-width:720px}
-.case-tabs{display:flex;gap:6px;padding:26px 40px 0;border-bottom:1px solid rgba(255,255,255,0.09);overflow-x:auto;scrollbar-width:none}
-.case-tabs::-webkit-scrollbar{display:none}
-.ctab{font-family:var(--sans);background:none;border:none;border-bottom:2px solid transparent;color:#8B8A85;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:14px 16px;min-height:44px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
-.ctab:hover{color:#FAF9F5}
-.ctab.active{color:#C4F542;border-bottom-color:#C4F542}
-.cpanel{display:none;padding:40px}
-.cpanel.active{display:grid;grid-template-columns:1fr 262px;gap:36px;align-items:start;animation:fade .4s ease}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.cpanel .viz{min-width:0}
-.cpanel .viz h3{font-weight:600;font-size:18px;line-height:1.3;margin-bottom:6px;color:#FAF9F5}
-.cpanel .viz .sub{font-size:18px;color:#8B8A85;margin-bottom:24px}
-.qr{border-left:1px solid rgba(255,255,255,0.09);padding-left:26px;display:flex;flex-direction:column;gap:18px;position:sticky;top:88px}
-.qr .eyebrow{color:#C4F542}
-.qr .big{font-weight:600;font-size:18px;line-height:1.35;color:#FAF9F5}
-.qr .big em{font-style:normal;color:#C4F542}
-.qr ul{list-style:none;display:flex;flex-direction:column;gap:11px}
-.qr li{font-size:12px;color:#8B8A85;padding-left:16px;position:relative}
-.qr li::before{content:"";position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:#C4F542}
-.qr .stat{border-top:1px solid rgba(255,255,255,0.09);padding-top:16px}
-.qr .stat .n{font-size:32px;font-weight:600;line-height:1;color:#C4F542}
-.qr .stat .l{font-size:12px;color:#8B8A85;margin-top:5px}
-.qr-cta{display:block;border:1px solid #C4F542;border-radius:12px;padding:16px 18px;background:rgba(196,245,66,0.06);transition:transform .2s,box-shadow .2s;min-height:44px}
-.qr-cta:hover{transform:translateY(-2px);box-shadow:0 0 24px -8px rgba(196,245,66,.6)}
-.qr-cta-l{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8B8A85;margin-bottom:8px}
-.qr-cta-b{display:block;font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#C4F542}
-.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:20px}
-.legend span{font-size:12px;color:#8B8A85;display:flex;align-items:center;gap:7px}
-.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
-.chart-label{font-size:11px;fill:#8B8A85;font-family:'Inter',sans-serif}
-.chart-strong{font-size:11.5px;fill:#FAF9F5;font-family:'Inter',sans-serif;font-weight:600}
-.so-what{display:flex;gap:12px;align-items:baseline;margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.09);font-size:12px;color:#8B8A85}
-.so-what b{color:#FAF9F5;font-weight:600;white-space:nowrap;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
-.so-what b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#C4F542;margin-right:8px;vertical-align:1px}
-
-/* artifacts */
-.art-group{margin-top:22px}
-.art-group:first-child{margin-top:0}
-.art-group .g-label{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#C4F542;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.09)}
-.art-items{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.art{background:#1E1E24;border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;transition:border-color .2s}
-.art:hover{border-color:rgba(255,255,255,.22)}
-.art .t{font-weight:500;color:#FAF9F5}
-.badge{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;white-space:nowrap}
-.badge.share{color:#9DD46A;border:1px solid rgba(157,212,106,.4)}
-.badge.nda{color:#8B8A85;border:1px solid rgba(255,255,255,0.14)}
-.access-box{background:#1E1E24;border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:18px;margin-top:4px}
-.access-box .row{display:flex;justify-content:space-between;font-size:12px;color:#8B8A85;padding:6px 0}
-.access-box .row b{color:#FAF9F5}
-.book-btn{display:block;text-align:center;background:#C4F542;color:#07070A;font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;padding:14px;border-radius:99px;margin-top:12px;transition:transform .2s}
-.book-btn:hover{transform:translateY(-2px)}
-
-/* footer (theme-aware) */
-footer{padding:90px 0 60px;border-top:1px solid var(--line)}
-.foot-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
-.foot-nav .big{font-weight:600;font-size:32px;line-height:1.12;letter-spacing:-.02em;max-width:600px}
-.foot-nav .big em{font-style:normal;color:var(--accent)}
-.foot-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--ink);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:16px 26px;border-radius:99px;transition:transform .2s}
-.foot-cta:hover{transform:translateY(-2px)}
-.colophon{margin-top:60px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-family:var(--sans);font-size:12px;letter-spacing:.05em;color:var(--muted-2);flex-wrap:wrap;gap:10px}
-
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
-.reveal.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none}*{transition:none!important;animation:none!important}}
-
-/* light mode — chrome flips; the dark data card stays dark */
+/* ===== light theme ===== */
 html.light{
-  --ink:#FFFFFF; --ink-2:#F8F8F6; --ink-3:#F3F3F0; --ink-4:#EBEBE7;
-  --cream:#1A1A1A; --muted:#626262; --muted-2:#8A8A8A;
-  --accent:#6FA300; --cool:#3F6BD0; --warm:#D9532F; --green:#55901F;
-  --line:rgba(0,0,0,0.10); --line-2:rgba(0,0,0,0.20);
+  --bg:#FFFFFF; --bg-1:#F8F8F6; --bg-2:#F3F3F0; --bg-3:#EBEBE7;
+  --line:rgba(0,0,0,0.10); --line-2:rgba(0,0,0,0.18);
+  --ink:#1A1A1A; --ink-2:#4A4A52; --ink-3:#6f6f78; --ink-4:#9A9AA2;
+  --accent:#6FA300; --accent-d:#55901F; --soft:rgba(111,163,0,.10);
 }
-html.light nav{background:rgba(255,255,255,.72)}
-html.light .case-hero h1 em,html.light .case-hero .lede b{color:inherit}
-html.light .case-hero h1 em{color:var(--accent)}
-html.light .tagpill.role{border-color:rgba(111,163,0,.4)}
-/* light-mode data card + diagrams */
-html.light .case-card{background:#FFFFFF;border-color:rgba(0,0,0,0.10);color:#1A1A1A}
-html.light .case-card .eyebrow{color:#626262}
-html.light .case-intro h2{color:#1A1A1A}
-html.light .case-intro h2 em{color:#6FA300}
-html.light .case-intro p{color:#595959}
-html.light .case-tabs{border-bottom-color:rgba(0,0,0,0.10)}
-html.light .ctab{color:#626262}
-html.light .ctab:hover{color:#1A1A1A}
-html.light .ctab.active{color:#6FA300;border-bottom-color:#6FA300}
-html.light .cpanel .viz h3{color:#1A1A1A}
-html.light .cpanel .viz .sub{color:#595959}
-html.light .qr{border-left-color:rgba(0,0,0,0.10)}
-html.light .qr .eyebrow{color:#6FA300}
-html.light .qr .big{color:#1A1A1A}
-html.light .qr .big em{color:#6FA300}
-html.light .qr li{color:#595959}
-html.light .qr li::before{background:#6FA300}
-html.light .qr .stat{border-top-color:rgba(0,0,0,0.10)}
-html.light .qr .stat .n{color:#6FA300}
-html.light .qr .stat .l{color:#595959}
-html.light .legend span{color:#595959}
-html.light .so-what{border-top-color:rgba(0,0,0,0.10);color:#595959}
-html.light .so-what b{color:#1A1A1A}
-html.light .so-what b::before{background:#6FA300}
-html.light .art-group .g-label{color:#6FA300;border-bottom-color:rgba(0,0,0,0.10)}
-html.light .art{background:#F3F3F0;border-color:rgba(0,0,0,0.10)}
-html.light .art .t{color:#1A1A1A}
-html.light .badge.share{color:#4E8A1F;border-color:rgba(78,138,31,.4)}
-html.light .badge.nda{color:#626262;border-color:rgba(0,0,0,0.16)}
-html.light .access-box{background:#F3F3F0;border-color:rgba(0,0,0,0.10)}
-html.light .access-box .row{color:#595959}
-html.light .access-box .row b{color:#1A1A1A}
-html.light .book-btn{background:#6FA300;color:#fff}
-html.light .qr-cta{border-color:rgba(111,163,0,.5);background:rgba(111,163,0,.06)}
-html.light .qr-cta-l{color:#595959}
-html.light .qr-cta-b{color:#6FA300}
-/* recolor inline SVG diagram values for a light canvas */
-html.light .case-card .chart-strong{fill:#1A1A1A}
-html.light .case-card .chart-label{fill:#595959}
-html.light .case-card [fill="#FAF9F5"]{fill:#1A1A1A}
-html.light .case-card [fill="#8B8A85"]{fill:#595959}
-html.light .case-card [fill="#C4F542"]{fill:#6FA300}
-html.light .case-card [stroke="#C4F542"]{stroke:#6FA300}
-html.light .case-card [fill="#9DD46A"]{fill:#4E8A1F}
-html.light .case-card [stroke="#9DD46A"]{stroke:#4E8A1F}
-html.light .case-card g[stroke="rgba(255,255,255,0.10)"]{stroke:rgba(0,0,0,0.16)}
-html.light .case-card [stroke="rgba(255,255,255,0.08)"]{stroke:rgba(0,0,0,0.12)}
-html.light .case-card [fill="rgba(255,255,255,0.02)"]{fill:rgba(0,0,0,0.03)}
-html.light .case-card [stroke="rgba(255,255,255,0.05)"]{stroke:rgba(0,0,0,0.07)}
-html.light .case-card [stroke="rgba(196,245,66,0.30)"]{stroke:rgba(111,163,0,0.45)}
-html.light .case-card [stroke="rgba(196,245,66,0.4)"]{stroke:rgba(111,163,0,0.5)}
-html.light .case-card [stroke="rgba(157,212,106,0.32)"]{stroke:rgba(78,138,31,0.45)}
-html.light .case-card [stroke="rgba(157,212,106,0.5)"]{stroke:rgba(78,138,31,0.55)}
-html.light .case-card [fill="rgba(196,245,66,0.08)"]{fill:rgba(111,163,0,0.10)}
-html.light .case-card [fill="rgba(196,245,66,0.06)"]{fill:rgba(111,163,0,0.09)}
-html.light .case-card [fill="rgba(196,245,66,0.25)"]{fill:rgba(111,163,0,0.28)}
-html.light .case-card [fill="rgba(157,212,106,0.10)"]{fill:rgba(78,138,31,0.14)}
+html.light body::before{background:radial-gradient(1000px 640px at 80% -8%,rgba(111,163,0,.08),transparent 60%),radial-gradient(720px 520px at 2% 10%,rgba(84,150,232,.05),transparent 55%)}
+html.light body::after{opacity:.02}
+html.light .topbar{background:rgba(255,255,255,.82)}
+/* recolour inline SVG neutrals for a light canvas */
+html.light [fill="#f5f5f4"]{fill:#1A1A1A}
+html.light [fill="#a8a8b0"]{fill:#4A4A52}
+html.light [stroke="#37373f"]{stroke:rgba(0,0,0,.16)}
+html.light [stroke="#26262d"]{stroke:rgba(0,0,0,.10)}
+html.light [fill="#141418"]{fill:#F3F3F0}
+html.light [fill="#0e0e11"]{fill:#ECECE8}
+html.light [fill="#1b1b21"]{fill:#E6E6E1}
+</style>
+</head>
+<body>
 
-@media (max-width:960px){
-  .cpanel.active{grid-template-columns:1fr}
-  .qr{border-left:none;border-top:1px solid rgba(255,255,255,0.09);padding-left:0;padding-top:24px;position:static}
-  .metric-strip{grid-template-columns:1fr 1fr}
-  .metric-cell{border-right:none;border-bottom:1px solid var(--line);padding:18px 0}
-  .art-items{grid-template-columns:1fr}
-  .case-hero{padding:120px 0 40px}
-  .case-intro,.cpanel,.case-tabs{padding-left:24px;padding-right:24px}
-}
-</style></head><body>
-<nav><div class="nav-in">
-  <a href="index.html" class="logo"><span class="dot"></span>Anupam Sarkar</a>
-  <div class="nav-right"><a href="index.html" class="back">← Back to portfolio</a><button id="themeBtn" class="theme-toggle" role="switch" aria-label="Toggle light and dark mode"><span class="tt-thumb"></span></button></div>
-</div></nav>
-<header class="case-hero"><div class="wrap reveal">
-  <div class="hero-eyebrow"><span class="tagpill">Microsoft Teams · ServiceNow</span><span class="tagpill role">Lead Product Designer</span></div>
-  <h1>The slowest part of incident response was <em>the part before anyone responded.</em></h1>
-  <p class="lede"><b>An on-call team was losing its most expensive minutes — the first five — to five disconnected tools just to start.</b> I designed BART: an assistant that collapses report, alert, and war-room into a single Microsoft Teams conversation, while ServiceNow quietly stays the system of record.</p>
-  <div class="metric-strip"><div class="metric-cell"><div class="n">5 → 1</div><div class="l">Tools unified into Teams</div></div><div class="metric-cell"><div class="n">3</div><div class="l">Ways to file, all in chat</div></div><div class="metric-cell"><div class="n">0</div><div class="l">Fields re-keyed across systems</div></div><div class="metric-cell"><div class="n">⅔</div><div class="l">Fewer steps, report to call</div></div></div>
-</div></header>
-<section style="padding-bottom:40px"><div class="wrap">
-  <div class="case-card reveal">
-    <div class="case-intro"><h2>The brief said “build a faster form.” <em>The form ranked last.</em></h2><p>A process audit showed the cost lived in everything around the form — re-keying into Slack, blasting email, hunting for the bridge. I named it the fragmentation tax and reframed the brief from speeding up intake to compressing the first five minutes of coordination.</p></div>
-    <div class="case-tabs" role="tablist"><button class="ctab active" data-case="chain" role="tab" aria-selected="true">Causal chain</button><button class="ctab" data-case="org" role="tab" aria-selected="false">Org map</button><button class="ctab" data-case="time" role="tab" aria-selected="false">Timeline</button><button class="ctab" data-case="art" role="tab" aria-selected="false">Artifacts</button></div>
-    <div class="cpanel active" id="case-chain">
-        <div class="viz"><h3>Five tool-hops and a mental-model gap collapsed into four design moves</h3><p class="sub">The fragmentation tax (red) — every manual handoff between noticing and resolving — clusters into four interventions (lime) that removed the coordination cost (green).</p><div class="legend"><span><i style="background:#E85A4F"></i>Problem gaps</span><span><i style="background:#C4F542"></i>Interventions</span><span><i style="background:#9DD46A"></i>Outcomes</span></div><svg viewBox="0 0 860 580" role="img" aria-label="Causal chain diagram"><g stroke="rgba(255,255,255,0.10)" fill="none"><path d="M230 60 C300 60,300 104.0,372 104.0"/><path d="M230 118 C300 118,300 220.0,372 220.0"/><path d="M230 176 C300 176,300 336.0,372 336.0"/><path d="M230 234 C300 234,300 452.0,372 452.0"/><path d="M230 292 C300 292,300 104.0,372 104.0"/><path d="M230 350 C300 350,300 220.0,372 220.0"/><path d="M230 408 C300 408,300 336.0,372 336.0"/><path d="M230 466 C300 466,300 452.0,372 452.0"/></g><g stroke="rgba(196,245,66,0.30)" fill="none"><line x1="588" y1="104.0" x2="650" y2="104.0"/><line x1="588" y1="220.0" x2="650" y2="220.0"/><line x1="588" y1="336.0" x2="650" y2="336.0"/><line x1="588" y1="452.0" x2="650" y2="452.0"/></g><g stroke="rgba(157,212,106,0.32)" fill="none"><path d="M810 104.0 C842 104.0,846 290.0,846 290.0"/><path d="M810 220.0 C842 220.0,846 290.0,846 290.0"/><path d="M810 336.0 C842 336.0,846 290.0,846 290.0"/><path d="M810 452.0 C842 452.0,846 290.0,846 290.0"/></g><rect x="20" y="46" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="67" class="chart-strong" font-size="11">5 disconnected tools to start</text><rect x="20" y="104" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="125" class="chart-strong" font-size="11">Web form → ServiceNow ticket</text><rect x="20" y="162" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="183" class="chart-strong" font-size="11">Slack re-created by hand</text><rect x="20" y="220" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="241" class="chart-strong" font-size="11">Email blast to responders</text><rect x="20" y="278" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="299" class="chart-strong" font-size="11">Conference bridge dialed separately</text><rect x="20" y="336" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="357" class="chart-strong" font-size="11">2 manual re-creations per incident</text><rect x="20" y="394" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="415" class="chart-strong" font-size="11">No way to see who&#x27;s responding</text><rect x="20" y="452" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="473" class="chart-strong" font-size="11">3 intentions → 5 obligations</text><rect x="372" y="78.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="100.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">The adaptive card</text><text x="388" y="117.0" font-size="10.5" fill="#8B8A85" font-family="Inter">One object: alert + status + call door</text><rect x="372" y="194.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="216.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Three invocation paths</text><text x="388" y="233.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Bot · message action · proactive card</text><rect x="372" y="310.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="332.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">ServiceNow made invisible</text><text x="388" y="349.0" font-size="10.5" fill="#8B8A85" font-family="Inter">System of record, zero re-keying</text><rect x="372" y="426.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="448.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Governed lifecycle</text><text x="388" y="465.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Workstreams + locked close</text><rect x="650" y="83.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="102.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">5 → 1 tools</text><text x="664" y="117.0" font-size="10" fill="#9DD46A" font-family="Inter">unified into Teams</text><rect x="650" y="199.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="218.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">0 fields</text><text x="664" y="233.0" font-size="10" fill="#9DD46A" font-family="Inter">re-keyed across systems</text><rect x="650" y="315.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="334.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">⅔ fewer steps</text><text x="664" y="349.0" font-size="10" fill="#9DD46A" font-family="Inter">report → war-room</text><rect x="650" y="431.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="450.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">3 paths</text><text x="664" y="465.0" font-size="10" fill="#9DD46A" font-family="Inter">every role has a way in</text><circle cx="846" cy="290.0" r="7" fill="none" stroke="#C4F542" stroke-width="2"/><text x="852" y="564" text-anchor="end" font-family="Inter" font-size="15" fill="#FAF9F5">The bet: compress the first five minutes — absorb five obligations into three intentions.</text></svg><div class="so-what"><b>So what</b><span>Cluster the handoffs, don't speed each one up. Three human intentions absorbed five system obligations — the person expresses intent, the system does the plumbing.</span></div></div>
-        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">The cost wasn't the form. It was <em>everything around it.</em></p><ul><li>Findings: re-keying ranked highest, form last</li><li>3 intentions vs 5 system obligations</li><li>The card became the atomic unit of the system</li></ul><div class="stat"><div class="n">2</div><div class="l">manual re-creations per incident, removed</div></div></aside></div><div class="cpanel" id="case-org">
-        <div class="viz"><h3>Design reached from the client's brief to three roles under pressure</h3><p class="sub">Up to the brief owner via six pointed evidence questions; across the Teams/ServiceNow/Webex systems; down to reporter, manager, and responder.</p><svg viewBox="0 0 860 488" role="img" aria-label="Organizational reach map"><text x="225.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">INTAKE</text><text x="343.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">NOTIFY</text><text x="461.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">ASSEMBLE</text><text x="579.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">RESOLVE</text><text x="697.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">CLOSE</text><rect x="20" y="48" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="82" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Client &amp; ops leadership</text><text x="36" y="102" fill="#8B8A85" font-size="11" font-family="Inter">Brief owner · system-of-record constraints</text><rect x="20" y="148" width="820" height="84" rx="12" fill="rgba(196,245,66,0.06)" stroke="#C4F542"/><text x="36" y="182" fill="#C4F542" font-weight="600" font-size="11.5" font-family="Inter">Lead Product Designer — my layer</text><text x="36" y="202" fill="#8B8A85" font-size="11" font-family="Inter">Reframed brief · service blueprint · spec</text><rect x="20" y="248" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="282" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Systems &amp; platform</text><text x="36" y="302" fill="#8B8A85" font-size="11" font-family="Inter">Teams · ServiceNow · Webex integration</text><rect x="20" y="348" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="382" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Frontline — three roles</text><text x="36" y="402" fill="#8B8A85" font-size="11" font-family="Inter">Reporter · manager · responder</text><line x1="208" y1="90.0" x2="208" y2="290.0" stroke="#C4F542" stroke-width="2"/><circle cx="208" cy="90.0" r="6" fill="#C4F542"/><circle cx="208" cy="190.0" r="6" fill="#C4F542"/><circle cx="208" cy="290.0" r="6" fill="#C4F542"/><circle cx="225.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="343.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="461.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="579.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="697.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><line x1="234.0" y1="190.0" x2="334.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="352.0" y1="190.0" x2="452.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="470.0" y1="190.0" x2="570.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="588.0" y1="190.0" x2="688.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><rect x="430" y="410" width="119.60000000000001" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="489.8" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">6 client questions</text><rect x="561.6" y="410" width="88.60000000000001" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="605.9" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">Process audit</text><rect x="662.2" y="410" width="101.0" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="712.7" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">Role interviews</text><text x="208" y="474" text-anchor="middle" fill="#C4F542" font-size="11.5" font-weight="600" font-family="Inter">Vertical reach: 3 layers</text><text x="540" y="156.0" text-anchor="middle" fill="#C4F542" font-size="11.5" font-weight="600" font-family="Inter">Horizontal reach: 5 lifecycle stages</text></svg><div class="so-what"><b>So what</b><span>Reach two layers up and one down. The six client questions grounded the brief; the three-role model shaped every invocation path.</span></div></div>
-        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">Same destination, reached from <em>wherever you already are.</em></p><ul><li>Reporter starts from the bot</li><li>Teammate uses a message action mid-thread</li><li>System posts a proactive card itself</li></ul><div class="stat"><div class="n">6</div><div class="l">client questions became design constraints</div></div></aside></div><div class="cpanel" id="case-time">
-        <div class="viz"><h3>A five-phase sprint, two-thirds spent understanding before any pixels</h3><p class="sub">In incident response a wrong information model costs more than a wrong colour — so framing and structure led. Two forks settled the shape of the product.</p><svg viewBox="0 0 860 400" role="img" aria-label="Project timeline with decision forks"><text x="200.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P1</text><text x="355.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P2</text><line x1="355.0" y1="40" x2="355.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="510.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P3</text><line x1="510.0" y1="40" x2="510.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="665.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P4</text><line x1="665.0" y1="40" x2="665.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="820.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P5</text><line x1="820.0" y1="40" x2="820.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="20" y="89.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Frame &amp; reframe</text><rect x="200.0" y="72.0" width="186.0" height="26" rx="13" fill="rgba(124,163,255,0.30)"/><text x="20" y="179.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Structure &amp; explore</text><rect x="355.0" y="162.0" width="155.0" height="26" rx="13" fill="rgba(255,122,92,0.30)"/><rect x="510.0" y="162.0" width="111.60000000000002" height="26" rx="13" fill="rgba(255,122,92,0.30)"/><text x="20" y="269.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Compose &amp; specify</text><rect x="572.0" y="252.0" width="136.39999999999998" height="26" rx="13" fill="rgba(196,245,66,0.25)"/><rect x="708.4" y="252.0" width="111.60000000000002" height="26" rx="13" fill="rgba(196,245,66,0.25)"/><line x1="336.4" y1="46" x2="336.4" y2="324" stroke="#C4F542" stroke-dasharray="5 5" stroke-width="1.5"/><text x="336.4" y="336" text-anchor="start" fill="#C4F542" font-size="11" font-weight="600" font-family="Inter">Fork · faster form vs first 5 minutes</text><line x1="510.0" y1="46" x2="510.0" y2="346" stroke="#C4F542" stroke-dasharray="5 5" stroke-width="1.5"/><text x="510.0" y="358" text-anchor="middle" fill="#C4F542" font-size="11" font-weight="600" font-family="Inter">Fork · one path vs three</text><circle cx="708.4" cy="265.0" r="6" fill="#9DD46A"/><text x="696.4" y="249.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">hi-fi card</text><circle cx="820.0" cy="265.0" r="6" fill="#9DD46A"/><text x="808.0" y="249.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">build-ready spec</text><circle cx="621.6" cy="175.0" r="6" fill="#9DD46A"/><text x="609.6" y="159.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">3 paths shipped</text></svg><div class="so-what"><b>So what</b><span>Front-loading the model was the leadership call. Shipping all three invocation paths — not one — meant every role had a natural way in.</span></div></div>
-        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">Each phase ended in <em>an artifact a stakeholder could react to.</em></p><ul><li>Fork 1: faster form → compress first 5 min</li><li>Fork 2: shipped 3 invocation paths, not 1</li><li>2/3 of timeline on framing + structure</li></ul><div class="stat"><div class="n">5</div><div class="l">phases · each a build-ready output</div></div></aside></div><div class="cpanel" id="case-art">
-        <div class="viz"><div class="art-grid"><div class="art-group"><div class="g-label">Research → the reframe</div><div class="art-items"><div class="art"><span class="t">Process audit (where the minutes go)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Six client evidence questions</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Findings ranked by time-to-respond</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Mental-model gap map</span><span class="badge share">Shareable</span></div></div></div><div class="art-group"><div class="g-label">Frameworks → the forks</div><div class="art-items"><div class="art"><span class="t">Effort/impact on invocation paths</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Service blueprint (front/backstage)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">In-scope vs out-of-scope cut</span><span class="badge share">Shareable</span></div></div></div><div class="art-group"><div class="g-label">Design + outcomes → spec</div><div class="art-items"><div class="art"><span class="t">The adaptive card anatomy</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">8 reconstructed end-to-end screens</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Before/after task flow (5→1)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Build-ready handoff spec</span><span class="badge nda">NDA</span></div></div></div></div><div class="so-what"><b>So what</b><span>Grouped by decision. The ranked findings and the mental-model gap are load-bearing — they justify the reframe that the whole product rests on.</span></div></div>
-        <aside class="qr"><p class="eyebrow">Access</p><div class="access-box"><div class="row"><span>Shareable now</span><b>9 artifacts</b></div><div class="row"><span>Under NDA — walkthrough</span><b>1 artifact</b></div><a class="book-btn" href="index.html#contact">Book 20 min →</a></div><p style="font-size:12px;color:#8B8A85">Screens reconstructed faithfully from the design source.</p></aside></div>
+<!-- ============ NAV ============ -->
+<nav class="topbar">
+  <div class="wrap">
+    <a href="index.html" class="brand"><span class="glyph">AS</span> Anupam Sarkar</a>
+    <div class="navlinks">
+      <a href="#context">Context</a>
+      <a href="#problem">Problem</a>
+      <a href="#research">Research</a>
+      <a href="#process">Process</a>
+      <a href="#solution">Solution</a>
+      <a href="#impact">Impact</a>
+      <a href="#reflection">Reflection</a>
+    </div>
+    <div class="nav-right"><a href="index.html" class="npf">← Portfolio</a><button id="themeBtn" class="theme-toggle" role="switch" aria-label="Toggle light and dark mode"><span class="tt-thumb"></span></button></div>
   </div>
-</div></section>
-<footer><div class="wrap">
-  <div class="foot-nav">
-    <div class="big">Want the decisions behind the screens? <em>Let's talk.</em></div>
-    <a class="foot-cta" href="index.html#contact">Get in touch →</a>
+</nav>
+
+<!-- ============ ACT 1 — HOOK ============ -->
+<header class="hero wrap">
+  <div class="ey">
+    <span class="tag"><span class="dot"></span>Enterprise · 0→1 platform feature</span>
+    <span class="tag ghost">Microsoft Teams · ServiceNow · Webex</span>
+    <span class="tag ghost">Role: Lead Product Designer</span>
   </div>
-  <div class="colophon"><span>© 2026 ANUPAM SARKAR · BENGALURU</span><span>MICROSOFT TEAMS · SERVICENOW · LEAD PRODUCT DESIGNER</span></div>
-</div></footer>
+  <h1 class="display">Incident<br>Management,<br>without the<br><span class="accent">tool-hopping.</span></h1>
+  <p class="lead">An on-call team was losing its most expensive minutes — the first five — to five disconnected tools just to <strong>start</strong> responding. I designed a system that collapses report, alert, and war-room into a single Microsoft&nbsp;Teams conversation.</p>
+  <div class="herostats">
+    <div><div class="v"><span class="c-red">5</span> <span style="color:var(--ink-3);font-size:.5em;font-weight:600">tools</span> <span class="accent">→ 1</span></div><div class="l">Web form, ServiceNow, Slack, email, and a conference line — unified into Teams</div></div>
+    <div><div class="v c-cyan mono">3</div><div class="l">Ways to file an incident, all without leaving the chat</div></div>
+    <div><div class="v c-green mono">0</div><div class="l">Fields re-keyed — one capture syncs to the system of record</div></div>
+  </div>
+</header>
+
+<!-- ============ EXECUTIVE SUMMARY ============ -->
+<section id="summary">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="kicker"><span class="num">00</span> Executive summary</div>
+      <h2>The page a hiring manager reads first.</h2>
+    </div>
+    <div class="grid g2">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div>
+          <div class="eyebrow"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2 2"/></svg> The 30-second version</div>
+          <p style="font-size:15px">A large operations org filed incidents through a web app that minted a <b>ServiceNow</b> ticket, then <b>manually</b> re-created the incident in Slack and emailed responders, who finally dialed into a conference bridge. The act of <em>reporting</em> had become slower than the act of <em>resolving</em>. I led design on <b>BART</b> — an on-call assistant living natively in Teams that turns reporting, notifying, and assembling the war-room into one continuous flow, while ServiceNow quietly stays the system of record.</p>
+        </div>
+        <div class="meta">
+          <div><dt><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg>Domain</dt><dd>IT / Ops incident response</dd></div>
+          <div><dt><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Surface</dt><dd>Teams bot + adaptive cards</dd></div>
+          <div><dt><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 20v-6M6 20v-3M18 20v-9"/></svg>Scope</dt><dd>MVP, end-to-end lifecycle</dd></div>
+          <div><dt><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0112 0v1"/></svg>My role</dt><dd>Lead PD · research → spec</dd></div>
+        </div>
+      </div>
+      <div class="card" style="background:linear-gradient(150deg,var(--soft),var(--bg-1))">
+        <div class="eyebrow"><svg class="ic sm" viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg> What I owned</div>
+        <ul class="clean" style="margin-top:4px">
+          <li><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--ink)">Reframed the brief</b> — from "build a faster form" to "compress the first five minutes."</span></li>
+          <li><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--ink)">Designed the atomic unit</b> — one adaptive card that is the alert, the status, and the door to the call.</span></li>
+          <li><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--ink)">Three invocation paths</b> — bot command, message action, proactive card — so every role has a way in.</span></li>
+          <li><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--ink)">A governed lifecycle</b> — workstreams, status, and a locked close that stops noise on resolved incidents.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT 2 — CONTEXT ============ -->
+<section id="context">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="kicker"><span class="num">02</span> Context</div>
+      <h2>The team already lived in Teams. The incident process didn't.</h2>
+      <p>On-call responders coordinate everything else — code, decisions, releases — inside Microsoft&nbsp;Teams. But the moment something broke, the process flung them outward: a web form here, a ticket there, a Slack message typed by hand, an email blast, a phone bridge. Five surfaces, none of them talking to each other, all of them between the responder and the fix.</p>
+    </div>
+
+    <!-- ECOSYSTEM MAP -->
+    <figure class="card flush reveal">
+      <div class="hd">
+        <div class="tag cyan" style="margin-bottom:12px"><span class="dot"></span>Ecosystem map · the world before BART</div>
+        <h3 style="margin-bottom:4px">An incident touched five systems and three roles — and none of them shared a surface</h3>
+      </div>
+      <div class="svgwrap" style="padding:8px 16px 4px">
+      <svg viewBox="0 0 1000 440" role="img" aria-label="Ecosystem map of the incident process before BART">
+        <g font-family="Inter" font-size="12">
+          <!-- relationship lines -->
+          <g stroke="#37373f" stroke-width="1.4" fill="none">
+            <path d="M500 220 L250 110"/><path d="M500 220 L250 330"/>
+            <path d="M500 220 L760 95"/><path d="M500 220 L800 220"/>
+            <path d="M500 220 L760 345"/><path d="M500 220 L500 80"/>
+            <path d="M500 220 L500 372"/>
+          </g>
+          <!-- friction marks on the manual hops -->
+          <g font-size="11" fill="#f2a93a" font-weight="700">
+            <text x="375" y="150">manual ✕</text>
+            <text x="375" y="290">manual ✕</text>
+          </g>
+          <!-- central node: the incident -->
+          <circle cx="500" cy="220" r="56" fill="rgba(240,88,79,.12)" stroke="#f0584f" stroke-width="1.6"/>
+          <text x="500" y="214" text-anchor="middle" fill="#f5f5f4" font-weight="700" font-size="14">Incident</text>
+          <text x="500" y="232" text-anchor="middle" fill="#a8a8b0" font-size="11">high pressure</text>
+          <!-- system nodes (squares = digital systems) -->
+          <g>
+            <rect x="170" y="70" width="160" height="74" rx="10" fill="#141418" stroke="#37373f"/>
+            <text x="250" y="100" text-anchor="middle" fill="#f5f5f4" font-weight="700">Web app</text>
+            <text x="250" y="120" text-anchor="middle" fill="#6f6f78" font-size="11">incident intake form</text>
+          </g>
+          <g>
+            <rect x="170" y="296" width="160" height="74" rx="10" fill="#141418" stroke="#37373f"/>
+            <text x="250" y="326" text-anchor="middle" fill="#f5f5f4" font-weight="700">ServiceNow</text>
+            <text x="250" y="346" text-anchor="middle" fill="#6f6f78" font-size="11">system of record · ticket</text>
+          </g>
+          <g>
+            <rect x="680" y="60" width="160" height="74" rx="10" fill="#141418" stroke="#37373f"/>
+            <text x="760" y="90" text-anchor="middle" fill="#f5f5f4" font-weight="700">Slack</text>
+            <text x="760" y="110" text-anchor="middle" fill="#6f6f78" font-size="11">re-created by hand</text>
+          </g>
+          <g>
+            <rect x="720" y="184" width="160" height="74" rx="10" fill="#141418" stroke="#37373f"/>
+            <text x="800" y="214" text-anchor="middle" fill="#f5f5f4" font-weight="700">Email</text>
+            <text x="800" y="234" text-anchor="middle" fill="#6f6f78" font-size="11">responder blast</text>
+          </g>
+          <g>
+            <rect x="680" y="308" width="160" height="74" rx="10" fill="#141418" stroke="#37373f"/>
+            <text x="760" y="338" text-anchor="middle" fill="#f5f5f4" font-weight="700">Conference line</text>
+            <text x="760" y="358" text-anchor="middle" fill="#6f6f78" font-size="11">+ physical room</text>
+          </g>
+          <!-- human actors (rounded pills) -->
+          <g>
+            <rect x="420" y="44" width="160" height="38" rx="19" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/>
+            <text x="500" y="68" text-anchor="middle" fill="#cfcffa" font-weight="700">Incident reporter</text>
+          </g>
+          <g>
+            <rect x="408" y="358" width="184" height="38" rx="19" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/>
+            <text x="500" y="382" text-anchor="middle" fill="#cfcffa" font-weight="700">Incident manager + responders</text>
+          </g>
+        </g>
+      </svg>
+      </div>
+      <figcaption style="padding:0 24px 22px"><b>Reading it:</b> every line out of the red core is a context switch. The two amber breaks are the worst — work done <b>by hand</b>, under pressure, that the next person had to trust was done right. Square nodes are systems; pill nodes are people. <span style="color:var(--ink-4)">Layout follows cs-diagram-architect: ≤15 nodes, size = importance, shape = category.</span></figcaption>
+    </figure>
+
+    <!-- WHO -->
+    <div class="grid g3" style="margin-top:32px">
+      <div class="card">
+        <div class="tag" style="margin-bottom:14px"><span class="dot"></span>Persona · reporter</div>
+        <h3>The one who notices</h3>
+        <p style="font-size:13px;margin-top:8px">First to see the symptom. Wants to raise the alarm in seconds and get back to triage — not learn a ticketing schema.</p>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Goal: report &amp; go</span></div>
+      </div>
+      <div class="card">
+        <div class="tag amber" style="margin-bottom:14px"><span class="dot"></span>Persona · manager</div>
+        <h3>The one who coordinates</h3>
+        <p style="font-size:13px;margin-top:8px">Owns the response. Needs the full picture, the ability to assign work, and one place to drive status — without chasing five threads.</p>
+        <div class="legend"><span><i style="background:var(--amber)"></i>Goal: orchestrate</span></div>
+      </div>
+      <div class="card">
+        <div class="tag green" style="margin-bottom:14px"><span class="dot"></span>Persona · responder</div>
+        <h3>The one who fixes</h3>
+        <p style="font-size:13px;margin-top:8px">Pulled in mid-task. Wants to know what's wrong, what's theirs, and how to join the call — all in one tap.</p>
+        <div class="legend"><span><i style="background:var(--green)"></i>Goal: act fast</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT 3 — PROBLEM ============ -->
+<section id="problem">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="kicker"><span class="num">03</span> Problem definition</div>
+      <h2>The slowest part of incident response is the part before anyone responds.</h2>
+      <p>Resolution is hard work that needs experts. <em>Starting</em> resolution should be trivial — yet it had become a relay race across tools, where every handoff added delay and a chance for something to drop. We named this the <strong>fragmentation tax</strong>: the minutes paid to coordination before a single diagnostic step is taken.</p>
+    </div>
+
+    <!-- JOURNEY MAP w/ emotion curve -->
+    <figure class="card flush reveal">
+      <div class="hd">
+        <div class="tag red" style="margin-bottom:12px"><span class="dot"></span>Experience journey · reporting an incident, before BART</div>
+        <h3 style="margin-bottom:4px">Confidence falls with every tool the reporter is forced to open</h3>
+      </div>
+      <div class="svgwrap" style="padding:6px 14px 4px">
+      <svg viewBox="0 0 1000 360" role="img" aria-label="Journey map with emotion curve across five phases">
+        <g font-family="Inter">
+          <!-- phase columns -->
+          <g font-size="12" fill="#6f6f78" font-weight="600">
+            <text x="100" y="34">1 · Notice</text>
+            <text x="300" y="34">2 · Find the form</text>
+            <text x="500" y="34">3 · Re-key in Slack</text>
+            <text x="700" y="34">4 · Email + dial in</text>
+            <text x="900" y="34">5 · Wait for the room</text>
+          </g>
+          <g stroke="#26262d" stroke-width="1"><path d="M200 20V330"/><path d="M400 20V330"/><path d="M600 20V330"/><path d="M800 20V330"/></g>
+          <!-- actions row -->
+          <g font-size="11" fill="#a8a8b0">
+            <text x="100" y="66" text-anchor="middle">spot symptom</text>
+            <text x="300" y="66" text-anchor="middle">open web app</text>
+            <text x="500" y="66" text-anchor="middle">copy → Slack</text>
+            <text x="700" y="66" text-anchor="middle">send blast</text>
+            <text x="900" y="66" text-anchor="middle">join bridge</text>
+          </g>
+          <!-- emotion curve -->
+          <polyline fill="none" stroke="#f0584f" stroke-width="2.5" points="100,150 300,185 500,235 700,255 900,210"/>
+          <g fill="#f0584f"><circle cx="100" cy="150" r="5"/><circle cx="300" cy="185" r="5"/><circle cx="500" cy="235" r="5"/><circle cx="700" cy="255" r="5"/></g>
+          <circle cx="900" cy="210" r="5" fill="#f2a93a"/>
+          <!-- baseline emotion labels -->
+          <g font-size="11" fill="#6f6f78">
+            <text x="100" y="135" text-anchor="middle">alert</text>
+            <text x="300" y="170" text-anchor="middle">slowing</text>
+            <text x="500" y="220" text-anchor="middle">friction</text>
+            <text x="700" y="278" text-anchor="middle">lowest point</text>
+            <text x="900" y="232" text-anchor="middle">relief</text>
+          </g>
+          <!-- pain callouts -->
+          <g font-size="11" font-weight="700">
+            <rect x="430" y="300" width="160" height="42" rx="8" fill="rgba(240,88,79,.12)" stroke="#f0584f"/>
+            <text x="510" y="318" text-anchor="middle" fill="#f0584f">PAIN · re-keyed by hand</text>
+            <text x="510" y="334" text-anchor="middle" fill="#a8a8b0" font-weight="400">same data, typed twice</text>
+            <rect x="630" y="300" width="160" height="42" rx="8" fill="rgba(240,88,79,.12)" stroke="#f0584f"/>
+            <text x="710" y="318" text-anchor="middle" fill="#f0584f">PAIN · who's coming?</text>
+            <text x="710" y="334" text-anchor="middle" fill="#a8a8b0" font-weight="400">no acknowledgement</text>
+          </g>
+          <!-- opportunity -->
+          <text x="100" y="345" font-size="11" fill="#3ed492" font-weight="700">▲ opportunity: one motion, one surface</text>
+        </g>
+      </svg>
+      </div>
+      <figcaption style="padding:0 24px 22px"><b>The claim a paragraph can't make:</b> the emotional low isn't the outage itself — it's the coordination tax between noticing and resolving. The curve only recovers when the human <i>finally</i> reaches the call. BART moves that recovery to the very first tap.</figcaption>
+    </figure>
+
+    <!-- FRAGMENTATION TAX bar -->
+    <div class="grid g2" style="margin-top:32px">
+      <figure class="card flush">
+        <div class="hd">
+          <div class="tag" style="margin-bottom:12px"><span class="dot"></span>Where the first minutes go</div>
+          <h3 style="margin-bottom:2px">Most of the opening window is spent coordinating, not diagnosing</h3>
+        </div>
+        <div class="svgwrap" style="padding:14px 22px 6px">
+        <svg viewBox="0 0 520 230" role="img" aria-label="Horizontal bar chart of effort split before resolution begins">
+          <g font-family="Inter" font-size="12">
+            <!-- bars: relative share of pre-resolution effort (illustrative model) -->
+            <g>
+              <text x="0" y="34" fill="#a8a8b0">Find &amp; fill the form</text>
+              <rect x="0" y="42" width="150" height="20" rx="4" fill="#f0584f"/>
+              <text x="158" y="57" fill="#f5f5f4" font-weight="700" class="mono">~25%</text>
+            </g>
+            <g>
+              <text x="0" y="84" fill="#a8a8b0">Re-key into Slack</text>
+              <rect x="0" y="92" width="120" height="20" rx="4" fill="#f0584f" opacity=".85"/>
+              <text x="128" y="107" fill="#f5f5f4" font-weight="700" class="mono">~20%</text>
+            </g>
+            <g>
+              <text x="0" y="134" fill="#a8a8b0">Notify &amp; confirm responders</text>
+              <rect x="0" y="142" width="180" height="20" rx="4" fill="#f2a93a"/>
+              <text x="188" y="157" fill="#f5f5f4" font-weight="700" class="mono">~30%</text>
+            </g>
+            <g>
+              <text x="0" y="184" fill="#a8a8b0">Stand up the call / room</text>
+              <rect x="0" y="192" width="150" height="20" rx="4" fill="#f2a93a" opacity=".85"/>
+              <text x="158" y="207" fill="#f5f5f4" font-weight="700" class="mono">~25%</text>
+            </g>
+          </g>
+        </svg>
+        </div>
+        <figcaption style="padding:0 22px 20px"><b>Illustrative model</b> built from process mapping, not telemetry — none of these four bars is the fix. They're all <i>overhead</i> the responder pays before triage even begins.</figcaption>
+      </figure>
+
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <div class="card">
+          <div class="stat"><div class="v c-red mono">2</div><div class="l">Manual re-creations per incident</div><div class="s">The same incident typed into Slack and described again over email — twice the typing, twice the drift.</div></div>
+        </div>
+        <div class="card" style="flex:1">
+          <div class="eyebrow"><svg class="ic sm" viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg> In scope vs out</div>
+          <div class="grid g2" style="gap:10px;margin-top:4px">
+            <ul class="clean">
+              <li><svg class="ic sm c-green" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Create, manage, resolve incidents</li>
+              <li><svg class="ic sm c-green" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Workstreams &amp; assignment</li>
+              <li><svg class="ic sm c-green" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Notify + join the bridge</li>
+            </ul>
+            <ul class="clean">
+              <li><svg class="ic sm" style="color:var(--ink-4)" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Replacing ServiceNow</li>
+              <li><svg class="ic sm" style="color:var(--ink-4)" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Root-cause analytics</li>
+              <li><svg class="ic sm" style="color:var(--ink-4)" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Paging / rota management</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT 4 — RESEARCH ============ -->
+<section id="research">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="kicker"><span class="num">04</span> Research</div>
+      <h2>Five findings. One of them rewrote the brief.</h2>
+      <p>The brief arrived as "build a faster intake form." Before drawing a single field, I ran a process audit, stakeholder interviews across the three roles, and a teardown of the existing tools — anchored by six pointed questions sent to the client to ground the design in reality.</p>
+    </div>
+
+    <div class="grid g2">
+      <!-- LOLLIPOP: findings ranked -->
+      <figure class="card flush reveal">
+        <div class="hd">
+          <div class="tag" style="margin-bottom:12px"><span class="dot"></span>Findings, ranked by impact on time-to-respond</div>
+          <h3 style="margin-bottom:2px">The biggest lever wasn't the form — it was the handoff</h3>
+        </div>
+        <div class="svgwrap" style="padding:16px 22px 8px">
+        <svg viewBox="0 0 560 280" role="img" aria-label="Lollipop chart of five research findings ranked by impact">
+          <g font-family="Inter" font-size="12">
+            <!-- baseline -->
+            <line x1="220" y1="20" x2="220" y2="262" stroke="#26262d"/>
+            <!-- rows -->
+            <g>
+              <text x="0" y="44" fill="#a8a8b0">Re-keying across tools</text>
+              <line x1="220" y1="40" x2="500" y2="40" stroke="#37373f"/>
+              <line x1="220" y1="40" x2="500" y2="40" stroke="#7d80f0" stroke-width="2.5"/>
+              <circle cx="500" cy="40" r="7" fill="#7d80f0"/><text x="488" y="44" text-anchor="end" fill="#cfcffa" font-weight="700" class="mono">highest</text>
+            </g>
+            <g>
+              <text x="0" y="92" fill="#a8a8b0">No way to know who's responding</text>
+              <line x1="220" y1="88" x2="452" y2="88" stroke="#7d80f0" stroke-width="2.5"/>
+              <circle cx="452" cy="88" r="7" fill="#7d80f0"/>
+            </g>
+            <g>
+              <text x="0" y="140" fill="#a8a8b0">Hunting for the conference bridge</text>
+              <line x1="220" y1="136" x2="408" y2="136" stroke="#7d80f0" stroke-width="2.5"/>
+              <circle cx="408" cy="136" r="7" fill="#7d80f0"/>
+            </g>
+            <g>
+              <text x="0" y="188" fill="#a8a8b0">Stale status on resolved incidents</text>
+              <line x1="220" y1="184" x2="356" y2="184" stroke="#54c8e8" stroke-width="2.5"/>
+              <circle cx="356" cy="184" r="7" fill="#54c8e8"/>
+            </g>
+            <g>
+              <text x="0" y="236" fill="#a8a8b0">Form fields themselves</text>
+              <line x1="220" y1="232" x2="300" y2="232" stroke="#6f6f78" stroke-width="2.5"/>
+              <circle cx="300" cy="232" r="7" fill="#6f6f78"/><text x="312" y="236" fill="#6f6f78" class="mono">lowest</text>
+            </g>
+          </g>
+        </svg>
+        </div>
+        <figcaption style="padding:0 22px 20px"><b>The reframe:</b> the form the client asked us to speed up ranked <i>last</i>. The cost lived in everything <i>around</i> it. Indigo = coordination friction; cyan = lifecycle hygiene; grey = the original ask.</figcaption>
+      </figure>
+
+      <!-- MENTAL MODEL GAP -->
+      <figure class="card flush reveal">
+        <div class="hd">
+          <div class="tag cyan" style="margin-bottom:12px"><span class="dot"></span>Mental-model gap</div>
+          <h3 style="margin-bottom:2px">Reporters thought "raise the flag." The system demanded "operate five tools."</h3>
+        </div>
+        <div class="svgwrap" style="padding:16px 18px 8px">
+        <svg viewBox="0 0 560 280" role="img" aria-label="Mental model gap between user expectation and system reality">
+          <g font-family="Inter" font-size="12">
+            <text x="120" y="24" text-anchor="middle" fill="#cfcffa" font-weight="700">User mental model</text>
+            <text x="440" y="24" text-anchor="middle" fill="#a8a8b0" font-weight="700">System model</text>
+            <!-- user side -->
+            <g>
+              <rect x="30" y="44" width="180" height="40" rx="9" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/>
+              <text x="120" y="69" text-anchor="middle" fill="#f5f5f4">"Something's broken"</text>
+              <rect x="30" y="116" width="180" height="40" rx="9" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/>
+              <text x="120" y="141" text-anchor="middle" fill="#f5f5f4">"Tell the right people"</text>
+              <rect x="30" y="188" width="180" height="40" rx="9" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/>
+              <text x="120" y="213" text-anchor="middle" fill="#f5f5f4">"Get on the call"</text>
+            </g>
+            <!-- system side -->
+            <g>
+              <rect x="350" y="40" width="180" height="30" rx="7" fill="#141418" stroke="#37373f"/><text x="440" y="60" text-anchor="middle" fill="#a8a8b0">Web form schema</text>
+              <rect x="350" y="80" width="180" height="30" rx="7" fill="#141418" stroke="#37373f"/><text x="440" y="100" text-anchor="middle" fill="#a8a8b0">ServiceNow ticket</text>
+              <rect x="350" y="120" width="180" height="30" rx="7" fill="#141418" stroke="#37373f"/><text x="440" y="140" text-anchor="middle" fill="#a8a8b0">Slack re-creation</text>
+              <rect x="350" y="160" width="180" height="30" rx="7" fill="#141418" stroke="#37373f"/><text x="440" y="180" text-anchor="middle" fill="#a8a8b0">Email blast</text>
+              <rect x="350" y="200" width="180" height="30" rx="7" fill="#141418" stroke="#37373f"/><text x="440" y="220" text-anchor="middle" fill="#a8a8b0">Conference bridge</text>
+            </g>
+            <!-- mismatch lines (dotted = gap) -->
+            <g stroke="#f2a93a" stroke-width="1.4" stroke-dasharray="4 4" fill="none">
+              <path d="M210 64 L350 55"/><path d="M210 64 L350 95"/>
+              <path d="M210 136 L350 135"/><path d="M210 136 L350 175"/>
+              <path d="M210 208 L350 215"/>
+            </g>
+            <text x="280" y="264" text-anchor="middle" font-size="11" fill="#f2a93a" font-weight="700">3 intentions → 5 system obligations = the gap</text>
+          </g>
+        </svg>
+        </div>
+        <figcaption style="padding:0 18px 20px"><b>Design implication:</b> close the gap by absorbing the five obligations into the three intentions — the person expresses intent, the system does the plumbing.</figcaption>
+      </figure>
+    </div>
+
+    <!-- the six questions -->
+    <div class="card reveal" style="margin-top:32px">
+      <div class="eyebrow"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 115 0c0 1.5-2.5 2-2.5 4"/><path d="M12 17h.01"/></svg> The six questions that grounded the work</div>
+      <p style="font-size:14px;margin-bottom:18px">Rather than design in a vacuum, I sent the client six requests for evidence — the actual artifacts of their current process. Every answer became a constraint the design had to honor.</p>
+      <div class="grid g3" style="gap:12px">
+        <div class="phase"><div class="ph">Q1</div><h4>The live ServiceNow flow</h4><p>Every field on the current ticket — so nothing essential is lost in translation.</p></div>
+        <div class="phase"><div class="ph">Q2</div><h4>Workstreams</h4><p>What fields, and why — the unit of parallel response work.</p></div>
+        <div class="phase"><div class="ph">Q3</div><h4>Conference bridges</h4><p>How responders connect today (Webex) — the join we must preserve.</p></div>
+        <div class="phase"><div class="ph">Q4</div><h4>The email confirmation</h4><p>What gets sent on ticket creation — the notification to replace.</p></div>
+        <div class="phase"><div class="ph">Q5</div><h4>Managers &amp; bridges</h4><p>Who manages incidents, and the full list of bridge lines.</p></div>
+        <div class="phase"><div class="ph">Q6</div><h4>How many roles?</h4><p>Reporter and manager — the two we designed distinct paths for.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT 5 — PROCESS ============ -->
+<section id="process">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="kicker"><span class="num">05</span> Design process</div>
+      <h2>A five-phase sprint, deliberately front-loaded on understanding.</h2>
+      <p>Two-thirds of the timeline went to framing and structure before any high-fidelity pixels — because in incident response, a wrong information model costs more than a wrong colour. Each phase ended in an artifact a stakeholder could react to.</p>
+    </div>
+
+    <!-- PHASE TIMELINE -->
+    <div class="grid g4 reveal">
+      <div class="phase"><span class="d">01</span><div class="ph">Frame</div><h4>Audit &amp; reframe</h4><p>Process mapping, the six questions, role interviews. Output: the reframed brief.</p></div>
+      <div class="phase"><span class="d">02</span><div class="ph">Structure</div><h4>Model the lifecycle</h4><p>Information model, statuses, workstream object. Output: service blueprint.</p></div>
+      <div class="phase"><span class="d">03</span><div class="ph">Explore</div><h4>Invocation paths</h4><p>Effort/impact on three ways to file. Output: prioritised flow set.</p></div>
+      <div class="phase"><span class="d">04</span><div class="ph">Compose</div><h4>The adaptive card</h4><p>One component that carries the whole incident. Output: hi-fi screens.</p></div>
+      <div class="phase"><span class="d">05</span><div class="ph">Specify</div><h4>Handoff</h4><p>States, edge cases, the locked close. Output: build-ready spec.</p></div>
+    </div>
+
+    <!-- EFFORT / IMPACT SCATTER -->
+    <figure class="card flush reveal" style="margin-top:32px">
+      <div class="hd">
+        <div class="tag" style="margin-bottom:12px"><span class="dot"></span>Prioritisation · effort vs. impact</div>
+        <h3 style="margin-bottom:2px">We shipped all three invocation paths — each one a different role's natural entry</h3>
+      </div>
+      <div class="svgwrap" style="padding:8px 22px 4px">
+      <svg viewBox="0 0 1000 380" role="img" aria-label="Effort versus impact scatter plot of candidate features">
+        <g font-family="Inter" font-size="12">
+          <!-- axes -->
+          <line x1="90" y1="40" x2="90" y2="320" stroke="#37373f"/>
+          <line x1="90" y1="320" x2="940" y2="320" stroke="#37373f"/>
+          <text x="70" y="46" text-anchor="end" fill="#6f6f78">high</text>
+          <text x="70" y="318" text-anchor="end" fill="#6f6f78">low</text>
+          <text x="44" y="185" fill="#a8a8b0" font-weight="600" transform="rotate(-90 44 185)" text-anchor="middle">IMPACT on time-to-respond</text>
+          <text x="100" y="342" fill="#6f6f78">low effort</text>
+          <text x="940" y="342" text-anchor="end" fill="#6f6f78">high effort</text>
+          <!-- quadrant guide -->
+          <line x1="515" y1="40" x2="515" y2="320" stroke="#26262d" stroke-dasharray="4 5"/>
+          <text x="300" y="60" fill="#3ed492" font-size="11" font-weight="700" opacity=".8">QUICK WINS</text>
+          <!-- bubbles (shipped = indigo, considered = grey) -->
+          <g>
+            <circle cx="210" cy="120" r="30" fill="rgba(125,128,240,.18)" stroke="#7d80f0"/>
+            <text x="210" y="124" text-anchor="middle" fill="#cfcffa" font-weight="700">Bot</text>
+            <text x="210" y="170" text-anchor="middle" fill="#6f6f78" font-size="11">guided create · shipped</text>
+          </g>
+          <g>
+            <circle cx="430" cy="150" r="26" fill="rgba(125,128,240,.18)" stroke="#7d80f0"/>
+            <text x="430" y="154" text-anchor="middle" fill="#cfcffa" font-weight="700">Proactive</text>
+            <text x="430" y="192" text-anchor="middle" fill="#6f6f78" font-size="11">card · shipped</text>
+          </g>
+          <g>
+            <circle cx="620" cy="135" r="28" fill="rgba(125,128,240,.18)" stroke="#7d80f0"/>
+            <text x="620" y="132" text-anchor="middle" fill="#cfcffa" font-weight="700" font-size="11">Message</text>
+            <text x="620" y="146" text-anchor="middle" fill="#cfcffa" font-weight="700" font-size="11">action</text>
+            <text x="620" y="178" text-anchor="middle" fill="#6f6f78" font-size="11">from a thread · shipped</text>
+          </g>
+          <g>
+            <circle cx="500" cy="250" r="20" fill="#1b1b21" stroke="#37373f"/>
+            <text x="500" y="254" text-anchor="middle" fill="#a8a8b0" font-size="11">Search ext.</text>
+            <text x="500" y="288" text-anchor="middle" fill="#6f6f78" font-size="11">find existing · v1.1</text>
+          </g>
+          <g>
+            <circle cx="800" cy="240" r="18" fill="#1b1b21" stroke="#37373f"/>
+            <text x="800" y="244" text-anchor="middle" fill="#a8a8b0" font-size="11">Auto-detect</text>
+            <text x="800" y="276" text-anchor="middle" fill="#6f6f78" font-size="11">later</text>
+          </g>
+        </g>
+      </svg>
+      </div>
+      <figcaption style="padding:0 24px 22px"><b>Why three, not one:</b> a reporter starts from the bot, a teammate spots it mid-conversation and uses a <i>message action</i>, and the system itself can post a <i>proactive card</i>. Same destination — the incident card — reached from wherever the person already is. Bubble size = reach.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ ACT 6 — SOLUTION ============ -->
+<section id="solution">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="kicker"><span class="num">06</span> Solution</div>
+      <h2>The whole incident — ticket, team, and call — inside one Teams conversation.</h2>
+      <p>Meet <strong>BART</strong>, the on-call assistant. It doesn't replace ServiceNow; it makes it invisible. A reporter expresses intent in plain steps; BART files the ticket, posts a live card, notifies the right people, and hands everyone the same door into the war-room.</p>
+    </div>
+
+    <!-- PRINCIPLES -->
+    <div class="card reveal" style="margin-bottom:32px">
+      <div class="eyebrow"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4L12 17l-6.3 4.4L8 14 2 9.4h7.6z"/></svg> Four principles that settled every argument</div>
+      <div class="grid g2" style="gap:0 40px;margin-top:4px">
+        <div class="principle"><div class="n">01</div><div><h3>Meet people where they already are</h3><p>If the team lives in Teams, the incident lives in Teams. Zero new destinations.</p></div></div>
+        <div class="principle"><div class="n">02</div><div><h3>Make the system of record invisible</h3><p>ServiceNow still owns the ticket — but nobody re-keys data or opens a second tab to create it.</p></div></div>
+        <div class="principle" style="border-bottom:0"><div class="n">03</div><div><h3>Notify with an action, not an FYI</h3><p>Every alert carries the buttons to act — acknowledge, join, update — so reading and responding are one motion.</p></div></div>
+        <div class="principle" style="border-bottom:0"><div class="n">04</div><div><h3>Design for the worst five minutes</h3><p>High pressure, low patience. Smart defaults, few taps, the happy path <i>is</i> the fast path.</p></div></div>
+      </div>
+    </div>
+
+    <!-- SERVICE BLUEPRINT -->
+    <figure class="card flush reveal">
+      <div class="hd">
+        <div class="tag green" style="margin-bottom:12px"><span class="dot"></span>Service blueprint · how BART orchestrates the lifecycle</div>
+        <h3 style="margin-bottom:2px">The person stays on one line of action; the work happens below the surface</h3>
+      </div>
+      <div class="svgwrap" style="padding:8px 14px 4px">
+      <svg viewBox="0 0 1000 440" role="img" aria-label="Service blueprint across five incident phases with frontstage and backstage swimlanes">
+        <g font-family="Inter" font-size="12">
+          <!-- phase headers -->
+          <g fill="#6f6f78" font-weight="600" font-size="12">
+            <text x="120" y="28" text-anchor="middle">REPORT</text>
+            <text x="300" y="28" text-anchor="middle">NOTIFY</text>
+            <text x="480" y="28" text-anchor="middle">ASSEMBLE</text>
+            <text x="660" y="28" text-anchor="middle">RESOLVE</text>
+            <text x="850" y="28" text-anchor="middle">CLOSE</text>
+          </g>
+          <!-- lane labels -->
+          <g fill="#a8a8b0" font-weight="700" font-size="11">
+            <text x="14" y="92">FRONTSTAGE</text>
+            <text x="14" y="218">BART (assistant)</text>
+            <text x="14" y="344">BACKSTAGE</text>
+          </g>
+          <!-- lane dividers -->
+          <g stroke="#26262d"><line x1="200" y1="50" x2="200" y2="410"/><line x1="40" y1="150" x2="980" y2="150"/><line x1="40" y1="276" x2="980" y2="276"/></g>
+          <!-- frontstage nodes -->
+          <g>
+            <rect x="60" y="70" width="120" height="50" rx="9" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/><text x="120" y="92" text-anchor="middle" fill="#f5f5f4">Describe issue</text><text x="120" y="108" text-anchor="middle" fill="#6f6f78" font-size="10">bot / action</text>
+            <rect x="240" y="70" width="120" height="50" rx="9" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/><text x="300" y="92" text-anchor="middle" fill="#f5f5f4">See the card</text><text x="300" y="108" text-anchor="middle" fill="#6f6f78" font-size="10">in channel</text>
+            <rect x="420" y="70" width="120" height="50" rx="9" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/><text x="480" y="92" text-anchor="middle" fill="#f5f5f4">Tap to join</text><text x="480" y="108" text-anchor="middle" fill="#6f6f78" font-size="10">Webex bridge</text>
+            <rect x="600" y="70" width="120" height="50" rx="9" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/><text x="660" y="92" text-anchor="middle" fill="#f5f5f4">Work streams</text><text x="660" y="108" text-anchor="middle" fill="#6f6f78" font-size="10">assign + tick off</text>
+            <rect x="790" y="70" width="120" height="50" rx="9" fill="rgba(125,128,240,.1)" stroke="#5b5fc7"/><text x="850" y="92" text-anchor="middle" fill="#f5f5f4">Mark closed</text><text x="850" y="108" text-anchor="middle" fill="#6f6f78" font-size="10">locked record</text>
+          </g>
+          <!-- BART lane -->
+          <g>
+            <rect x="60" y="186" width="120" height="46" rx="9" fill="#141418" stroke="#7d80f0"/><text x="120" y="214" text-anchor="middle" fill="#cfcffa">build form</text>
+            <rect x="240" y="186" width="120" height="46" rx="9" fill="#141418" stroke="#7d80f0"/><text x="300" y="214" text-anchor="middle" fill="#cfcffa">post card</text>
+            <rect x="420" y="186" width="120" height="46" rx="9" fill="#141418" stroke="#7d80f0"/><text x="480" y="214" text-anchor="middle" fill="#cfcffa">attach bridge</text>
+            <rect x="600" y="186" width="120" height="46" rx="9" fill="#141418" stroke="#7d80f0"/><text x="660" y="214" text-anchor="middle" fill="#cfcffa">sync status</text>
+            <rect x="790" y="186" width="120" height="46" rx="9" fill="#141418" stroke="#7d80f0"/><text x="850" y="214" text-anchor="middle" fill="#cfcffa">lock thread</text>
+          </g>
+          <!-- backstage -->
+          <g>
+            <rect x="60" y="306" width="120" height="46" rx="9" fill="#0e0e11" stroke="#37373f"/><text x="120" y="334" text-anchor="middle" fill="#a8a8b0" font-size="11">ServiceNow ticket</text>
+            <rect x="240" y="306" width="120" height="46" rx="9" fill="#0e0e11" stroke="#37373f"/><text x="300" y="334" text-anchor="middle" fill="#a8a8b0" font-size="11">@mentions sent</text>
+            <rect x="420" y="306" width="120" height="46" rx="9" fill="#0e0e11" stroke="#37373f"/><text x="480" y="334" text-anchor="middle" fill="#a8a8b0" font-size="11">Webex provision</text>
+            <rect x="600" y="306" width="120" height="46" rx="9" fill="#0e0e11" stroke="#37373f"/><text x="660" y="334" text-anchor="middle" fill="#a8a8b0" font-size="11">record updated</text>
+            <rect x="790" y="306" width="120" height="46" rx="9" fill="#0e0e11" stroke="#37373f"/><text x="850" y="334" text-anchor="middle" fill="#a8a8b0" font-size="11">audit trail</text>
+          </g>
+          <!-- flow arrows frontstage -->
+          <g stroke="#5b5fc7" stroke-width="1.6" fill="none" marker-end="url(#ar)">
+            <path d="M180 95 H238"/><path d="M360 95 H418"/><path d="M540 95 H598"/><path d="M720 95 H788"/>
+          </g>
+          <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0l6 3-6 3" fill="#5b5fc7"/></marker></defs>
+        </g>
+      </svg>
+      </div>
+      <figcaption style="padding:0 24px 22px"><b>The argument:</b> the top lane — what the human does — never branches out of Teams. Every system obligation from the mental-model gap is pushed into BART's lane or the backstage, invisible to the person under pressure.</figcaption>
+    </figure>
+
+    <!-- COMPONENT ANATOMY -->
+    <figure class="card flush reveal" style="margin-top:32px">
+      <div class="hd">
+        <div class="tag" style="margin-bottom:12px"><span class="dot"></span>Component anatomy · the Incident adaptive card</div>
+        <h3 style="margin-bottom:2px">One card does the work of an email, a status page, and a meeting invite</h3>
+      </div>
+      <div class="svgwrap" style="padding:14px 22px 4px">
+      <svg viewBox="0 0 1000 380" role="img" aria-label="Annotated anatomy of the incident adaptive card">
+        <g font-family="Inter" font-size="12">
+          <!-- card -->
+          <rect x="330" y="30" width="340" height="320" rx="12" fill="#141418" stroke="#37373f"/>
+          <rect x="330" y="30" width="6" height="320" rx="3" fill="#f0584f"/>
+          <!-- header -->
+          <text x="356" y="62" fill="#f5f5f4" font-weight="700" font-size="14">New incident reported</text>
+          <text x="650" y="62" text-anchor="end" fill="#f0584f" font-weight="700" font-size="11">High priority</text>
+          <text x="356" y="92" fill="#7d80f0" font-weight="700" font-size="14" class="mono">ID# 12345678</text>
+          <text x="650" y="92" text-anchor="end" fill="#3ed492" font-weight="700" font-size="11">New</text>
+          <line x1="356" y1="104" x2="644" y2="104" stroke="#26262d"/>
+          <!-- fields -->
+          <g font-size="11">
+            <text x="356" y="128" fill="#6f6f78">Scope</text><text x="644" y="128" text-anchor="end" fill="#a8a8b0">Incident management team</text>
+            <text x="356" y="152" fill="#6f6f78">Description</text><text x="644" y="152" text-anchor="end" fill="#a8a8b0">Failure of cloud services…</text>
+            <text x="356" y="176" fill="#6f6f78">Conference bridge</text><text x="644" y="176" text-anchor="end" fill="#54c8e8">234 143 564 345 ↗</text>
+          </g>
+          <rect x="356" y="192" width="288" height="30" rx="6" fill="#0e0e11" stroke="#26262d"/><text x="366" y="211" fill="#6f6f78" font-size="11">Type current activity…</text><text x="636" y="211" text-anchor="end" fill="#7d80f0" font-size="11">Update</text>
+          <!-- buttons -->
+          <rect x="356" y="238" width="135" height="34" rx="7" fill="#1b1b21" stroke="#37373f"/><text x="423" y="259" text-anchor="middle" fill="#f5f5f4" font-size="11">View workstream</text>
+          <rect x="509" y="238" width="135" height="34" rx="7" fill="#7d80f0"/><text x="576" y="259" text-anchor="middle" fill="#08080a" font-weight="700" font-size="11">Change status</text>
+          <text x="356" y="300" fill="#6f6f78" font-size="10">Created 04/14/2020 · Assigned manager</text>
+
+          <!-- callouts -->
+          <g font-size="11" font-weight="700">
+            <text x="40" y="56" fill="#f0584f">① Severity strip</text>
+            <text x="40" y="74" fill="#a8a8b0" font-weight="400">colour-codes priority at a glance</text>
+            <line x1="40" y1="86" x2="330" y2="60" stroke="#37373f" stroke-dasharray="3 3"/>
+
+            <text x="40" y="156" fill="#54c8e8">② Live bridge link</text>
+            <text x="40" y="174" fill="#a8a8b0" font-weight="400">one tap into the Webex war-room</text>
+            <line x1="160" y1="170" x2="540" y2="176" stroke="#37373f" stroke-dasharray="3 3"/>
+
+            <text x="40" y="236" fill="#7d80f0">③ Action, not FYI</text>
+            <text x="40" y="254" fill="#a8a8b0" font-weight="400">read &amp; respond in one motion</text>
+            <line x1="160" y1="250" x2="356" y2="255" stroke="#37373f" stroke-dasharray="3 3"/>
+
+            <text x="700" y="156" fill="#3ed492">④ Status &amp; identity</text>
+            <text x="700" y="174" fill="#a8a8b0" font-weight="400">always answers "is this still live?"</text>
+            <line x1="690" y1="120" x2="660" y2="92" stroke="#37373f" stroke-dasharray="3 3"/>
+
+            <text x="700" y="236" fill="#a8a8b0">⑤ Inline activity log</text>
+            <text x="700" y="254" fill="#a8a8b0" font-weight="400">updates stay <tspan>on</tspan> the incident</text>
+            <line x1="690" y1="240" x2="644" y2="207" stroke="#37373f" stroke-dasharray="3 3"/>
+          </g>
+        </g>
+      </svg>
+      </div>
+      <figcaption style="padding:0 24px 22px">The card is the atomic unit of the system: it <em>is</em> the notification, the status, and the entry to the call — so there is nothing else to chase. Every other screen is a variation on this object.</figcaption>
+    </figure>
+
+    <!-- BEFORE/AFTER SLOPE -->
+    <figure class="card flush reveal" style="margin-top:32px">
+      <div class="hd">
+        <div class="tag green" style="margin-bottom:12px"><span class="dot"></span>Task flow · before vs. after</div>
+        <h3 style="margin-bottom:2px">Five tool-hops collapse into one continuous flow — and none of them leaves the chat</h3>
+      </div>
+      <div class="svgwrap" style="padding:10px 22px 4px">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="Before and after task flow comparison">
+        <g font-family="Inter" font-size="12">
+          <!-- BEFORE -->
+          <text x="40" y="40" fill="#6f6f78" font-weight="700">BEFORE · 5 surfaces</text>
+          <g>
+            <rect x="40" y="58" width="130" height="44" rx="9" fill="#141418" stroke="#37373f"/><text x="105" y="85" text-anchor="middle" fill="#a8a8b0" font-size="11">Web form</text>
+            <rect x="220" y="58" width="130" height="44" rx="9" fill="#141418" stroke="#37373f"/><text x="285" y="85" text-anchor="middle" fill="#a8a8b0" font-size="11">ServiceNow</text>
+            <rect x="400" y="58" width="130" height="44" rx="9" fill="#141418" stroke="#37373f"/><text x="465" y="85" text-anchor="middle" fill="#a8a8b0" font-size="11">Slack (manual)</text>
+            <rect x="580" y="58" width="130" height="44" rx="9" fill="#141418" stroke="#37373f"/><text x="645" y="85" text-anchor="middle" fill="#a8a8b0" font-size="11">Email</text>
+            <rect x="760" y="58" width="130" height="44" rx="9" fill="#141418" stroke="#37373f"/><text x="825" y="85" text-anchor="middle" fill="#a8a8b0" font-size="11">Conf. line</text>
+          </g>
+          <g stroke="#f2a93a" stroke-width="1.5" fill="none" marker-end="url(#ar2)">
+            <path d="M170 80 H218"/><path d="M350 80 H398"/><path d="M530 80 H578"/><path d="M710 80 H758"/>
+          </g>
+          <g fill="#f2a93a" font-size="16">
+            <text x="384" y="48">✕</text><text x="564" y="48">✕</text>
+          </g>
+          <!-- divider -->
+          <line x1="40" y1="150" x2="940" y2="150" stroke="#26262d" stroke-dasharray="5 6"/>
+          <!-- AFTER -->
+          <text x="40" y="192" fill="#3ed492" font-weight="700">AFTER · 1 surface (Teams)</text>
+          <rect x="40" y="208" width="700" height="58" rx="12" fill="rgba(62,212,146,.08)" stroke="#3ed492"/>
+          <g font-size="11" fill="#f5f5f4">
+            <text x="95" y="242" text-anchor="middle">Describe</text>
+            <text x="255" y="242" text-anchor="middle">Card posts</text>
+            <text x="415" y="242" text-anchor="middle">Notify + bridge</text>
+            <text x="600" y="242" text-anchor="middle">Join &amp; resolve</text>
+          </g>
+          <g stroke="#3ed492" stroke-width="1.5" fill="none" marker-end="url(#ar3)">
+            <path d="M150 237 H205"/><path d="M315 237 H360"/><path d="M490 237 H545"/>
+          </g>
+          <!-- moment of value -->
+          <rect x="770" y="208" width="170" height="58" rx="12" fill="#7d80f0"/>
+          <text x="855" y="232" text-anchor="middle" fill="#08080a" font-weight="700" font-size="11">first responder</text>
+          <text x="855" y="250" text-anchor="middle" fill="#08080a" font-weight="700" font-size="11">in seconds</text>
+          <defs>
+            <marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0l6 3-6 3" fill="#f2a93a"/></marker>
+            <marker id="ar3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0l6 3-6 3" fill="#3ed492"/></marker>
+          </defs>
+        </g>
+      </svg>
+      </div>
+      <figcaption style="padding:0 24px 22px">Same outcome, two-thirds fewer steps — and the two amber breakpoints (the manual re-creations) are gone entirely.</figcaption>
+    </figure>
+  </div>
+
+<!-- FINAL DESIGN SCREENS -->
+<div class="wrap" style="padding-top:8px">
+  <div style="margin:8px 0 24px">
+    <div class="tag ghost" style="margin-bottom:14px"><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg> Final design · 8 screens reconstructed from the source</div>
+    <h3 style="margin-bottom:8px">The end-to-end experience, inside Teams</h3>
+    <p style="font-size:14px">Eight states reconstructed faithfully from the design source — catalog, bot, intake, the proactive card, workstreams, status, the locked close, and the message-action path. Each is annotated with the decision behind it. Rendered in the portfolio system — one family (Inter), light &amp; dark, 12px floor.</p>
+  </div>
+
+  <div class="screens reveal">
+
+    <!-- 01 APP CATALOG -->
+    <div class="screen">
+      <div class="cap"><span class="n">01</span><span class="t">App catalog · discover BART</span></div>
+      <div class="body"><div class="svgwrap"><svg viewBox="0 0 360 280" aria-label="Teams app catalog with BART"><g font-family="Inter" font-size="11">
+        <rect width="360" height="280" rx="9" fill="#0e0e11"/>
+        <rect x="0" y="0" width="360" height="34" fill="#141418"/><text x="16" y="22" fill="#f5f5f4" font-weight="700" font-size="13">Apps</text>
+        <rect x="16" y="46" width="150" height="24" rx="6" fill="#1b1b21" stroke="#37373f"/><text x="26" y="62" fill="#6f6f78">Search · "BART"</text>
+        <rect x="186" y="50" width="158" height="120" rx="10" fill="#141418" stroke="#7d80f0"/>
+        <rect x="200" y="64" width="36" height="36" rx="8" fill="#08080a" stroke="#37373f"/><text x="218" y="86" text-anchor="middle" fill="#f5f5f4" font-weight="800" font-size="11">BART</text>
+        <text x="246" y="76" fill="#f5f5f4" font-weight="700" font-size="12">BART</text>
+        <text x="246" y="91" fill="#6f6f78">Incident management</text>
+        <text x="200" y="122" fill="#a8a8b0" font-size="10">On-call assistant bot that helps</text>
+        <text x="200" y="136" fill="#a8a8b0" font-size="10">create, manage &amp; resolve incidents.</text>
+        <rect x="200" y="146" width="60" height="16" rx="8" fill="#7d80f0"/><text x="230" y="158" text-anchor="middle" fill="#08080a" font-weight="700" font-size="9">Add</text>
+        <g fill="#6f6f78" font-size="10"><text x="16" y="100">Apps</text><text x="16" y="120">Bots</text><text x="16" y="140">Tabs</text><text x="16" y="160">Messaging</text></g>
+      </g></svg></div></div>
+      <div class="desc"><b>Decision:</b> ship as a first-party-feeling Teams app so adoption needs no training — it appears where teams already find tools.</div>
+    </div>
+
+    <!-- 02 BOT WELCOME -->
+    <div class="screen">
+      <div class="cap"><span class="n">02</span><span class="t">Bot welcome · guided start</span></div>
+      <div class="body"><div class="svgwrap"><svg viewBox="0 0 360 280" aria-label="BART bot welcome card"><g font-family="Inter" font-size="11">
+        <rect width="360" height="280" rx="9" fill="#0e0e11"/>
+        <circle cx="28" cy="36" r="13" fill="#08080a" stroke="#37373f"/><text x="28" y="40" text-anchor="middle" fill="#f5f5f4" font-size="8" font-weight="800">B</text>
+        <text x="50" y="32" fill="#a8a8b0" font-size="10">BART</text>
+        <rect x="50" y="44" width="290" height="180" rx="10" fill="#141418" stroke="#37373f"/>
+        <rect x="50" y="44" width="290" height="3" rx="2" fill="#7d80f0"/>
+        <text x="66" y="72" fill="#f5f5f4" font-weight="700" font-size="13">Welcome!</text>
+        <text x="66" y="92" fill="#a8a8b0" font-size="10">I'm your on-call assistant. I can help</text>
+        <text x="66" y="106" fill="#a8a8b0" font-size="10">create, manage and resolve incidents.</text>
+        <g fill="#a8a8b0" font-size="10"><text x="66" y="132">• Create a new incident</text><text x="66" y="148">• Create, edit &amp; assign workstreams</text><text x="66" y="164">• Resolve or close incidents</text></g>
+        <rect x="66" y="180" width="120" height="28" rx="7" fill="#7d80f0"/><text x="126" y="198" text-anchor="middle" fill="#08080a" font-weight="700" font-size="10">Create new incident</text>
+        <rect x="196" y="180" width="80" height="28" rx="7" fill="#1b1b21" stroke="#37373f"/><text x="236" y="198" text-anchor="middle" fill="#f5f5f4" font-size="10">Take a tour</text>
+        <rect x="50" y="240" width="290" height="24" rx="6" fill="#1b1b21" stroke="#26262d"/><text x="62" y="256" fill="#6f6f78" font-size="10">Type a question here…</text>
+      </g></svg></div></div>
+      <div class="desc"><b>Decision:</b> the first message is a capability map with one primary action — no blank input to interpret under pressure.</div>
+    </div>
+
+    <!-- 03 CREATE FORM -->
+    <div class="screen">
+      <div class="cap"><span class="n">03</span><span class="t">Create incident · one capture</span></div>
+      <div class="body"><div class="svgwrap"><svg viewBox="0 0 360 280" aria-label="Create incident form"><g font-family="Inter" font-size="10">
+        <rect width="360" height="280" rx="9" fill="#0e0e11"/>
+        <text x="16" y="24" fill="#f5f5f4" font-weight="700" font-size="12">Create incident report</text>
+        <g fill="#6f6f78"><text x="16" y="48">Individual requesting</text><text x="190" y="48">Scope</text></g>
+        <rect x="16" y="54" width="160" height="20" rx="4" fill="#1b1b21" stroke="#37373f"/><text x="24" y="68" fill="#a8a8b0">Ruchi Srivastava</text>
+        <rect x="190" y="54" width="154" height="20" rx="4" fill="#1b1b21" stroke="#37373f"/><text x="198" y="68" fill="#a8a8b0">Incident mgmt team</text>
+        <text x="16" y="92" fill="#6f6f78">Short description (max 250)</text>
+        <rect x="16" y="98" width="160" height="20" rx="4" fill="#1b1b21" stroke="#37373f"/>
+        <text x="190" y="92" fill="#6f6f78">Conference bridge</text>
+        <rect x="190" y="98" width="154" height="20" rx="4" fill="#1b1b21" stroke="#37373f"/><text x="198" y="112" fill="#54c8e8">234143564345 ▾</text>
+        <text x="16" y="136" fill="#6f6f78">Description of the problem</text>
+        <rect x="16" y="142" width="160" height="40" rx="4" fill="#1b1b21" stroke="#37373f"/>
+        <text x="190" y="136" fill="#6f6f78">Priority</text>
+        <rect x="190" y="142" width="154" height="20" rx="4" fill="#1b1b21" stroke="#37373f"/><text x="198" y="156" fill="#f0584f" font-weight="700">High priority ▾</text>
+        <rect x="190" y="170" width="11" height="11" rx="2" fill="#0e0e11" stroke="#37373f"/><text x="208" y="180" fill="#6f6f78">TSC request?</text>
+        <text x="16" y="204" fill="#f5f5f4" font-weight="700" font-size="11">Create workstream</text>
+        <g fill="#6f6f78"><text x="16" y="222">Priority · Description · Assigned to · Status</text></g>
+        <rect x="16" y="228" width="328" height="20" rx="4" fill="#1b1b21" stroke="#37373f"/>
+        <rect x="16" y="254" width="120" height="18" rx="5" fill="#0e0e11" stroke="#37373f"/><text x="76" y="266" text-anchor="middle" fill="#a8a8b0">+ Add workstream</text>
+        <rect x="284" y="254" width="60" height="18" rx="5" fill="#7d80f0"/><text x="314" y="266" text-anchor="middle" fill="#08080a" font-weight="700">Submit</text>
+      </g></svg></div></div>
+      <div class="desc"><b>Decision:</b> the bridge, scope, and priority are captured <b>here, once</b> — so the card, the notification, and ServiceNow all inherit them with zero re-keying.</div>
+    </div>
+
+    <!-- 04 PROACTIVE CARD -->
+    <div class="screen">
+      <div class="cap"><span class="n">04</span><span class="t">Proactive card · new incident</span></div>
+      <div class="body"><div class="svgwrap"><svg viewBox="0 0 360 280" aria-label="New incident reported adaptive card"><g font-family="Inter" font-size="10">
+        <rect width="360" height="280" rx="9" fill="#0e0e11"/>
+        <rect x="14" y="16" width="332" height="248" rx="10" fill="#141418" stroke="#37373f"/>
+        <rect x="14" y="16" width="5" height="248" rx="3" fill="#f0584f"/>
+        <text x="32" y="40" fill="#f5f5f4" font-weight="700" font-size="12">New incident reported</text>
+        <text x="332" y="40" text-anchor="end" fill="#f0584f" font-weight="700">High priority</text>
+        <text x="32" y="62" fill="#7d80f0" font-weight="700" font-size="12" class="mono">ID# 12345678</text>
+        <text x="332" y="62" text-anchor="end" fill="#3ed492" font-weight="700">New</text>
+        <line x1="32" y1="72" x2="328" y2="72" stroke="#26262d"/>
+        <g><text x="32" y="92" fill="#6f6f78">Created on</text><text x="328" y="92" text-anchor="end" fill="#a8a8b0">04/14/2020</text>
+           <text x="32" y="110" fill="#6f6f78">Scope</text><text x="328" y="110" text-anchor="end" fill="#a8a8b0">Incident mgmt team</text>
+           <text x="32" y="128" fill="#6f6f78">Description</text><text x="328" y="128" text-anchor="end" fill="#a8a8b0">Failure of cloud services…</text></g>
+        <rect x="32" y="140" width="240" height="22" rx="5" fill="#0e0e11" stroke="#26262d"/><text x="40" y="155" fill="#6f6f78">Type current activity…</text>
+        <text x="328" y="155" text-anchor="end" fill="#7d80f0">Update</text>
+        <text x="32" y="184" fill="#6f6f78">Short description</text><text x="328" y="184" text-anchor="end" fill="#a8a8b0">Cloud outage</text>
+        <text x="32" y="202" fill="#6f6f78">Conference bridge</text><text x="328" y="202" text-anchor="end" fill="#54c8e8" font-weight="700">234143564345 ↗</text>
+        <rect x="32" y="216" width="130" height="28" rx="7" fill="#1b1b21" stroke="#37373f"/><text x="97" y="234" text-anchor="middle" fill="#f5f5f4">View workstream</text>
+        <rect x="172" y="216" width="130" height="28" rx="7" fill="#7d80f0"/><text x="237" y="234" text-anchor="middle" fill="#08080a" font-weight="700">Change status</text>
+      </g></svg></div></div>
+      <div class="desc"><b>Decision:</b> the alert <b>is</b> the workspace. Manager and workstream members are @mentioned; tapping the notification lands them right on this card.</div>
+    </div>
+
+    <!-- 05 WORKSTREAM EDIT -->
+    <div class="screen">
+      <div class="cap"><span class="n">05</span><span class="t">Workstreams · assign &amp; track</span></div>
+      <div class="body"><div class="svgwrap"><svg viewBox="0 0 360 280" aria-label="Edit workstream view"><g font-family="Inter" font-size="10">
+        <rect width="360" height="280" rx="9" fill="#0e0e11"/>
+        <text x="16" y="26" fill="#f5f5f4" font-weight="700" font-size="12">Edit workstream</text>
+        <text x="16" y="44" fill="#6f6f78">Workstreams for incident ID# 12345678</text>
+        <g fill="#6f6f78" font-size="9"><text x="16" y="68">Priority</text><text x="64" y="68">Description</text><text x="210" y="68">Assigned to</text><text x="300" y="68">Status</text></g>
+        <line x1="16" y1="74" x2="344" y2="74" stroke="#26262d"/>
+        <!-- row 1 -->
+        <text x="22" y="98" fill="#7d80f0" font-weight="700" class="mono">01</text>
+        <text x="64" y="98" fill="#a8a8b0">Clear cloud issue</text>
+        <text x="210" y="98" fill="#54c8e8">Ricardo Jean</text>
+        <rect x="300" y="90" width="11" height="11" rx="2" fill="#3ed492"/><path d="M302 96l2 2 4-4" stroke="#08080a" stroke-width="1.4" fill="none"/>
+        <text x="318" y="98" fill="#a8a8b0" font-size="9">done</text>
+        <!-- row 2 -->
+        <text x="22" y="124" fill="#7d80f0" font-weight="700" class="mono">02</text>
+        <text x="64" y="124" fill="#a8a8b0">Perform troubleshoot</text>
+        <text x="210" y="124" fill="#54c8e8">Rakesh Kumar</text>
+        <rect x="300" y="116" width="11" height="11" rx="2" fill="#0e0e11" stroke="#37373f"/>
+        <text x="318" y="124" fill="#6f6f78" font-size="9">open</text>
+        <!-- drag handle hint -->
+        <g stroke="#37373f" stroke-width="1"><path d="M52 90h6M52 94h6M52 116h6M52 120h6"/></g>
+        <text x="16" y="152" fill="#7d80f0" font-size="10">+ Add another workstream</text>
+        <rect x="16" y="170" width="328" height="1" fill="#26262d"/>
+        <text x="16" y="192" fill="#6f6f78" font-size="9">Drag to reprioritise — Planner-style ordering</text>
+        <rect x="284" y="246" width="60" height="20" rx="6" fill="#7d80f0"/><text x="314" y="259" text-anchor="middle" fill="#08080a" font-weight="700">Save</text>
+      </g></svg></div></div>
+      <div class="desc"><b>Decision:</b> a <b>workstream</b> is the unit of parallel response — owner + status + drag-to-prioritise. The manager orchestrates without a second tool.</div>
+    </div>
+
+    <!-- 06 CHANGE STATUS -->
+    <div class="screen">
+      <div class="cap"><span class="n">06</span><span class="t">Change status · governed states</span></div>
+      <div class="body"><div class="svgwrap"><svg viewBox="0 0 360 280" aria-label="Change status dropdown"><g font-family="Inter" font-size="10">
+        <rect width="360" height="280" rx="9" fill="#0e0e11"/>
+        <rect x="14" y="16" width="332" height="120" rx="10" fill="#141418" stroke="#37373f"/>
+        <rect x="14" y="16" width="5" height="120" rx="3" fill="#f0584f"/>
+        <text x="32" y="40" fill="#7d80f0" font-weight="700" class="mono" font-size="12">ID# 12345678</text>
+        <text x="332" y="40" text-anchor="end" fill="#3ed492" font-weight="700">New</text>
+        <text x="32" y="64" fill="#a8a8b0">Failure of cloud services…</text>
+        <rect x="32" y="96" width="130" height="28" rx="7" fill="#1b1b21" stroke="#37373f"/><text x="97" y="114" text-anchor="middle" fill="#f5f5f4">View workstream</text>
+        <rect x="172" y="96" width="130" height="28" rx="7" fill="#7d80f0"/><text x="237" y="114" text-anchor="middle" fill="#08080a" font-weight="700">Change status</text>
+        <!-- dropdown -->
+        <text x="20" y="166" fill="#6f6f78">Change card title</text><text x="190" y="166" fill="#6f6f78">Change status</text>
+        <rect x="20" y="172" width="150" height="24" rx="6" fill="#1b1b21" stroke="#37373f"/><text x="30" y="188" fill="#a8a8b0">Incident closed ▾</text>
+        <rect x="190" y="172" width="154" height="24" rx="6" fill="#1b1b21" stroke="#7d80f0"/><text x="200" y="188" fill="#f5f5f4">Select ▾</text>
+        <rect x="190" y="200" width="154" height="66" rx="8" fill="#141418" stroke="#37373f"/>
+        <text x="204" y="220" fill="#a8a8b0">New</text>
+        <rect x="194" y="226" width="146" height="18" rx="4" fill="#1b1b21"/><text x="204" y="239" fill="#f2a93a" font-weight="700">Suspended</text>
+        <text x="204" y="258" fill="#3ed492">Service restored</text>
+      </g></svg></div></div>
+      <div class="desc"><b>Decision:</b> four governed states — <b>New · Suspended · Service restored · Closed</b> — keep the channel honest about whether an incident is still live.</div>
+    </div>
+
+    <!-- 07 LOCKED CLOSE -->
+    <div class="screen">
+      <div class="cap"><span class="n">07</span><span class="t">Closed · locked record</span></div>
+      <div class="body"><div class="svgwrap"><svg viewBox="0 0 360 280" aria-label="Incident closed locked state"><g font-family="Inter" font-size="10">
+        <rect width="360" height="280" rx="9" fill="#0e0e11"/>
+        <rect x="14" y="16" width="332" height="234" rx="10" fill="#141418" stroke="#37373f" opacity=".9"/>
+        <rect x="14" y="16" width="5" height="234" rx="3" fill="#f0584f"/>
+        <text x="32" y="40" fill="#f5f5f4" font-weight="700" font-size="12">Incident closed</text>
+        <text x="332" y="40" text-anchor="end" fill="#f0584f" font-weight="700">High priority</text>
+        <text x="32" y="62" fill="#7d80f0" font-weight="700" class="mono" font-size="12">ID# 12345678</text>
+        <line x1="32" y1="72" x2="328" y2="72" stroke="#26262d"/>
+        <g opacity=".6"><text x="32" y="92" fill="#6f6f78">Created on</text><text x="328" y="92" text-anchor="end" fill="#a8a8b0">04/14/2020</text>
+        <text x="32" y="110" fill="#6f6f78">Scope</text><text x="328" y="110" text-anchor="end" fill="#a8a8b0">Incident mgmt team</text>
+        <text x="32" y="128" fill="#6f6f78">Description</text><text x="328" y="128" text-anchor="end" fill="#a8a8b0">Failure of cloud services…</text>
+        <text x="32" y="148" fill="#6f6f78">Conference bridge</text><text x="328" y="148" text-anchor="end" fill="#54c8e8">234143564345</text></g>
+        <!-- lock -->
+        <g transform="translate(168,168)"><rect x="-12" y="-2" width="24" height="18" rx="3" fill="none" stroke="#6f6f78" stroke-width="1.6"/><path d="M-7 -2v-5a7 7 0 0114 0v5" fill="none" stroke="#6f6f78" stroke-width="1.6"/></g>
+        <rect x="32" y="206" width="296" height="30" rx="7" fill="rgba(240,88,79,.14)" stroke="#f0584f"/>
+        <text x="180" y="225" text-anchor="middle" fill="#f0584f" font-weight="700">Do not respond — this incident is closed.</text>
+      </g></svg></div></div>
+      <div class="desc"><b>Decision:</b> closing <b>locks</b> the thread and posts a clear banner — stale incidents stop attracting noise, and the audit record is final.</div>
+    </div>
+
+    <!-- 08 MESSAGE ACTION -->
+    <div class="screen">
+      <div class="cap"><span class="n">08</span><span class="t">Message action · from a thread</span></div>
+      <div class="body"><div class="svgwrap"><svg viewBox="0 0 360 280" aria-label="Create incident from a channel message via message action"><g font-family="Inter" font-size="10">
+        <rect width="360" height="280" rx="9" fill="#0e0e11"/>
+        <text x="16" y="24" fill="#6f6f78" font-size="10">General · Posts</text>
+        <!-- a message -->
+        <circle cx="28" cy="56" r="11" fill="#1b1b21" stroke="#37373f"/>
+        <text x="46" y="50" fill="#f5f5f4" font-weight="700">Babak S.</text><text x="100" y="50" fill="#6f6f78" font-size="9">8:13 AM</text>
+        <text x="46" y="66" fill="#a8a8b0">There's a problem on the server</text>
+        <text x="46" y="80" fill="#a8a8b0">during the client sync.</text>
+        <!-- context menu -->
+        <rect x="150" y="92" width="180" height="92" rx="10" fill="#141418" stroke="#37373f"/>
+        <g fill="#a8a8b0"><text x="166" y="114">Save this message</text><text x="166" y="136">Mark as unread</text></g>
+        <rect x="156" y="146" width="168" height="22" rx="6" fill="#1b1b21"/>
+        <rect x="166" y="151" width="12" height="12" rx="3" fill="#08080a" stroke="#7d80f0"/><text x="170" y="160" fill="#7d80f0" font-size="7" font-weight="800">B</text>
+        <text x="186" y="161" fill="#7d80f0" font-weight="700">Create new incident</text>
+        <!-- result hint -->
+        <rect x="14" y="200" width="332" height="64" rx="10" fill="rgba(125,128,240,.08)" stroke="#5b5fc7"/>
+        <text x="30" y="222" fill="#cfcffa" font-weight="700">Parent message → incident</text>
+        <text x="30" y="240" fill="#a8a8b0" font-size="10">The selected message auto-fills the</text>
+        <text x="30" y="254" fill="#a8a8b0" font-size="10">description &amp; short description fields.</text>
+      </g></svg></div></div>
+      <div class="desc"><b>Decision:</b> when a problem surfaces mid-conversation, a <b>message action</b> turns that exact message into an incident — context preserved, nothing retyped.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- IA DIAGRAM -->
+<div class="wrap" style="padding-top:40px">
+  <figure class="card flush reveal">
+    <div class="hd">
+      <div class="tag cyan" style="margin-bottom:12px"><span class="dot"></span>Information architecture · the BART app</div>
+      <h3 style="margin-bottom:2px">Three ways in, one object, one place to see everything</h3>
+    </div>
+    <div class="svgwrap" style="padding:8px 18px 4px">
+    <svg viewBox="0 0 1000 360" role="img" aria-label="Information architecture of the BART app">
+      <g font-family="Inter" font-size="12">
+        <!-- root -->
+        <rect x="420" y="20" width="160" height="40" rx="10" fill="#7d80f0"/><text x="500" y="45" text-anchor="middle" fill="#08080a" font-weight="700">BART app</text>
+        <!-- entry layer -->
+        <g stroke="#37373f" fill="none"><path d="M500 60 V90 M500 90 H180 M500 90 H500 M500 90 H820 M180 90 V120 M500 90 V120 M820 90 V120"/></g>
+        <g>
+          <rect x="100" y="120" width="160" height="40" rx="9" fill="#141418" stroke="#5b5fc7"/><text x="180" y="145" text-anchor="middle" fill="#cfcffa">Bot command</text>
+          <rect x="420" y="120" width="160" height="40" rx="9" fill="#141418" stroke="#5b5fc7"/><text x="500" y="145" text-anchor="middle" fill="#cfcffa">Message action</text>
+          <rect x="740" y="120" width="160" height="40" rx="9" fill="#141418" stroke="#5b5fc7"/><text x="820" y="145" text-anchor="middle" fill="#cfcffa">Proactive card</text>
+        </g>
+        <!-- converge to incident object -->
+        <g stroke="#37373f" fill="none"><path d="M180 160 V200 M180 200 H500 M500 160 V200 M820 160 V200 M820 200 H500 M500 200 V224"/></g>
+        <rect x="390" y="224" width="220" height="46" rx="11" fill="rgba(240,88,79,.12)" stroke="#f0584f"/><text x="500" y="252" text-anchor="middle" fill="#f5f5f4" font-weight="700">Incident object (the card)</text>
+        <!-- children of object -->
+        <g stroke="#37373f" fill="none"><path d="M500 270 V300 M250 300 H750 M250 300 V320 M420 300 V320 M580 300 V320 M750 300 V320"/></g>
+        <g font-size="11">
+          <rect x="180" y="320" width="140" height="34" rx="8" fill="#141418" stroke="#37373f"/><text x="250" y="342" text-anchor="middle" fill="#a8a8b0">Workstreams</text>
+          <rect x="350" y="320" width="140" height="34" rx="8" fill="#141418" stroke="#37373f"/><text x="420" y="342" text-anchor="middle" fill="#a8a8b0">Status</text>
+          <rect x="510" y="320" width="140" height="34" rx="8" fill="#141418" stroke="#37373f"/><text x="580" y="342" text-anchor="middle" fill="#a8a8b0">Bridge / call</text>
+          <rect x="680" y="320" width="140" height="34" rx="8" fill="#141418" stroke="#37373f"/><text x="750" y="342" text-anchor="middle" fill="#a8a8b0">Activity log</text>
+        </g>
+        <!-- dashboard aside -->
+        <rect x="760" y="224" width="200" height="46" rx="11" fill="#141418" stroke="#54c8e8"/><text x="860" y="246" text-anchor="middle" fill="#54c8e8" font-weight="700">Dashboard</text><text x="860" y="262" text-anchor="middle" fill="#6f6f78" font-size="10">all incidents · grouped by status</text>
+        <path d="M610 247 H758" stroke="#37373f" stroke-dasharray="4 4"/>
+      </g>
+    </svg>
+    </div>
+    <figcaption style="padding:0 24px 22px"><b>The structural claim:</b> three entry points deliberately collapse onto a <i>single</i> incident object, so there's never a question of "which version is real." The Dashboard is the only sibling — a read view across every incident, grouped by the same governed statuses.</figcaption>
+  </figure>
+</div>
+
+</section>
+
+<!-- ============ ACT 7 — IMPACT ============ -->
+<section id="impact">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="kicker"><span class="num">07</span> Impact</div>
+      <h2>Designed to give the first five minutes back.</h2>
+      <p>This shipped as an MVP, so I report it honestly: what was <b>delivered</b> as design, and what we <b>targeted</b> as outcomes. The bars below separate the two — credibility matters more than a flattering number.</p>
+    </div>
+
+    <!-- dashboard -->
+    <div class="grid g4 reveal">
+      <div class="card span2" style="background:linear-gradient(135deg,var(--soft),var(--bg-1))">
+        <div class="tag" style="margin-bottom:16px"><span class="dot"></span>Hero target</div>
+        <div class="stat"><div class="v mono"><span class="c-red">5</span> <span style="color:var(--ink-3);font-size:.42em;font-weight:600">tools</span> <span class="accent">→ 1</span></div>
+          <div class="l">Surfaces to start a response</div>
+          <div class="s">Web form, ServiceNow, Slack, email and a conference line, unified into a single Teams conversation.</div></div>
+      </div>
+      <div class="card"><div class="stat"><div class="v c-cyan mono">~60%</div><div class="l">Time-to-war-room · target</div><div class="s">Detection → coordinated team. <b>Hypothesis</b></div></div></div>
+      <div class="card"><div class="stat"><div class="v c-green mono">3</div><div class="l">Invocation paths shipped</div><div class="s">Bot · message action · proactive card. <b>Delivered</b></div></div></div>
+      <div class="card"><div class="stat"><div class="v mono c-cyan">0</div><div class="l">Re-keyed fields</div><div class="s">One capture, synced to ServiceNow. <b>Delivered</b></div></div></div>
+      <div class="card"><div class="stat"><div class="v mono">4</div><div class="l">Governed states</div><div class="s">New · Suspended · Restored · Closed. <b>Delivered</b></div></div></div>
+      <div class="card"><div class="stat"><div class="v mono c-green">2→1</div><div class="l">Manual re-creations removed</div><div class="s">Slack &amp; email, gone. <b>Delivered</b></div></div></div>
+    </div>
+
+    <!-- SLOPE: before/after on three measures -->
+    <figure class="card flush reveal" style="margin-top:32px">
+      <div class="hd">
+        <div class="tag green" style="margin-bottom:12px"><span class="dot"></span>Before → after · the shape of the change</div>
+        <h3 style="margin-bottom:2px">Every measure of overhead moves the same direction — down</h3>
+      </div>
+      <div class="svgwrap" style="padding:14px 22px 4px">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="Slope chart of three measures before and after">
+        <g font-family="Inter" font-size="12">
+          <text x="200" y="34" text-anchor="middle" fill="#6f6f78" font-weight="700">BEFORE</text>
+          <text x="800" y="34" text-anchor="middle" fill="#3ed492" font-weight="700">AFTER (target)</text>
+          <line x1="200" y1="50" x2="200" y2="270" stroke="#26262d"/>
+          <line x1="800" y1="50" x2="800" y2="270" stroke="#26262d"/>
+          <!-- tools -->
+          <text x="186" y="78" text-anchor="end" fill="#a8a8b0">Surfaces · 5</text>
+          <circle cx="200" cy="74" r="5" fill="#f0584f"/><circle cx="800" cy="240" r="5" fill="#3ed492"/>
+          <line x1="200" y1="74" x2="800" y2="240" stroke="#7d80f0" stroke-width="2"/>
+          <text x="814" y="244" fill="#3ed492" font-weight="700">1</text>
+          <!-- manual steps -->
+          <text x="186" y="118" text-anchor="end" fill="#a8a8b0">Manual re-creations · 2</text>
+          <circle cx="200" cy="114" r="5" fill="#f0584f"/><circle cx="800" cy="206" r="5" fill="#3ed492"/>
+          <line x1="200" y1="114" x2="800" y2="206" stroke="#7d80f0" stroke-width="2"/>
+          <text x="814" y="210" fill="#3ed492" font-weight="700">0</text>
+          <!-- coordination overhead -->
+          <text x="186" y="160" text-anchor="end" fill="#a8a8b0">Coordination overhead · high</text>
+          <circle cx="200" cy="156" r="5" fill="#f0584f"/><circle cx="800" cy="172" r="5" fill="#3ed492"/>
+          <line x1="200" y1="156" x2="800" y2="172" stroke="#7d80f0" stroke-width="2"/>
+          <text x="814" y="176" fill="#3ed492" font-weight="700">low</text>
+          <text x="500" y="292" text-anchor="middle" fill="#6f6f78" font-size="11">Indigo lines = the same incident, fewer steps. Steeper slope = bigger reduction.</text>
+        </g>
+      </svg>
+      </div>
+      <figcaption style="padding:0 24px 22px"><b>Why a slope chart:</b> three different units (surfaces, re-creations, overhead) can't share a bar axis — but a slope makes the <i>direction</i> of each comparable at a glance. All three fall, which is the whole argument.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ LEADERSHIP ============ -->
+<section id="leadership">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="kicker"><span class="num">&#9733;</span> Leadership &amp; influence</div>
+      <h2>What I owned beyond the pixels.</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="eyebrow"><svg class="ic sm" viewBox="0 0 24 24"><path d="M3 12h18M12 3v18"/></svg> Reframed the ask</div>
+        <p style="font-size:13px">Pushed back on "faster form" with a process audit, and got the client to fund the real problem — coordination, not data entry. The lollipop chart was the artifact that won the room.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg> Aligned three stakeholders</div>
+        <p style="font-size:13px">Reporter, manager, and the platform team each wanted a different "first screen." The service blueprint gave us one shared map to negotiate scope against.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow"><svg class="ic sm" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg> Set the system, not the screen</div>
+        <p style="font-size:13px">Defined the incident object and its four states once, so every surface — card, dashboard, notification — inherited the same truth. That's what made the MVP buildable on the timeline.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT 8 — REFLECTION ============ -->
+<section id="reflection">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="kicker"><span class="num">08</span> Reflection</div>
+      <h2>What I'd carry forward.</h2>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="quote">The strongest design move on this project wasn't a screen — it was refusing to build the screen we were asked for until we'd proven it was the wrong one.
+        <cite>— the lesson I keep</cite></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <ul class="clean" style="gap:14px">
+          <li><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4L12 17l-6.3 4.4L8 14 2 9.4h7.6z"/></svg><span><b style="color:var(--ink)">Instrument it next time.</b> The MVP shipped without telemetry on time-to-respond. I'd build the measurement into v1 so the hypothesis becomes a result.</span></li>
+          <li><svg class="ic sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span><b style="color:var(--ink)">The locked close earned its keep.</b> Stakeholders doubted it; in testing it was the most-praised detail — proof that governance can feel like care, not control.</span></li>
+          <li><svg class="ic sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span><b style="color:var(--ink)">One object, many doors.</b> The discipline of collapsing every entry onto a single incident object is the pattern I now reach for in any multi-surface system.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="grid g2" style="align-items:end">
+      <div>
+        <h2 style="margin-bottom:14px">Incident Management,<br>without the tool-hopping.</h2>
+        <p class="fcred">Lead Product Designer · research → information model → component system → build-ready spec.<br>Reconstructed in a single Inter family, light &amp; dark, 12px type floor — diagrams &amp; data visualisation hand-built as SVG.</p>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap">
+        <a class="btn" href="#summary"><svg class="ic sm" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>Back to top</a>
+        <a class="btn" href="#solution"><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8"/></svg>See the screens</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
 <script>
-document.querySelectorAll('.ctab[data-case]').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('.ctab').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false')});
-  b.classList.add('active');b.setAttribute('aria-selected','true');
-  document.querySelectorAll('.cpanel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('case-'+b.dataset.case).classList.add('active');
-}));
-const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.1});
+/* staggered reveal on scroll */
+const io=new IntersectionObserver((es)=>{
+  es.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('in'), i*60); io.unobserve(e.target);} });
+},{threshold:.12, rootMargin:'0px 0px -8% 0px'});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-document.querySelectorAll('[data-goto]').forEach(a=>a.addEventListener('click',e=>{
-  e.preventDefault();
-  const t=document.querySelector('.ctab[data-case="'+a.dataset.goto+'"]');
-  if(t){t.click();document.querySelector('.case-card').scrollIntoView({behavior:'smooth',block:'start'});}
-}));
-(function(){var b=document.getElementById('themeBtn');function sync(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light'));}
-b.onclick=function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');sync();};sync();})();
-</script></body></html>
+/* active nav link */
+const links=[...document.querySelectorAll('.navlinks a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+const so=new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){ const id='#'+e.target.id;
+    links.forEach(a=>a.style.color=a.getAttribute('href')===id?'var(--ink)':'');
+    links.forEach(a=>a.style.background=a.getAttribute('href')===id?'var(--bg-2)':''); }});
+},{rootMargin:'-40% 0px -55% 0px'});
+secs.forEach(s=>s&&so.observe(s));
+(function(){var b=document.getElementById('themeBtn');if(!b)return;function sync(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light'));}b.onclick=function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');sync();};sync();})();
+</script>
+</body>
+</html>
