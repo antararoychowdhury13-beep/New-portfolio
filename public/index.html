@@ -132,18 +132,21 @@ section{padding:100px 0;position:relative;z-index:2}
 
 /* work */
 .work-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.wcard{background:linear-gradient(180deg,rgba(20,20,27,.6),rgba(14,14,19,.6));border:1px solid var(--line);border-radius:14px;padding:26px;display:block;position:relative;transition:all .25s;overflow:hidden}
-.wcard::before{content:"";position:absolute;inset:0;background:radial-gradient(140% 100% at 0% 0%,rgba(196,245,66,.06),transparent 50%);opacity:0;transition:opacity .25s}
-.wcard:hover{border-color:var(--line-2);transform:translateY(-3px)}
-.wcard:hover::before{opacity:1}
-.wcard .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.wcard .cli{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.wcard .open{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--accent);opacity:0;transition:opacity .25s}
-.wcard:hover .open{opacity:1}
-.wcard h3{font-family:var(--serif);font-weight:400;font-size:23px;line-height:1.16;margin-bottom:16px}
+.wcard{background:linear-gradient(180deg,rgba(20,20,27,.6),rgba(14,14,19,.6));border:1px solid var(--line);border-radius:16px;display:block;position:relative;transition:all .25s;overflow:hidden}
+.wcard:hover{border-color:var(--line-2);transform:translateY(-3px);box-shadow:0 24px 60px -30px rgba(0,0,0,.8)}
+.wthumb{position:relative;aspect-ratio:5/2;overflow:hidden;border-bottom:1px solid var(--line)}
+.wthumb svg{position:absolute;inset:0;width:100%;height:100%;transition:transform .5s ease}
+.wcard:hover .wthumb svg{transform:scale(1.05)}
+.wthumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(7,7,10,.55))}
+.wtag{position:absolute;top:14px;left:16px;z-index:2;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--cream);opacity:.6}
+.wcard .open{position:absolute;top:12px;right:14px;z-index:2;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--ink);background:var(--accent);border-radius:8px;padding:5px 10px;font-weight:700;opacity:0;transform:translateY(-4px);transition:all .25s}
+.wcard:hover .open{opacity:1;transform:none}
+.wbody{padding:20px 22px 22px}
+.wcard .cli{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.wcard h3{font-weight:600;line-height:1.35;margin:10px 0 16px}
 .wcard .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;padding-top:16px;border-top:1px solid var(--line)}
 .wcard .role{font-size:12px;color:var(--muted)}
-.wcard .m{font-family:var(--serif);font-size:24px;color:var(--accent);white-space:nowrap}
+.wcard .m{font-weight:600;color:var(--accent);white-space:nowrap;line-height:1}
 
 /* footer */
 footer{padding:110px 0 60px;border-top:1px solid var(--line);position:relative;z-index:2;margin-top:40px}
@@ -530,16 +533,29 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')ask(input.value);});
 
 /* ===== Work cards ===== */
 const WORK=[
-  {cli:'Siemens · Smart Mining',h:'Clustered eight operational gaps into four interventions — instead of fixing them one by one.',role:'Design Lead',m:'+67%',href:'case-smart-mining.html'},
-  {cli:'Siemens · #NextWork',h:'Built the operating system around the methodology — without rebuilding the methodology.',role:'Lead Product Designer',m:'72%',href:'case-nextwork.html'},
-  {cli:'John Deere · 0→1',h:'A wordless interface a 7-year-old masters, wrapped in a layer a parent can audit.',role:'Lead Product / UX',m:'91%',href:'case-deere-pioneers.html'},
-  {cli:'Microsoft Teams · BART',h:'Compressed the first five minutes of incident response — five tools into one.',role:'Lead Product Designer',m:'5→1',href:'case-incident-bart.html'},
-  {cli:'John Deere · India',h:'Stopped showing data and showed the next move — an offline-first decision assistant.',role:'Design Lead',m:'+17.3%',href:'case-khetmitra.html'},
-  {cli:'IBM · Power Systems',h:'Aligned four squads on one design language — without slowing any of them down.',role:'Product Design Manager',m:'−20%',href:'#work'}
+  {cli:'Siemens · Smart Mining',h:'Clustered eight operational gaps into four interventions — instead of fixing them one by one.',role:'Design Lead',m:'+67%',href:'case-smart-mining.html',motif:'nodes',tint:'#7CA3FF'},
+  {cli:'Siemens · #NextWork',h:'Built the operating system around the methodology — without rebuilding the methodology.',role:'Lead Product Designer',m:'72%',href:'case-nextwork.html',motif:'orbit',tint:'#C4F542'},
+  {cli:'John Deere · 0→1',h:'A wordless interface a 7-year-old masters, wrapped in a layer a parent can audit.',role:'Lead Product / UX',m:'91%',href:'case-deere-pioneers.html',motif:'play',tint:'#FF7A5C'},
+  {cli:'Microsoft Teams · BART',h:'Compressed the first five minutes of incident response — five tools into one.',role:'Lead Product Designer',m:'5→1',href:'case-incident-bart.html',motif:'converge',tint:'#7CA3FF'},
+  {cli:'John Deere · India',h:'Stopped showing data and showed the next move — an offline-first decision assistant.',role:'Design Lead',m:'+17.3%',href:'case-khetmitra.html',motif:'rows',tint:'#9DD46A'},
+  {cli:'IBM · Power Systems',h:'Aligned four squads on one design language — without slowing any of them down.',role:'Product Design Manager',m:'−20%',href:'#work',motif:'grid',tint:'#C4F542'}
 ];
+/* abstract thumbnail placeholders — one motif per case, swap for real imagery later */
+function thumbSVG(motif,c){
+  const M={
+    nodes:`<line x1="70" y1="130" x2="160" y2="62"/><line x1="160" y1="62" x2="268" y2="138"/><line x1="268" y1="138" x2="352" y2="70"/><line x1="352" y1="70" x2="438" y2="126"/><line x1="160" y1="62" x2="352" y2="70"/><line x1="268" y1="138" x2="210" y2="176"/>`+
+      `<circle cx="70" cy="130" r="6"/><circle cx="160" cy="62" r="6"/><circle cx="352" cy="70" r="6"/><circle cx="438" cy="126" r="6"/><circle cx="210" cy="176" r="5"/><circle cx="268" cy="138" r="11" fill="${c}" stroke="none"/>`,
+    orbit:`<ellipse cx="250" cy="100" rx="185" ry="72"/><ellipse cx="250" cy="100" rx="122" ry="46"/><ellipse cx="250" cy="100" rx="62" ry="23"/><circle cx="250" cy="100" r="9" fill="${c}" stroke="none"/><circle cx="405" cy="62" r="6" fill="${c}" stroke="none"/><circle cx="140" cy="132" r="4"/>`,
+    play:`<circle cx="170" cy="105" r="72" fill="${c}" fill-opacity=".14" stroke="none"/><circle cx="285" cy="85" r="52" fill="${c}" fill-opacity=".22" stroke="none"/><circle cx="372" cy="128" r="36" fill="${c}" fill-opacity=".32" stroke="none"/><circle cx="372" cy="128" r="9" fill="${c}" stroke="none"/><path d="M150 108 L185 88 L185 128 Z" fill="#07070A" stroke="none"/>`,
+    converge:`<line x1="0" y1="24" x2="352" y2="100"/><line x1="0" y1="62" x2="352" y2="100"/><line x1="0" y1="100" x2="352" y2="100"/><line x1="0" y1="138" x2="352" y2="100"/><line x1="0" y1="176" x2="352" y2="100"/><circle cx="352" cy="100" r="16"/><circle cx="352" cy="100" r="6" fill="${c}" stroke="none"/><line x1="368" y1="100" x2="500" y2="100" stroke-dasharray="3 7"/>`,
+    rows:`<path d="M0 62 C150 40 350 84 500 56" fill="none"/><path d="M0 102 C150 80 350 124 500 96" fill="none"/><path d="M0 142 C150 120 350 164 500 136" fill="none"/><path d="M0 182 C150 160 350 204 500 176" fill="none"/><circle cx="330" cy="112" r="9" fill="${c}" stroke="none"/>`,
+    grid:(()=>{let r='';for(let y=0;y<3;y++)for(let x=0;x<8;x++)r+=`<rect x="${58+x*50}" y="${28+y*52}" width="30" height="30" rx="7"${x===2&&y===1?` fill="${c}" stroke="none"`:''}/>`;return r;})()
+  };
+  return `<svg viewBox="0 0 500 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="none" stroke="${c}" stroke-opacity=".45" stroke-width="1.6">${M[motif]}</g></svg>`;
+}
 const wg=document.getElementById('workgrid');
-WORK.forEach(w=>{const a=document.createElement('a');a.className='wcard reveal';a.href=w.href;
-  a.innerHTML=`<div class="top"><span class="cli">${w.cli}</span><span class="open">OPEN ↗</span></div><h3>${w.h}</h3><div class="meta"><span class="role">${w.role}</span><span class="m">${w.m}</span></div>`;
+WORK.forEach((w,i)=>{const a=document.createElement('a');a.className='wcard reveal';a.href=w.href;
+  a.innerHTML=`<div class="wthumb" style="background:radial-gradient(130% 170% at 18% 0%,${w.tint}26,transparent 55%),linear-gradient(160deg,#171720,#0c0c11)">${thumbSVG(w.motif,w.tint)}<span class="wtag">Case file ${String(i+1).padStart(2,'0')}</span><span class="open">OPEN ↗</span></div><div class="wbody"><span class="cli">${w.cli}</span><h3>${w.h}</h3><div class="meta"><span class="role">${w.role}</span><span class="m">${w.m}</span></div></div>`;
   wg.appendChild(a);});
 
 /* reveals */
