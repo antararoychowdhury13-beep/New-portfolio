@@ -61,3 +61,7 @@ section{padding:44px 0}
 footer{padding:60px 0 50px;border-top:1px solid var(--line);margin-top:50px}
 .colophon{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted-2);flex-wrap:wrap;gap:10px}
 @media (max-width:640px){header{padding:120px 0 30px}}
+/* all-Inter typography: solid weights, no narrow or thin display text */
+header h1,.tstop h3,.timeline h3{font-weight:600;letter-spacing:-.02em}
+header h1 em{font-style:normal}
+.cell .n{font-weight:600}
