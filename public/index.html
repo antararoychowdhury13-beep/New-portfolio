@@ -117,6 +117,13 @@ section{padding:88px 0;position:relative;z-index:2}
 .chip::before{content:"→";color:var(--accent);opacity:.6}
 .chip:hover{color:var(--cream);border-color:var(--accent);background:rgba(196,245,66,.06)}
 .agent-note{font-size:12px;color:var(--muted);margin:14px 8px 0;max-width:640px;line-height:1.6}
+.voice-console{padding:26px 24px}
+.voice-head{display:flex;gap:18px;align-items:flex-start}
+.voice-orb{width:46px;height:46px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,var(--accent),rgba(196,245,66,.2));box-shadow:0 0 26px -4px rgba(196,245,66,.6);animation:pulse 2s infinite}
+.voice-cue{font-size:18px;color:var(--muted);margin-top:6px;max-width:560px}
+.voice-cue b{color:var(--cream);font-weight:600}
+.chip-static{cursor:default}
+.chip-static:hover{color:var(--muted);border-color:var(--line-2);background:var(--ink-3)}
 
 /* answer panel */
 .answer{margin:14px 8px 6px;min-height:0;overflow:hidden}
@@ -210,21 +217,9 @@ footer h2 em{font-style:normal;color:var(--accent)}
 .foot-links a:not(.primary):hover{border-color:var(--accent)}
 .colophon{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--muted-2);flex-wrap:wrap;gap:10px}
 
-/* sticky footer dock */
-.dock{position:fixed;left:0;right:0;bottom:0;z-index:45;padding:14px 0 16px;background:linear-gradient(180deg,transparent,var(--ink) 42%);transform:translateY(130%);opacity:0;transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .3s ease;pointer-events:none}
-.dock.show{transform:none;opacity:1;pointer-events:auto}
-.dock-bar{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(7,7,10,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1.5px solid rgba(196,245,66,.5);border-radius:14px;box-shadow:0 0 40px -12px rgba(196,245,66,.4),0 20px 50px -20px rgba(0,0,0,.8)}
-.dock-bar .pr{font-family:var(--mono);color:var(--accent);font-size:18px;font-weight:600;line-height:1}
-.dock-bar input{flex:1;width:0;min-width:0;background:none;border:none;outline:none;color:var(--cream);font-family:var(--mono);font-size:18px;caret-color:var(--accent)}
-.dock-bar input::placeholder{color:#7d8a55}
-.dock-bar .send{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--ink);background:var(--accent);border:none;border-radius:9px;padding:12px 18px;min-height:44px;cursor:pointer;font-weight:700;transition:box-shadow .2s}
-.dock-bar .send:hover{box-shadow:0 0 24px -4px rgba(196,245,66,.8)}
-html.light .dock-bar{background:rgba(255,255,255,.94);border-color:rgba(111,163,0,.55);box-shadow:0 0 40px -16px rgba(111,163,0,.35),0 18px 44px -20px rgba(0,0,0,.22)}
-html.light .dock-bar input::placeholder{color:#94A366}
 
 /* ElevenLabs voice widget — sit above the sticky dock */
 elevenlabs-convai{position:fixed;z-index:60}
-@media (max-width:600px){elevenlabs-convai{--convai-bottom-offset:88px}}
 
 /* reveals + motion */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
@@ -331,26 +326,28 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
 <section id="agent"><div class="wrap">
   <div class="sec-head reveal">
     <p class="mono"><span class="hl">01</span> · Ask my portfolio</p>
-    <h2>Explore the selected work, or <em>ask a specific question.</em></h2>
-    <p class="lead">Get a synthesized answer from the case-study evidence. Optional — the work above stands on its own.</p>
+    <h2>Talk to my portfolio — <em>by voice.</em></h2>
+    <p class="lead">A voice agent that answers from my documented case studies. Ask about my leadership, results or a specific project.</p>
   </div>
   <div class="console-wrap reveal">
-    <div class="console-label"><span class="live"></span>Ask a question about my work</div>
-    <div class="console" id="console">
-      <div class="console-bar">
-        <span class="pr" aria-hidden="true">›</span>
-        <input id="cinput" type="text" autocomplete="off" spellcheck="false" placeholder="Ask anything about my work…" aria-label="Ask a question about my work" aria-describedby="console-help">
-        <button class="send" id="csend">GO</button>
+    <div class="console voice-console">
+      <div class="voice-head">
+        <span class="voice-orb" aria-hidden="true"></span>
+        <div>
+          <div class="console-label"><span class="live"></span>Voice agent · live</div>
+          <p class="voice-cue">Tap <b>Start a call</b> in the corner and speak your question — allow microphone access when your browser asks.</p>
+        </div>
       </div>
-      <p id="console-help" class="console-help">For example: “Show my leadership scope.”</p>
-      <div class="chips-lead">New here? Tap a question to begin →</div>
-      <div class="chips" id="chips"></div>
-      <div class="answer empty" id="answer" role="region" aria-live="polite" aria-labelledby="atag">
-        <div class="a-head"><span class="tag" id="atag">RESOLVED</span></div>
-        <div class="a-line" id="aline"></div>
-        <div class="a-body" id="abody"></div>
+      <div class="chips-lead">Try asking aloud →</div>
+      <div class="chips">
+        <span class="chip chip-static">Show my leadership scope</span>
+        <span class="chip chip-static">Show measurable impact</span>
+        <span class="chip chip-static">Show a difficult trade-off</span>
+        <span class="chip chip-static">How I build design systems</span>
+        <span class="chip chip-static">Walk through my career</span>
+        <span class="chip chip-static">What is Intent-First UX?</span>
       </div>
-      <p class="agent-note">Responses are generated from six documented case studies. Open the linked source to verify the full context.</p>
+      <p class="agent-note">Voice answers are generated from six documented case studies. Open a case study below to verify the full context.</p>
     </div>
   </div>
 </div></section>
@@ -426,11 +423,6 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
   <div class="colophon"><span>© 2026 ANUPAM SARKAR · BENGALURU</span><span>PRODUCT DESIGN MANAGER</span></div>
 </div></footer>
 
-<div class="dock" id="dock" aria-hidden="true"><div class="wrap"><div class="dock-bar">
-  <span class="pr" aria-hidden="true">&rsaquo;</span>
-  <input id="dinput" type="text" autocomplete="off" spellcheck="false" placeholder="Ask anything about my work…" aria-label="Ask the agent">
-  <button class="send" id="dsend">GO</button>
-</div></div></div>
 
 <!-- ElevenLabs Conversational AI (voice) widget -->
 <elevenlabs-convai agent-id="agent_3001kzzbtvkzfsgtmftsfr3zgmd2"></elevenlabs-convai>
@@ -461,168 +453,6 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
   frame();
   addEventListener('resize',()=>{size();});
 })();
-
-/* ===== Agent console ===== */
-const CASELIB={
-  'ibm-power':{cli:'IBM · Power Systems',t:'Unified four squads around one design language.',m:'20% less UI drift',href:'case-ibm-power.html'},
-  'smart-mining':{cli:'Siemens · Smart Mining',t:'Reframed eight gaps into four fundable interventions.',m:'67% faster decisions',href:'case-smart-mining.html'},
-  'nextwork':{cli:'Siemens · #NextWork',t:'Built the operating system around the methodology.',m:'72% adoption',href:'case-nextwork.html'},
-  'khetmitra':{cli:'John Deere India · KhetMitra',t:'Showed the next move instead of the data.',m:'+17.3% pilot yield',href:'case-khetmitra.html'},
-  'deere-pioneers':{cli:'John Deere · Farm Pioneers',t:'A wordless interface a 7-year-old masters.',m:'91% task success',href:'case-deere-pioneers.html'},
-  'bart':{cli:'Microsoft Teams · BART',t:'The first five minutes of incident response, compressed.',m:'5→1 tools',href:'case-incident-bart.html'},
-  'career-journey':{cli:'Experience',t:'Twelve years across five industries, into IBM.',m:'5 industries',href:'career-journey.html',btn:'View experience'}
-};
-function caseCards(slugs){
-  const cards=(slugs||[]).map(s=>CASELIB[s]).filter(Boolean);
-  if(!cards.length)return '';
-  return '<div class="a-follow"><div class="fl">View all relevant work</div><div class="case-cards">'+cards.map(c=>
-    `<a class="case-card" href="${c.href}"><span class="cc-cli">${c.cli}</span><h5>${c.t}</h5><span class="cc-m">${c.m}</span><span class="cc-btn">${(c.btn||'Read case study').toUpperCase()}</span></a>`
-  ).join('')+'</div></div>';
-}
-const INTENTS={
-  leadershipScope:{label:'Show my leadership scope',tag:'TEAM & ORGANIZATIONAL LEADERSHIP',
-    line:'resolving → team & organizational leadership…',
-    body:()=>`<div class="a-statement">I build the conditions in which <em>design teams succeed</em> — and own the calls in between.</div>
-      <div class="a-grid">
-        <div class="a-cell"><div class="n">4</div><div class="l">direct reports coached across squads · IBM</div></div>
-        <div class="a-cell"><div class="n">4</div><div class="l">product squads supported without a central bottleneck</div></div>
-        <div class="a-cell cool"><div class="n">+35%</div><div class="l">first-pass approvals via 3-in-a-box governance</div></div>
-        <div class="a-cell green"><div class="n">3 layers</div><div class="l">exec framing → cross-functional → frontline · Siemens</div></div>
-      </div>
-      <p class="a-note">Leadership here means decision rights, coaching and cross-functional alignment — not only artifacts. Open a case to see how it played out.</p>
-      ${caseCards(['ibm-power','smart-mining'])}`},
-  impact:{label:'Show measurable impact',tag:'QUANTIFIED OUTCOMES',
-    line:'resolving → quantified outcomes across 5 industries…',
-    body:()=>`<div class="a-grid">
-        <div class="a-cell"><div class="n">20% less</div><div class="l">documented UI inconsistency · IBM Power Systems</div></div>
-        <div class="a-cell cool"><div class="n">60→85%</div><div class="l">prototype validation rate · Siemens</div></div>
-        <div class="a-cell warm"><div class="n">500K+</div><div class="l">business users served · BT billing</div></div>
-        <div class="a-cell green"><div class="n">+17.3%</div><div class="l">yield for pilot participants · KhetMitra</div></div>
-        <div class="a-cell"><div class="n">67% faster</div><div class="l">safety-decision completion · Smart Mining</div></div>
-        <div class="a-cell cool"><div class="n">5→1</div><div class="l">tools at incident triage · BART</div></div>
-      </div>
-      <p class="a-note">Outcomes are normalized to protect confidential business data; measurement method is retained. For KhetMitra, pilot participants recorded 17.3% higher yield — the design contribution was improved recommendation adoption. Open the linked case to verify context.</p>
-      ${caseCards(['ibm-power','smart-mining','khetmitra'])}`},
-  decision:{label:'Show a difficult trade-off',tag:'HIGHEST-COST TRADE-OFF',
-    line:'resolving → highest-cost trade-offs in the archive…',
-    body:()=>`<div class="decision"><h4>Killed a concept that tested well — Siemens Smart Mining</h4>
-        <div class="row"><b>Why</b><span>The alert-centric concept amplified the exact alert fatigue it was meant to cure.</span></div>
-        <div class="row"><b>Trade-off</b><span>Threw away a fast-validating concept and absorbed a timeline hit to pivot to a spatial canvas.</span></div>
-        <div class="row res"><b>Result</b><span>67% faster safety decisions · 240→18 daily alerts · SUS 92.</span></div></div>
-      <div class="decision"><h4>Overrode the brief — KhetMitra / John Deere India</h4>
-        <div class="row"><b>Why</b><span>Field research: no farmer consulted more than two data sources before deciding. A dashboard would add load.</span></div>
-        <div class="row"><b>Trade-off</b><span>Contradicted the stakeholder ask for a dashboard; had to re-sell leadership on a decision assistant.</span></div>
-        <div class="row res"><b>Result</b><span>41→87% task completion · +17.3% pilot yield · funded to phase 2.</span></div></div>
-      ${caseCards(['smart-mining','khetmitra'])}`},
-  systems:{label:'How I build design systems',tag:'DESIGN SYSTEMS & GOVERNANCE',
-    line:'resolving → design systems, governance and adoption…',
-    body:()=>`<div class="a-statement">A design system is an <em>operating model</em>, not a component library.</div>
-      <div class="a-prin">
-        <div class="p"><span class="nm">01</span><span class="tx">Standardise tokens, patterns and governance so four squads share one language.</span></div>
-        <div class="p"><span class="nm">02</span><span class="tx">Install decision rights and critique cadence so the system scales without a central bottleneck.</span></div>
-        <div class="p"><span class="nm">03</span><span class="tx">Measure drift and adoption, not just component counts.</span></div>
-      </div>
-      <p class="a-note">At IBM Power Systems this cut documented UI inconsistency ~20% while first-pass approvals rose ~35%.</p>
-      ${caseCards(['ibm-power','nextwork'])}`},
-  arc:{label:'Walk through my career',tag:'CAREER TRAJECTORY',
-    line:'resolving → trajectory, architecture → IBM…',
-    body:()=>`<div class="a-statement">Architecture → IIT design → TCS → John Deere → Siemens → BT → <em>IBM.</em></div>
-      <p class="a-note">Each industry switch built a durable capability the next role compounded — from shipping volume at TCS to decision design at Siemens to people leadership and governance at IBM.</p>
-      ${caseCards(['career-journey'])}`},
-  ifu:{label:'What is Intent-First UX?',tag:'ORIGINAL FRAMEWORK',
-    line:'resolving → original framework you are currently inside…',
-    body:()=>`<div class="a-statement">Every UI framework starts <em>after</em> intent. Intent-First UX starts before it.</div>
-      <p class="a-note">IFU pre-resolves the interface to the most probable user outcome before conscious action — four stages: <b style="color:var(--cream)">Sense → Morph → Confirm → Escape.</b> This portfolio's ask box is a small demonstration.</p>
-      <div class="a-actions"><a href="#capabilities">See the capability map</a></div>`},
-  fallback:{label:'I could not match that question',tag:'TRY ANOTHER QUESTION',
-    line:'I can answer from the six documented case studies…',
-    body:()=>`<p class="a-note">Try asking about team leadership, measurable impact, difficult decisions, design systems or career progression — or open a case study directly.</p>
-      ${caseCards(['ibm-power','smart-mining','bart'])}`}
-};
-const ORDER=['leadershipScope','impact','decision','systems','arc','ifu'];
-const KW={
-  leadershipScope:['lead','leader','manage','manager','team','report','mentor','coach','people','organization','organizational','scope','altitude'],
-  impact:['impact','metric','number','result','outcome','roi','data','measure','proof','yield'],
-  decision:['decision','hard','trade','trade-off','tradeoff','tough','difficult','kill','pivot','choice','call','override'],
-  systems:['system','systems','token','component','library','governance','pattern','standard','carbon'],
-  arc:['arc','journey','career','story','years','history','path','experience','trajectory'],
-  ifu:['intent','ifu','framework','gravity','invent','original','philosophy']
-};
-
-const chipsEl=document.getElementById('chips'), ansEl=document.getElementById('answer'),
-      tagEl=document.getElementById('atag'), lineEl=document.getElementById('aline'),
-      bodyEl=document.getElementById('abody'), input=document.getElementById('cinput');
-ORDER.forEach(k=>{const b=document.createElement('button');b.className='chip';b.textContent=INTENTS[k].label;b.onclick=()=>resolve(k);chipsEl.appendChild(b);});
-
-function route(q){
-  q=(q||'').toLowerCase().trim();
-  if(!q)return 'fallback';
-  for(const k of ORDER){if(KW[k].some(w=>q.includes(w)))return k;}
-  return 'fallback';
-}
-const reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let typing=null;
-function resolve(k,opts){
-  opts=opts||{};
-  const it=INTENTS[k]||INTENTS.fallback;
-  ansEl.classList.remove('empty');
-  ansEl.setAttribute('aria-busy','true');
-  tagEl.textContent=it.tag;
-  bodyEl.innerHTML='';
-  if(typing)clearInterval(typing);
-  const txt='› '+it.line;
-  if(reduceM){lineEl.textContent=txt;show(it);}
-  else{
-    lineEl.innerHTML='<span class="cursor"></span>'; let i=0;
-    typing=setInterval(()=>{
-      i++; lineEl.innerHTML=txt.slice(0,i)+'<span class="cursor"></span>';
-      if(i>=txt.length){clearInterval(typing);lineEl.innerHTML=txt;setTimeout(()=>show(it),140);}
-    },14);
-  }
-  if(opts.scroll!==false) ansEl.scrollIntoView({behavior:reduceM?'auto':'smooth',block:'nearest'});
-}
-function show(it){bodyEl.innerHTML=it.body();ansEl.setAttribute('aria-busy','false');}
-
-/* live AI chat — /api/chat via gpt-4o-mini (primary) or Ollama (secondary);
-   on any failure we fall back to the local keyword index */
-const chatHist=[];
-function escTx(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
-function aiHtml(s){
-  let h=escTx(s).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/^[-*] (.*)$/gm,'&bull; $1');
-  return h.split(/\n{2,}/).map(p=>'<p>'+p.replace(/\n/g,'<br>')+'</p>').join('');
-}
-async function ask(q){
-  q=(q||'').trim();
-  if(!q){resolve('fallback');return;}
-  ansEl.classList.remove('empty');
-  ansEl.setAttribute('aria-busy','true');
-  if(typing)clearInterval(typing);
-  tagEl.textContent='LIVE AGENT';
-  bodyEl.innerHTML='';
-  lineEl.innerHTML='&rsaquo; resolving &rarr; querying the live agent&hellip;<span class="cursor"></span>';
-  ansEl.scrollIntoView({behavior:reduceM?'auto':'smooth',block:'nearest'});
-  try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},
-      body:JSON.stringify({messages:[...chatHist,{role:'user',content:q}]}),
-      signal:AbortSignal.timeout(30000)});
-    if(!r.ok)throw new Error('api '+r.status);
-    const d=await r.json();
-    if(!d.answer)throw new Error('empty answer');
-    chatHist.push({role:'user',content:q},{role:'assistant',content:d.answer});
-    while(chatHist.length>8)chatHist.shift();
-    tagEl.textContent=d.provider==='openai'?'GPT-4O MINI':d.provider==='ollama'?'OLLAMA':'LIVE AGENT';
-    lineEl.textContent='› '+q;
-    bodyEl.innerHTML='<div class="a-body"><div class="a-ai">'+aiHtml(d.answer)+'</div>'+caseCards(d.cases)+'</div>';
-    ansEl.setAttribute('aria-busy','false');
-    input.value='';
-  }catch(e){
-    const k=route(q);
-    resolve(k,{scroll:false});
-    tagEl.textContent=INTENTS[k].tag+' · LOCAL INDEX';
-  }
-}
-document.getElementById('csend').onclick=()=>ask(input.value);
-input.addEventListener('keydown',e=>{if(e.key==='Enter')ask(input.value);});
 
 /* ===== Capability field ===== */
 (function(){
@@ -795,21 +625,6 @@ syncThemeBtn();
 const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{threshold:.08});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-/* sticky footer dock: appears once the console has scrolled above the viewport */
-(function(){
-  const dock=document.getElementById('dock'), dinput=document.getElementById('dinput'),
-        heroConsole=document.querySelector('.console-wrap');
-  if(!dock||!heroConsole)return;
-  function dockAsk(){ const v=dinput.value.trim(); if(!v)return; dinput.value=''; ask(v); }
-  document.getElementById('dsend').onclick=dockAsk;
-  dinput.addEventListener('keydown',e=>{if(e.key==='Enter')dockAsk();});
-  const dio=new IntersectionObserver(es=>es.forEach(e=>{
-    const show=!e.isIntersecting && e.boundingClientRect.top<0;
-    dock.classList.toggle('show',show);
-    dock.setAttribute('aria-hidden',show?'false':'true');
-  }),{rootMargin:'-72px 0px 0px 0px',threshold:0});
-  dio.observe(heroConsole);
-})();
 </script>
 </body>
 </html>
