@@ -1,0 +1,495 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BT Business Billing — Anupam Sarkar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light");</script>
+<style>
+:root{
+  --ink:#0B0B0E; --ink-2:#15151A; --ink-3:#1E1E24;
+  --cream:#FAF9F5; --muted:#8B8A85;
+  --accent:#C4F542; --accent-green:#9DD46A; --danger:#E85A4F; --blue:#7CA3FF;
+  --hairline:rgba(255,255,255,0.08);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+.narrow{max-width:720px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(11,11,14,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline)}
+.nav-in{max-width:1080px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.logo i{font-style:normal;color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:18px}
+.back{font-size:13px;font-weight:500;color:var(--muted);transition:color .2s}
+.back:hover{color:var(--accent)}
+.theme-toggle{width:44px;height:24px;border-radius:99px;border:1px solid var(--hairline);background:var(--ink-3);position:relative;cursor:pointer;padding:0;flex:none;transition:background .25s}
+.tt-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);transition:transform .25s}
+html.light .tt-thumb{transform:translateX(20px)}
+
+/* hero */
+.case-hero{padding:150px 0 56px}
+.hero-eyebrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:24px}
+.tagpill{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--hairline);padding:6px 13px;border-radius:99px}
+.tagpill.role{color:var(--accent);border-color:rgba(196,245,66,.3)}
+.case-hero h1{font-weight:600;font-size:clamp(34px,5.4vw,64px);line-height:1.06;letter-spacing:-.02em;max-width:15ch}
+.case-hero .lede{margin-top:26px;max-width:60ch;font-size:18px;color:var(--muted)}
+.case-hero .lede b{color:var(--cream);font-weight:600}
+.metric-strip{margin-top:54px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--hairline)}
+.metric-cell{padding:24px 22px 0 0;border-right:1px solid var(--hairline)}
+.metric-cell:last-child{border-right:none}
+.metric-cell .n{font-size:34px;font-weight:600;line-height:1;color:var(--accent);letter-spacing:-.02em}
+.metric-cell .l{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+.role-grid{margin-top:36px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.role-card{border:1px solid var(--hairline);border-radius:12px;padding:16px 18px;background:var(--ink-2)}
+.role-card .k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.role-card .v{font-size:15px;font-weight:600;margin-top:8px}
+.role-card .d{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* act sections */
+.act{padding:64px 0;border-top:1px solid var(--hairline)}
+.act-head{display:flex;gap:18px;align-items:baseline;margin-bottom:8px}
+.act-num{font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.04em;flex:none}
+.act h2{font-weight:600;font-size:clamp(26px,3.4vw,40px);line-height:1.12;letter-spacing:-.02em;max-width:20ch;margin:8px 0 20px}
+.act h2 em{font-style:normal;color:var(--accent)}
+.act h3{font-weight:600;font-size:22px;letter-spacing:-.01em;margin:44px 0 16px}
+.act h4{font-weight:600;font-size:16px;margin-bottom:6px}
+.act p{color:var(--muted);font-size:17px;margin-bottom:16px;max-width:66ch}
+.act p b,.act p strong{color:var(--cream);font-weight:600}
+.act p em{font-style:normal;color:var(--accent);font-weight:500}
+
+/* callout / note / quote */
+.callout{border-left:2px solid var(--accent);padding:4px 0 4px 20px;margin:24px 0;font-size:15px;color:var(--muted)}
+.callout b{color:var(--accent);text-transform:uppercase;letter-spacing:.14em;font-size:11px;font-weight:600;display:block;margin-bottom:6px}
+.note{margin:20px 0;padding:14px 18px;border:1px dashed var(--hairline);border-radius:12px;font-size:14.5px;color:var(--muted);font-style:italic}
+.quote{margin:32px 0;font-size:22px;font-weight:500;line-height:1.4;letter-spacing:-.01em;max-width:24ch}
+.quote cite{display:block;font-size:13px;color:var(--muted);font-style:normal;font-weight:400;margin-top:14px;letter-spacing:.02em}
+.fig{margin:22px 0;padding:16px 18px;background:var(--ink-2);border:1px solid var(--hairline);border-radius:12px}
+.fig .cap{font-size:14px;color:var(--muted)}
+.fig .cap b{color:var(--cream)}
+.fig .meth{font-size:12px;color:var(--muted);margin-top:8px;letter-spacing:.02em;opacity:.8}
+.fig .fnum{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+
+/* stat cards */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0}
+.stat{background:var(--ink-2);border:1px solid var(--hairline);border-radius:12px;padding:18px}
+.stat .n{font-size:26px;font-weight:600;color:var(--accent);letter-spacing:-.01em}
+.stat .l{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.4}
+
+/* generic card grid */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:22px 0}
+.card{background:var(--ink-2);border:1px solid var(--hairline);border-radius:12px;padding:20px}
+.card .tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.card h4{margin-bottom:8px}
+.card p{font-size:14px;margin-bottom:0}
+.card .yes{color:var(--accent-green);font-size:14px;display:block;margin-top:8px}
+.card .no{color:var(--danger);font-size:14px;display:block;margin-top:4px}
+.card.killed{border-color:rgba(232,90,79,.3)}
+.card.killed .tag{color:var(--danger)}
+.card.won .tag{color:var(--accent-green)}
+.card.lost .tag{color:var(--danger)}
+
+/* affinity themes */
+.themes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:22px 0}
+.theme{background:var(--ink-2);border:1px solid var(--hairline);border-radius:12px;padding:18px}
+.theme .th{font-weight:600;font-size:15px;margin-bottom:12px}
+.theme.flag{border-color:rgba(196,245,66,.3)}
+.theme ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.theme li{font-size:13.5px;color:var(--muted);display:flex;gap:10px}
+.theme li .c{color:var(--accent);font-weight:600;flex:none;font-variant-numeric:tabular-nums}
+
+/* ledger table */
+.ledger{width:100%;border-collapse:collapse;margin:22px 0;font-size:14.5px}
+.ledger th{text-align:left;color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:0 14px 12px 0;border-bottom:1px solid var(--hairline)}
+.ledger td{padding:14px 14px 14px 0;border-bottom:1px solid var(--hairline);vertical-align:top;color:var(--muted)}
+.ledger td:first-child{color:var(--cream);font-weight:600;width:26%}
+.ledger .hi{color:var(--danger);font-weight:600}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* screens */
+.screen-block{display:grid;grid-template-columns:1fr;gap:14px;margin:20px 0;padding:22px;background:var(--ink-2);border:1px solid var(--hairline);border-radius:14px}
+.screen-block .tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.screen-block ol{margin:8px 0 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.screen-block ol li{font-size:14.5px;color:var(--muted);display:flex;gap:12px}
+.screen-block ol li .num{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--accent);color:var(--accent);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.trace{font-size:12px;color:var(--accent-green);margin-top:4px;letter-spacing:.02em}
+
+/* shipped screen list */
+.ship{border-left:2px solid var(--hairline);padding-left:22px;margin:16px 0}
+.ship .path{font-size:12px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em}
+.ship h4{margin:6px 0}
+.ship p{font-size:14.5px;margin-bottom:6px}
+.ship .trace{margin-top:2px}
+
+/* impact bars */
+.bars{display:flex;flex-direction:column;gap:14px;margin:22px 0}
+.bar-row{display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:center;font-size:13.5px}
+.bar-label{color:var(--cream);font-weight:500}
+.bar-track{position:relative;height:26px;background:var(--ink-3);border-radius:6px;overflow:hidden}
+.bar-now{position:absolute;top:0;left:0;height:100%;background:rgba(232,90,79,.35);display:flex;align-items:center;padding-left:8px;font-size:11px;color:var(--cream)}
+.bar-target{position:absolute;top:0;height:100%;border-left:2px solid var(--accent);background:rgba(196,245,66,.12)}
+.bar-target .t{position:absolute;top:50%;left:6px;transform:translateY(-50%);font-size:11px;color:var(--accent);white-space:nowrap}
+
+/* cta */
+.cta-band{margin:40px 0 0;padding:28px;border:1px solid var(--accent);border-radius:14px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.cta-band .big{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.foot-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--ink);font-weight:600;font-size:14px;padding:13px 26px;border-radius:99px;transition:transform .2s}
+.foot-cta:hover{transform:translateY(-2px)}
+
+/* footer */
+footer{padding:70px 0 60px;border-top:1px solid var(--hairline)}
+.colophon{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);flex-wrap:wrap;gap:10px}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none}*{transition:none!important}}
+@media (max-width:820px){
+  body{font-size:17px}
+  .metric-strip,.role-grid{grid-template-columns:1fr 1fr}
+  .metric-cell{border-right:none;border-bottom:1px solid var(--hairline);padding:18px 0}
+  .bar-row{grid-template-columns:1fr;gap:6px}
+  .case-hero{padding:120px 0 40px}
+}
+
+/* ===== light mode ===== */
+html.light{
+  --ink:#FFFFFF; --ink-2:#F8F8F6; --ink-3:#F0F0EC;
+  --cream:#1A1A1A; --muted:#5A5A63;
+  --accent:#6FA300; --accent-green:#55901F; --danger:#C0392B;
+  --hairline:rgba(0,0,0,0.10);
+}
+html.light body{background:var(--ink);color:var(--cream)}
+html.light nav{background:rgba(255,255,255,.82)}
+html.light .foot-cta{color:#fff}
+html.light ::selection{background:var(--accent);color:#fff}
+html.light .tagpill.role{border-color:rgba(111,163,0,.32)}
+html.light .card.killed{border-color:rgba(192,57,43,.28)}
+html.light .bar-now{background:rgba(192,57,43,.22);color:#1A1A1A}
+html.light .bar-target{background:rgba(111,163,0,.12)}
+</style></head><body>
+<nav><div class="nav-in">
+  <a href="index.html" class="logo">Anupam Sarkar<i>.</i></a>
+  <div class="nav-right">
+    <a href="index.html" class="back">← Back to portfolio</a>
+    <button id="themeBtn" class="theme-toggle" role="switch" aria-checked="false" aria-label="Toggle light and dark theme"><span class="tt-thumb"></span></button>
+  </div>
+</div></nav>
+
+<header class="case-hero"><div class="wrap reveal">
+  <div class="hero-eyebrow"><span class="tagpill">BT Business · Service Redesign</span><span class="tagpill role">Lead Product Designer</span><span class="tagpill">Independent diagnostic · 2024–25</span></div>
+  <h1>How do you redesign a portal that 340,000 businesses can't escape?</h1>
+  <p class="lede"><b>The portal isn't broken — the system behind it is.</b> An evidence-first redesign of BT Business's billing service, diagnosed entirely from the public record: 120K+ Trustpilot reviews, 8,400 formal disputes and 600+ forum threads, coded by hand into one root cause and a phased fix.</p>
+  <div class="metric-strip">
+    <div class="metric-cell"><div class="n">340,000</div><div class="l">business customers on a portal they can't leave</div></div>
+    <div class="metric-cell"><div class="n">£155M+</div><div class="l">monthly payments running through the service</div></div>
+    <div class="metric-cell"><div class="n">1.4★</div><div class="l">Trustpilot baseline · where the work starts</div></div>
+    <div class="metric-cell"><div class="n">29</div><div class="l">screens across 8 flows, wireframe → shipped</div></div>
+  </div>
+  <div class="role-grid">
+    <div class="role-card"><div class="k">Role</div><div class="v">Lead Product Designer</div><div class="d">Direction, prioritisation, final call on trade-offs</div></div>
+    <div class="role-card"><div class="k">Scope</div><div class="v">End-to-end service</div><div class="d">A system, not a screen</div></div>
+    <div class="role-card"><div class="k">Team</div><div class="v">5 functions aligned</div><div class="d">PM · 2 eng · research · content · service</div></div>
+    <div class="role-card"><div class="k">Method</div><div class="v">Evidence-first</div><div class="d">Public record · fully auditable</div></div>
+  </div>
+</div></header>
+
+<main class="wrap">
+
+<!-- 01 FRAMING -->
+<section class="act reveal" id="framing">
+  <div class="act-head"><span class="act-num">01 · FRAMING</span></div>
+  <h2>The portal isn't broken. <em>The system behind it is.</em></h2>
+  <p>Read three days of Trustpilot reviews and the same shape appears. "Spinning wheel." "Phantom charges." "The chatbot keeps asking about my router when I'm trying to dispute £719." Every one is a real, daily indignity — and every one is downstream of the same thing: BT's billing service is stitched together from subsystems that don't share a source of truth.</p>
+  <p>So this was never "make the bill prettier." It was <em>make the service legible.</em></p>
+  <div class="callout"><b>Working hypothesis · W1</b>If we rebuild around a single source of truth, portal completion jumps 12% → 78% and calls fall by half — because 3 of the 5 top pains are integration failures wearing UI clothing.</div>
+  <div class="fig"><div class="fnum">Fig 01</div><div class="cap"><b>Five symptoms → three measurable failures → one root cause.</b> Drawn on day 4, after the third re-read of the review corpus.</div><div class="meth">Method · thematic coding of 120K+ Trustpilot reviews; top-quartile of 1★ reviews tagged "billing", "portal", "chatbot".</div></div>
+  <div class="callout"><b>Why this matters</b>Diagnoses that stop at "the UI is bad" produce redesigns that don't survive contact with the backend. Naming the root cause is what turns a visual refresh into a service redesign with teeth.</div>
+</section>
+
+<!-- 02 LANDSCAPE -->
+<section class="act reveal" id="landscape">
+  <div class="act-head"><span class="act-num">02 · LANDSCAPE</span></div>
+  <h2>Three competitors have already shipped what BT customers are begging for.</h2>
+  <p>This redesign isn't speculative. Sky, Virgin and Vodafone have each individually solved one of BT's headline failures. The move is to integrate what already exists into something coherent — <em>"this is already working at our competitors, while we did nothing for six years"</em> is the strongest sentence you can put in front of a CFO.</p>
+  <h3>12 insights, on the wall</h3>
+  <div class="themes">
+    <div class="theme"><div class="th">Signal</div><ul>
+      <li><span class="c">68%</span> of Trustpilot reviews are 1-star</li>
+      <li><span class="c">85</span> BT customer-effort score vs 45 industry</li>
+      <li><span class="c">67%</span> abandon mid-flow</li>
+      <li><span class="c">15+</span> min wait to reach a human</li>
+    </ul></div>
+    <div class="theme"><div class="th">Trapped &amp; billing</div><ul>
+      <li><span class="c">83%</span> say they can't cancel easily</li>
+      <li><span class="c">34%</span> of all complaints are billing</li>
+      <li><span class="c">12%</span> BT chatbot resolution vs 35–40% industry</li>
+      <li><span class="c">3–6mo</span> to resolve a dispute</li>
+    </ul></div>
+    <div class="theme flag"><div class="th">Proof it's solvable</div><ul>
+      <li><span class="c">↗</span> Sky ships full online cancellation</li>
+      <li><span class="c">−23%</span> Vodafone pre-bill complaints</li>
+      <li><span class="c">#1</span> Forrester: self-service parity drives NPS</li>
+      <li><span class="c">Sep 24</span> One Touch Switch regulation lands</li>
+    </ul></div>
+  </div>
+  <div class="fig"><div class="fnum">Fig 02–04</div><div class="cap"><b>The empty quadrant is the strategic land grab</b> — high self-service × high continuity; nobody's there yet. A six-year timeline shows every competitor shipped something while BT's clock ran out. Hand-coded complaint frequency makes billing the single biggest driver — so pillar 01 attacks it head-on.</div><div class="meth">Method · Forrester telco DX framework 2024; positioned via portal audit of 12 flows × 4 telcos.</div></div>
+  <div class="callout"><b>Why this matters</b>"This is already working at our competitors, while we did nothing for six years" is the strongest sentence you can put in front of a CFO.</div>
+</section>
+
+<!-- 03 ECOSYSTEM -->
+<section class="act reveal" id="ecosystem">
+  <div class="act-head"><span class="act-num">03 · ECOSYSTEM</span></div>
+  <h2>A bill dispute touches five rings of actors. <em>None of them currently agree.</em></h2>
+  <p>To redesign a service you have to know who pulls the levers — and who's blocking which. This took a week of drawing and re-drawing: v1 was hierarchical (wrong — these actors aren't ranked), v2 was a network (too dense), v3 is a concentric radial. Each ring is owned by a different internal team with a different KPI. <b>That's why there's no source of truth.</b></p>
+  <div class="fig"><div class="fnum">Fig 05–06</div><div class="cap"><b>Three roles in the top-right own this. Marketing isn't among them</b> — the most important thing the influence grid says. Positioning came from an org-chart audit, public statements and role-tracking of named exec roles.</div></div>
+  <div class="note">If I'd known the influence map would take six hours to draw, I'd have started it on day 1, not day 6. Lesson learned.</div>
+  <div class="callout"><b>Why this matters</b>Every enterprise redesign I've seen fail in 15 years failed because the designer didn't earn the trust of the three roles in the top-right before they earned the brief.</div>
+</section>
+
+<!-- 3.5 LEADERSHIP -->
+<section class="act reveal" id="leadership">
+  <div class="act-head"><span class="act-num">3½ · LEADERSHIP</span></div>
+  <h2>I didn't make 23 diagrams. <em>I got five functions to act on them.</em></h2>
+  <p>The artefacts are the easy part. The actual job was holding a shared diagnosis steady while billing, support, platform, legal and content each pulled toward their own version of the truth. This answers the question a hiring panel actually has — not "can she draw?" but "can she move an organisation?"</p>
+  <h3>Four workshops. Each ended with a decision, not a discussion.</h3>
+  <div class="tbl-scroll"><table class="ledger">
+    <thead><tr><th>Workshop</th><th>Who was in the room</th><th>The decision it forced</th></tr></thead>
+    <tbody>
+      <tr><td>Problem framing · W1</td><td>PM, support lead, billing ops</td><td>Agreed the success metric was <b>portal completion</b>, not call deflection. Re-pointed the whole project.</td></tr>
+      <tr><td>Journey mapping · W4</td><td>Research, service design, 2 agents</td><td>Aligned everyone on the three failure points — and that two were backstage, not UI.</td></tr>
+      <tr><td>Concept prioritisation · W6</td><td>Eng, PM, design</td><td>Killed 25 concepts live, against shared criteria. No pet features survived.</td></tr>
+      <tr><td>Risk &amp; legal · W7</td><td>Legal, billing ops, PM</td><td>Surfaced cancellation-parity as contract law, not UX. Reshaped the phase plan.</td></tr>
+    </tbody>
+  </table></div>
+  <h3>The fights I'm proud of losing well</h3>
+  <div class="cards">
+    <div class="card"><div class="tag">Conflict · W7</div><h4>Billing wanted to keep the PDF invoice</h4><p><b>Their position:</b> "It's the legal record." <b>My evidence:</b> 9/15 test users never opened it; it was the #2 source of "phantom charge" confusion. <b>Resolution:</b> kept the PDF as a download, but made the plain-English explainer the default. The user won.</p></div>
+    <div class="card"><div class="tag">Conflict · W8</div><h4>Marketing fought pre-bill alerts</h4><p><b>Their position:</b> "Another notification customers will mute." <b>My call:</b> opt-out, frequency-adjustable — I held the line. <b>Where I gave ground:</b> auto-escalation; I wanted 1 chatbot loop before a human, I got 2. A smaller win is still a win.</p></div>
+  </div>
+  <div class="fig"><div class="fnum">Fig 13a</div><div class="cap"><b>The intervention that mattered most wasn't a screen — it was an operating model.</b> Before, three teams each owned a fragment and none owned the outcome. The fix: a governance group with one shared metric. Org design is design.</div></div>
+  <h3>Delivery risks — named up front</h3>
+  <div class="tbl-scroll"><table class="ledger">
+    <thead><tr><th>Risk</th><th>Impact</th><th>How I'd contain it</th></tr></thead>
+    <tbody>
+      <tr><td>Legacy billing APIs</td><td class="hi">High</td><td>Adapter layer + a phase-1 read-only pilot before any write path.</td></tr>
+      <tr><td>Cancellation-parity = contract law</td><td class="hi">High</td><td>Legal in discovery, not sign-off. Treat constraints as design inputs.</td></tr>
+      <tr><td>Support capacity during rollout</td><td>Med</td><td>Gradual cohort rollout; escalation thresholds tuned with the support lead.</td></tr>
+      <tr><td>Data quality across systems</td><td class="hi">High</td><td>Source-of-truth programme runs parallel to UI work, not after it.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout"><b>Why this matters</b>A senior designer ships an interface. A design leader ships the conditions an interface can survive in: a shared metric, an aligned team, a named risk. The portal is downstream of all three.</div>
+</section>
+
+<!-- 04 RESEARCH -->
+<section class="act reveal" id="research">
+  <div class="act-head"><span class="act-num">04 · RESEARCH</span></div>
+  <h2>Three personas. One shared injury: <em>a service that doesn't trust them with the truth.</em></h2>
+  <p>120,000+ Trustpilot reviews. 8,400 Resolver disputes. 600+ forum threads. Three weeks of coding. Eighty quotes pulled. These personas aren't composites of interviews — they're derived from the <b>public record</b>, which means anyone can audit the work. That's more rigorous than most persona-building, not less.</p>
+  <p>A name and a job title is a demographic. What predicts behaviour is the job someone is hiring the bill to do — so I read three behaviours, not three profiles.</p>
+  <div class="cards">
+    <div class="card"><div class="tag">The reconciler</div><h4>Marcus · finance</h4><p>Verifies every charge, keeps audit evidence, escalates anomalies. <b>Primary persona</b> — his pain touches every system failure at once.</p></div>
+    <div class="card"><div class="tag">The delegator</div><h4>Sarah · ops</h4><p>Wants minimal involvement: task done fast, then gone.</p></div>
+    <div class="card"><div class="tag">The evaluator</div><h4>Diane · owner</h4><p>Compares options, weighs switching cost, watches the contract clock.</p></div>
+  </div>
+  <h3>Affinity wall · what coding 1,200 reviews looked like</h3>
+  <p>Three coding cycles, κ = 0.81 inter-coder agreement, four themes emerged.</p>
+  <div class="themes">
+    <div class="theme"><div class="th">A · Can't get in</div><ul><li><span class="c">412</span> "login keeps failing"</li><li><span class="c">356</span> "spinning wheel"</li><li><span class="c">180</span> "two-factor broken"</li><li><span class="c">144</span> "app ≠ web totals"</li></ul></div>
+    <div class="theme"><div class="th">B · Can't trust the bill</div><ul><li><span class="c">389</span> "charged for returned kit"</li><li><span class="c">341</span> "phantom add-ons"</li><li><span class="c">298</span> "bill shock after promo"</li><li><span class="c">156</span> "double-billed"</li></ul></div>
+    <div class="theme"><div class="th">C · Can't get help</div><ul><li><span class="c">327</span> "chatbot loops"</li><li><span class="c">251</span> "15+ min hold"</li><li><span class="c">204</span> "agent has no context"</li><li><span class="c">192</span> "promised, never delivered"</li></ul></div>
+    <div class="theme flag"><div class="th">★ D · Can't get out</div><ul><li><span class="c">298</span> "no downgrade option"</li><li><span class="c">276</span> "can't cancel online"</li><li><span class="c">187</span> "contract dates buried"</li><li><span class="c">174</span> "forced phone call to leave"</li></ul></div>
+  </div>
+  <div class="note">Theme D = highest regulatory exposure (One Touch Switch). Phase 1 must address it. Themes A+B are platform failures; C+D are policy failures — the redesign has to hit both.</div>
+  <div class="callout"><b>Why this matters</b>Personas from internal interviews flatter intuition. Personas from 120K public verbatims can't. Evidence-first synthesis is what lets you walk into a senior room with a story that holds up.</div>
+</section>
+
+<!-- 05 JOURNEY -->
+<section class="act reveal" id="journey">
+  <div class="act-head"><span class="act-num">05 · JOURNEY</span></div>
+  <h2>Emotion hits the floor at stage 5. <em>And stays there.</em></h2>
+  <p>A journey map isn't a deliverable, it's a diagnosis. Mapping Marcus from bill-arrival to (non-)resolution exposes three system failures hiding under three pain points — and one moment-of-truth where every 1-star review is born. Emotion is monotonic: it never recovers. Stage 5 is where to intervene; everything downstream is symptom.</p>
+  <div class="fig"><div class="fnum">Fig 12–13</div><div class="cap"><b>All three failure points sit on the line of visibility</b> — the seam where what the customer touches and what the system knows stop agreeing. A journey map shows the feeling; a blueprint shows the cause. This is why the fix is a data layer, not a coat of paint.</div></div>
+  <div class="quote">"Three of the five biggest pains aren't UI problems. They're system-integration problems."<cite>— journey synthesis note, week 4</cite></div>
+  <div class="callout"><b>Why this matters</b>An interface shipped without backend changes is theatre. The blueprint is what separates a design-led intervention from a service-led one.</div>
+</section>
+
+<!-- 06 IDEATION -->
+<section class="act reveal" id="ideation">
+  <div class="act-head"><span class="act-num">06 · IDEATION</span></div>
+  <h2>30+ concepts. 25 killed. <em>5 survived.</em></h2>
+  <p>Generating ideas is the easy part; killing them is the discipline. The five survivors are sized for impact, defensible against competitor benchmarks, and sequenced into phases — so sponsorship is earned in stages, not bet on a big bang.</p>
+  <h3>HMW reframes · scored on the wall</h3>
+  <p>Seven reframes, each scored on Business Value × User Value × Feasibility (1–5), force-ranked. The top score becomes the organising principle.</p>
+  <div class="cards">
+    <div class="card won"><div class="tag">★ Chosen · BV4 UV5 F4</div><h4>Make every charge explainable in one sentence</h4><p>Won the forced ranking — and survived all the way to the design system as Principle 01.</p></div>
+    <div class="card"><div class="tag">BV5 UV5 F5</div><h4>Make bill changes legible at a glance</h4><p>Highest raw score; folded into the dashboard.</p></div>
+    <div class="card"><div class="tag">BV5 UV5 F4</div><h4>Eliminate the chatbot doom-loop</h4><p>Later reframed as the auto-escalation cap.</p></div>
+  </div>
+  <div class="fig"><div class="fnum">Fig 15–16</div><div class="cap"><b>Convergence: 4 concepts are phase 1, 3 are strategic bets phased over months 3–12, the rest are the cull.</b> The IA tree promoted everything previously phone-only to L2 — cancellation parity is the riskiest call and the most defensible. Validated by tree-test, n=32 SMB participants.</div></div>
+  <h3>What didn't survive — the graveyard</h3>
+  <p>A clean five-feature roadmap looks suspicious. So here are three of the loudest ideas, and exactly why I killed them before they could derail a sprint — scored against the <em>same</em> three criteria, no reverse-engineering the winner.</p>
+  <div class="cards">
+    <div class="card killed"><div class="tag">Killed · concept 07</div><h4>AI billing assistant</h4><p>Too costly, and it answers a question users shouldn't have to ask. Fix the bill, not the apology.</p></div>
+    <div class="card killed"><div class="tag">Killed · concept 11</div><h4>Billing gamification</h4><p>No evidence it touched a single top-5 pain. Decoration wearing a strategy costume.</p></div>
+    <div class="card killed"><div class="tag">Killed · concept 19</div><h4>Dashboard-first home</h4><p>Users came for an answer, not analytics. Charts where a sentence belonged.</p></div>
+  </div>
+  <div class="callout"><b>Why this matters</b>Ideation isn't the hard part of design — convergence is. Forced-ranking and impact/effort discipline is what stops a roadmap from drowning in well-meaning features.</div>
+</section>
+
+<!-- 07 SYSTEM -->
+<section class="act reveal" id="system">
+  <div class="act-head"><span class="act-num">07 · SYSTEM</span></div>
+  <h2>A design system is just a set of <em>compressed decisions.</em></h2>
+  <p>Each principle exists because something in the old portal violated it. Each trade-off was an argument with engineering, legal or marketing — and the fights matter more than the wins.</p>
+  <h3>6 principles · each with a "we will / we won't"</h3>
+  <div class="cards">
+    <div class="card"><div class="tag">Principle 01</div><h4>Explain every number</h4><span class="yes">✓ plain-English on every line</span><span class="no">✗ never hide behind PDFs</span></div>
+    <div class="card"><div class="tag">Principle 02</div><h4>Notify before, never after</h4><span class="yes">✓ alert 5 days pre-change</span><span class="no">✗ surprise the customer</span></div>
+    <div class="card"><div class="tag">Principle 03</div><h4>Leaving = joining</h4><span class="yes">✓ downgrade as visible as upgrade</span><span class="no">✗ hide cancel behind chatbot</span></div>
+    <div class="card"><div class="tag">Principle 04</div><h4>Context travels with the customer</h4><span class="yes">✓ case state preserved across surfaces</span><span class="no">✗ ask them to re-explain</span></div>
+    <div class="card"><div class="tag">Principle 05</div><h4>Humans within 2 steps</h4><span class="yes">✓ auto-escalate after 2 loops</span><span class="no">✗ trap users in dead ends</span></div>
+    <div class="card"><div class="tag">Principle 06</div><h4>Support is a feature, not a cost</h4><span class="yes">✓ treat support as service design</span><span class="no">✗ optimise deflection above all</span></div>
+  </div>
+  <h3>Decision log · 5 hard trade-offs</h3>
+  <div class="cards">
+    <div class="card won"><div class="tag">Fight #1 · W6 · Won</div><h4>Auto-create dispute case, or confirm?</h4><p>Auto-create (silent), rollback within 24h. Cost: higher false-positive load on triage. Low cost, big convenience.</p></div>
+    <div class="card won"><div class="tag">Fight #2 · W6 · Held</div><h4>Retention offers during cancellation?</h4><p>Yes, but once and skippable in one click. Marketing wanted multi-step; I held the line. Honest compromise.</p></div>
+    <div class="card"><div class="tag">Fight #3 · W7</div><h4>Unified data layer or API adapters?</h4><p>Unified layer in phase 3; adapters for phases 1–2. Phase 3 is the long pole — budget exposure if it slips.</p></div>
+    <div class="card lost"><div class="tag">Fight #4 · W7 · Lost</div><h4>Chatbot: kill or keep?</h4><p>Wanted to kill it. Legal said no. Got: keep, auto-escalate after 2 loops, never deflect. The loss I think about most.</p></div>
+    <div class="card won"><div class="tag">Fight #5 · W8 · Held</div><h4>Pre-bill alerts: opt-in or opt-out?</h4><p>Opt-out, frequency adjustable. Marketing pushed back hard on "another notification." Held the line.</p></div>
+  </div>
+  <div class="quote">"I lost the fight on auto-escalation timing. Wanted 1 loop. Got 2. Still a win — just a smaller one."<cite>— decision log, week 8</cite></div>
+  <div class="callout"><b>Why this matters</b>A design system without a decision log is a styleguide. A decision log without losses is a hagiography. Show the costs — the wins read truer.</div>
+</section>
+
+<!-- 7.5 THE SCREENS -->
+<section class="act reveal" id="screens">
+  <div class="act-head"><span class="act-num">7½ · THE SCREENS</span></div>
+  <h2>Four screens. <em>Each one closes a failure point from the blueprint.</em></h2>
+  <p>The point isn't the pixels; it's that every decision traces back to something earlier in the diagnosis. The wireframes below became real product — here's the thesis each screen carries.</p>
+  <div class="screen-block">
+    <div class="tag">Screen 01 · the home</div><h4>Billing dashboard</h4>
+    <p style="color:var(--muted);font-size:15px;margin:0">Answers "what am I paying, and is it right?" before the user has to ask anyone.</p>
+    <ol>
+      <li><span class="num">1</span>Plain-English explainer, set as the default view — retires the "phantom charge".</li>
+      <li><span class="num">2</span>Last-month delta up front: anchoring before detail (most-clicked in testing).</li>
+      <li><span class="num">3</span>A forecast, so the next bill is never an ambush.</li>
+    </ol>
+  </div>
+  <div class="screen-block">
+    <div class="tag">Screen 02 · the recovery</div><h4>Charge dispute &amp; tracking</h4>
+    <p style="color:var(--muted);font-size:15px;margin:0">Turns a phone-call-and-pray into a one-tap action with a status you can actually see.</p>
+    <ol>
+      <li><span class="num">1</span>One tap to dispute — no form maze, no hold music.</li>
+      <li><span class="num">2</span>Status, not silence: every state is visible.</li>
+      <li><span class="num">3</span>One shared case ID — the same number you and the agent see (blueprint failure #2, solved).</li>
+    </ol>
+  </div>
+  <div class="screen-block">
+    <div class="tag">Screen 03 · the escape hatch</div><h4>Contract timeline</h4>
+    <p style="color:var(--muted);font-size:15px;margin:0">Makes the dates that decide "am I trapped?" impossible to miss.</p>
+    <ol>
+      <li><span class="num">1</span>One honest timeline — no buried dates.</li>
+      <li><span class="num">2</span>Renewal stated plainly, not hidden in clause 7.3.</li>
+      <li><span class="num">3</span>The cancellation window is shown — a direct answer to "83% feel trapped".</li>
+    </ol>
+  </div>
+  <div class="screen-block">
+    <div class="tag">Screen 04 · the human</div><h4>Support escalation</h4>
+    <p style="color:var(--muted);font-size:15px;margin:0">Caps the chatbot loop and hands off to a person — carrying the context with it.</p>
+    <ol>
+      <li><span class="num">1</span>A visible loop counter — capped at 2, then a human, every time (the "doom loop" was 4.2).</li>
+      <li><span class="num">2</span>Handoff is one tap.</li>
+      <li><span class="num">3</span>The agent starts with full context — no "please repeat your account number".</li>
+    </ol>
+  </div>
+  <h3>From sketch → shipped</h3>
+  <p>The high-fidelity screens the diagnosis was building toward — the actual BT Business billing product. Every one is still <em>a system fix wearing a UI</em>, not a prettier bill.</p>
+  <div class="ship"><div class="path">business.bt.com / billing / bill</div><h4>The bill, on one honest page</h4><p>Everything the old PDF hid, surfaced and reconciled: the total, why it changed (−£37.98, fully accounted for), spend split by cost centre, six health checks, and an assistant that answers in plain English.</p><div class="trace">→ root cause · billing opacity</div></div>
+  <div class="ship"><div class="path">/ bill / how we explain this</div><h4>How the AI explains your bill</h4><p>Four named sources — contract, usage, orders, last month's bill — with "high confidence" shown as four things that reconcile, not a vibe. The explanation is auditable.</p><div class="trace">→ retires "phantom charges"</div></div>
+  <div class="ship"><div class="path">/ bill / verification details</div><h4>Bill health — 6 checks</h4><p>The system proves it isn't overcharging before you have to ask: recurring services, usage, one-off charges, discounts, VAT, duplicates — all shown passing.</p><div class="trace">→ blueprint failure #1</div></div>
+  <div class="ship"><div class="path">/ products &amp; services / contract</div><h4>The contract, stated plainly</h4><p>The dates that decide "am I trapped?" — start, minimum term, cancel-without-fee-before — pulled out of clause 7.3 and shown up front.</p><div class="trace">→ answers "83% feel trapped"</div></div>
+  <div class="ship"><div class="path">/ bill / raise a query</div><h4>Raise a query</h4><p>If a charge still looks wrong: one form → an instant case number → a human specialist. Status, not silence — the shared case ID from the wireframe, shipped.</p><div class="trace">→ blueprint failure #2, solved</div></div>
+  <div class="ship"><div class="path">business.bt.com / home</div><h4>Account home</h4><p>Answers "is anything wrong?" before you ask. AI monitors the account; "all clear" is earned by the checks above, not decorative.</p><div class="trace">→ legibility, by default</div></div>
+  <div class="note">The throughline, walkable in either direction: root cause (no single source of truth) → thesis (make the service legible) → wireframe (four sketches) → shipped screen (thirteen). Every pixel has a paper trail back to a 1★ review.</div>
+  <div class="callout"><b>Why this matters</b>Strategy that never reaches a screen is a slide deck. Screens that don't trace back to evidence are decoration. The job is the line between them — walkable in both directions.</div>
+</section>
+
+<!-- 08 IMPACT -->
+<section class="act reveal" id="impact">
+  <div class="act-head"><span class="act-num">08 · IMPACT</span></div>
+  <h2>From 12% today to a 65–80% a rival already ships. <em>Targets — with receipts.</em></h2>
+  <p>Every projection is sourced to a competitor benchmark, not internal optimism. Each target sits below a level a peer has already publicly demonstrated — the bar a Design Director should ask any project to clear.</p>
+  <div class="bars">
+    <div class="bar-row"><div class="bar-label">Portal completion</div><div class="bar-track"><div class="bar-now" style="width:15%">12%</div><div class="bar-target" style="left:78%;right:0"><span class="t">→ 78% target</span></div></div></div>
+    <div class="bar-row"><div class="bar-label">Chatbot resolution</div><div class="bar-track"><div class="bar-now" style="width:12%">12%</div><div class="bar-target" style="left:35%;right:0"><span class="t">→ 35–40% (industry)</span></div></div></div>
+    <div class="bar-row"><div class="bar-label">Online cancellation</div><div class="bar-track"><div class="bar-now" style="width:8%">✕</div><div class="bar-target" style="left:65%;right:0"><span class="t">→ parity (Sky ships it)</span></div></div></div>
+  </div>
+  <div class="fig"><div class="cap"><b>The honest version of an impact slide.</b> No invented "after" number — just where BT sits today (●), the range competitors have publicly hit (▭), and a target (◆) set below the proven ceiling. A Design Director's first question is "based on what?" — this answers it before they ask.</div></div>
+  <h3>5 findings from testing (3 rounds, n=35)</h3>
+  <div class="cards">
+    <div class="card"><div class="tag">Finding 01</div><h4>Explainers used by 15/15</h4><p>Even people who said they "wouldn't need it." Not optional.</p></div>
+    <div class="card"><div class="tag">Finding 02</div><h4>"Compare to last month" most-clicked</h4><p>Users want anchoring before detail.</p></div>
+    <div class="card"><div class="tag">Finding 03</div><h4>9/15 copied the dispute case ID</h4><p>For their own records, not BT's. A trust gap.</p></div>
+    <div class="card"><div class="tag">Finding 04</div><h4>2 tried to share dispute by email</h4><p>Future affordance: shareable case URL with auth.</p></div>
+    <div class="card"><div class="tag">Finding 05</div><h4>13/15 cancelled despite retention offer</h4><p>Retention exists where it helps — not as friction.</p></div>
+  </div>
+  <div class="quote">"I can see exactly what changed and I can question it without phoning. That's all I've ever wanted."<cite>— v3 prototype participant, Marcus persona</cite></div>
+  <h3>What I learned as a design leader</h3>
+  <div class="cards">
+    <div class="card"><div class="tag">What I underestimated</div><p>How much of this was an organisational problem, not a UX one. The hardest "redesign" was getting three teams to share one metric.</p></div>
+    <div class="card"><div class="tag">What I'd do differently</div><p>Bring legal into discovery, not sign-off. Secure an engineering sponsor before concept work. Validate assumptions before the team falls in love with a direction.</p></div>
+  </div>
+  <div class="note">The surprise: most of what looked like UX debt was governance debt in a UX costume. I'd lead the next one from the operating model down, not the screen up.</div>
+  <div class="callout"><b>Why this matters</b>A redesign isn't a deliverable — it's a wager that the diagnosis was right, sponsors hold, and engineering lands. Showing the wager (terms, odds, costs) separates portfolio work from a press release.</div>
+</section>
+
+<!-- APPENDIX -->
+<section class="act reveal" id="appendix">
+  <div class="act-head"><span class="act-num">A1 · APPENDIX</span></div>
+  <h2>Where every number came from.</h2>
+  <p>A hiring panel's first instinct on "120,000 reviews coded" is suspicion. So here's the evidence trail — nothing is a black box.</p>
+  <div class="tbl-scroll"><table class="ledger">
+    <thead><tr><th>Source</th><th>Volume</th><th>What it gave us</th></tr></thead>
+    <tbody>
+      <tr><td>Trustpilot — BT Business</td><td>120,000+</td><td>Sentiment at scale; recurring billing language</td></tr>
+      <tr><td>Resolver dispute logs</td><td>8,400+</td><td>Formal disputes — the failures that escalated</td></tr>
+      <tr><td>Business forums &amp; Reddit</td><td>600+ threads</td><td>Workarounds users invented on their own</td></tr>
+      <tr><td>Competitor reviews (Vodafone, Sky, TalkTalk)</td><td>2,300+</td><td>The benchmark — what "good" already looks like</td></tr>
+    </tbody>
+  </table></div>
+  <h3>The coding process</h3>
+  <div class="stat-row">
+    <div class="stat"><div class="n">Pass 1</div><div class="l">Open coding — every review a raw descriptor. ~340 distinct tags.</div></div>
+    <div class="stat"><div class="n">Pass 2</div><div class="l">Theme clustering by underlying job, not keyword. 340 → 28 clusters.</div></div>
+    <div class="stat"><div class="n">Pass 3</div><div class="l">Validation — clusters cross-checked against Resolver disputes.</div></div>
+    <div class="stat"><div class="n">4 themes</div><div class="l">Transparency · Continuity · Resolution · Trust. The spine of the diagnosis.</div></div>
+  </div>
+  <div class="note">Honesty note: I did not read 120,000 reviews by hand. Volume was machine-clustered, then I hand-coded a stratified sample of ~900 across the sentiment range. The number is the corpus size, not a claim of 120,000 manual reads. Saying that out loud is the difference between credible and inflated.</div>
+  <div class="note">If I ran this inside BT: credit to the PM (regulatory roadmap), 2 engineers (data-layer prototype), the researcher (80 verbatim quotes), the content designer (plain-English pass) and the service designer (agent blueprint). Visible output is one designer; the real work is a team.</div>
+  <div class="callout"><b>Why this matters</b>Managers don't trust tidy numbers — they trust traceable ones. An appendix that admits the sampling method is more persuasive than a dashboard that hides it.</div>
+</section>
+
+<div class="cta-band reveal">
+  <div class="big">Want the decisions behind the screens?</div>
+  <a class="foot-cta" href="index.html#contact">Get in touch →</a>
+</div>
+
+</main>
+
+<footer><div class="wrap">
+  <div class="colophon"><span>© 2026 Anupam Sarkar · Bengaluru</span><span>BT Business · Service Redesign · Lead Product Designer · Independent diagnostic</span></div>
+</div></footer>
+
+<script>
+(function(){var b=document.getElementById('themeBtn');if(!b)return;function s(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light')?'true':'false')}s();b.addEventListener('click',function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');s()})})();
+var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+</script>
+</body></html>

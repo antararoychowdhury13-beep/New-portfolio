@@ -448,6 +448,7 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
       <li><a href="case-ibm-power.html">IBM · Power Systems — design systems &amp; team leadership</a></li>
       <li><a href="case-smart-mining.html">Siemens · Smart Mining — strategy &amp; decision design</a></li>
       <li><a href="case-incident-bart.html">Microsoft Teams · BART — incident response</a></li>
+      <li><a href="case-bt-billing.html">BT Business · Billing — service redesign</a></li>
       <li><a href="case-nextwork.html">Siemens · #NextWork — operating model</a></li>
       <li><a href="case-khetmitra.html">John Deere India · KhetMitra — decision assistant</a></li>
       <li><a href="case-deere-pioneers.html">John Deere · Farm Pioneers — zero-to-one</a></li>
@@ -620,7 +621,8 @@ function thumbHTML(w){
 const FEATURED=[
   {cli:'IBM · Power Systems',h:'Unified four squads around one design language without slowing delivery.',role:'Product Design Manager',scope:'4 designers managed · 4 product & engineering squads',duration:'12 months',metric:'20% less',metricLabel:'documented UI inconsistency',href:'case-ibm-power.html',motif:'grid',tint:'#7CA3FF'},
   {cli:'Siemens · Smart Mining',h:'Reframed eight operational gaps into four fundable interventions.',role:'Design Lead',scope:'Design across 3 organizational layers',metric:'67% faster',metricLabel:'safety-decision completion',href:'case-smart-mining.html',motif:'nodes',tint:'#7CA3FF',img:'assets/smart-mining.jpg'},
-  {cli:'Microsoft Teams · BART',h:'Compressed the first five minutes of incident response.',role:'Lead Product Designer',scope:'Five triage tools consolidated into one surface',metric:'5 → 1',metricLabel:'tools at incident triage',href:'case-incident-bart.html',motif:'converge',tint:'#7CA3FF',img:'assets/bart.jpg'}
+  {cli:'Microsoft Teams · BART',h:'Compressed the first five minutes of incident response.',role:'Lead Product Designer',scope:'Five triage tools consolidated into one surface',metric:'5 → 1',metricLabel:'tools at incident triage',href:'case-incident-bart.html',motif:'converge',tint:'#7CA3FF',img:'assets/bart.jpg'},
+  {cli:'BT Business · Billing',h:'Rebuilt an inescapable billing portal around a single source of truth.',role:'Lead Product Designer',scope:'End-to-end service redesign · 5 functions aligned',duration:'Independent diagnostic',metric:'120K+',metricLabel:'reviews coded into one root cause',href:'case-bt-billing.html',motif:'orbit',tint:'#7CA3FF'}
 ];
 const fg=document.getElementById('featuredgrid');
 FEATURED.forEach(w=>{
@@ -767,6 +769,7 @@ const CASELIB={
   'khetmitra':{cli:'John Deere India · KhetMitra',t:'Showed the next move instead of the data.',m:'+17.3% pilot yield',href:'case-khetmitra.html'},
   'deere-pioneers':{cli:'John Deere · Farm Pioneers',t:'A wordless interface a 7-year-old masters.',m:'91% task success',href:'case-deere-pioneers.html'},
   'bart':{cli:'Microsoft Teams · BART',t:'The first five minutes of incident response, compressed.',m:'5→1 tools',href:'case-incident-bart.html'},
+  'bt-billing':{cli:'BT Business · Billing',t:'Rebuilt an inescapable billing portal around a single source of truth.',m:'120K+ reviews coded',href:'case-bt-billing.html'},
   'career-journey':{cli:'Experience',t:'Twelve years across five industries, into IBM.',m:'5 industries',href:'career-journey.html',btn:'View experience'}
 };
 function caseCards(slugs){
