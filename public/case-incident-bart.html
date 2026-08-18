@@ -1,216 +1,171 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Incident Management in Teams — Case Study — Anupam Sarkar</title>
-<meta name="description" content="Microsoft Teams · BART: compressing the first five minutes of incident response — five tools into one Teams conversation, with ServiceNow as the invisible system of record.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Incident Management in Teams — Anupam Sarkar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 <script>if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light");</script>
 <style>
 :root{
-  --ink:#07070A; --ink-2:#0E0E13; --ink-3:#16161D; --ink-4:#1E1E27;
-  --cream:#FAF9F5; --muted:#A7A7B2; --muted-2:#858591;
-  --accent:#C4F542; --cool:#7CA3FF; --warm:#FF7A5C; --green:#9DD46A; --danger:#E85A4F;
-  --line:rgba(255,255,255,0.08); --line-2:rgba(255,255,255,0.14);
+  --ink:#0B0B0E; --ink-2:#15151A; --ink-3:#1E1E24;
+  --cream:#FAF9F5; --muted:#8B8A85;
+  --accent:#C4F542; --accent-warm:#FF7A5C; --accent-cool:#7CA3FF;
+  --accent-green:#9DD46A; --danger:#E85A4F;
+  --hairline:rgba(255,255,255,0.08);
+  --serif:'Inter',-apple-system,sans-serif;
   --sans:'Inter',-apple-system,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:84px}
-body{background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 ::selection{background:var(--accent);color:var(--ink)}
 a{color:inherit;text-decoration:none}
 svg{display:block;max-width:100%}
 .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
-a:focus-visible,button:focus-visible{outline:3px solid var(--cool);outline-offset:4px;border-radius:6px}
-.eyebrow{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.so-what{display:flex;gap:12px;align-items:baseline;margin-top:22px;padding-top:16px;border-top:1px solid var(--hairline);font-size:14px;color:var(--muted)}
+.so-what b{color:var(--cream);font-weight:600;white-space:nowrap;font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.so-what b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:1px}
 
-/* nav (matches portfolio) */
-nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(7,7,10,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);transition:background .3s}
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(11,11,14,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline)}
 .nav-in{max-width:1180px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.logo{font-weight:700;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:12px}
-.logo .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
-.nav-right{display:flex;align-items:center;gap:18px}
-.back{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px;transition:color .2s}
+.logo{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.logo i{font-style:normal;color:var(--accent)}
+.back{font-size:13px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:7px;transition:color .2s}
 .back:hover{color:var(--accent)}
-.theme-toggle{-webkit-appearance:none;appearance:none;position:relative;width:46px;height:24px;flex:none;border-radius:99px;background:var(--ink-4);border:1px solid var(--line-2);cursor:pointer;padding:0;outline:none;transition:background .3s ease,border-color .3s ease}
-.theme-toggle .tt-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.35)}
-.theme-toggle .tt-thumb::after{content:"\263E"}
-html.light .theme-toggle{background:rgba(111,163,0,.16);border-color:rgba(111,163,0,.3)}
-html.light .theme-toggle .tt-thumb{transform:translateX(22px)}
-html.light .theme-toggle .tt-thumb::after{content:"\2600"}
 
-/* hero (theme-aware) */
+/* hero */
 .case-hero{padding:150px 0 56px}
 .hero-eyebrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:22px}
-.tagpill{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:7px 14px;border-radius:99px}
-.tagpill.role{color:var(--accent);border-color:rgba(196,245,66,.35)}
-.case-hero h1{font-weight:600;font-size:32px;line-height:1.1;letter-spacing:-.02em;max-width:900px}
-.case-hero h1 em{font-style:normal;color:var(--accent)}
-.case-hero .lede{margin-top:24px;max-width:660px;font-size:18px;color:var(--muted)}
+.tagpill{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border:1px solid var(--hairline);padding:6px 13px;border-radius:99px}
+.tagpill.role{color:var(--accent);border-color:rgba(196,245,66,.3)}
+.case-hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6.2vw,80px);line-height:1.04;letter-spacing:-.015em;max-width:980px}
+.case-hero h1 em{font-style:italic;color:var(--accent)}
+.case-hero .lede{margin-top:26px;max-width:660px;font-size:17px;color:var(--muted)}
 .case-hero .lede b{color:var(--cream);font-weight:600}
-.metric-strip{margin-top:48px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
-.metric-cell{padding:24px 22px 4px 0;border-right:1px solid var(--line)}
+.metric-strip{margin-top:54px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--hairline)}
+.metric-cell{padding:24px 22px 0 0;border-right:1px solid var(--hairline)}
 .metric-cell:last-child{border-right:none}
-.metric-cell .n{font-size:32px;font-weight:600;line-height:1;color:var(--accent)}
-.metric-cell .l{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+.metric-cell .n{font-family:var(--serif);font-size:38px;line-height:1;color:var(--accent)}
+.metric-cell .l{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.45}
 
-/* ===== case card — data panels stay on a dark canvas in both themes ===== */
-.case-card{background:#12121A;border:1px solid rgba(255,255,255,0.09);border-radius:16px;overflow:hidden;margin-bottom:80px;color:#FAF9F5}
-.case-card .eyebrow{color:#8B8A85}
+/* case card / tabs */
+.case-card{background:var(--ink-2);border:1px solid var(--hairline);border-radius:16px;overflow:hidden;margin-bottom:90px}
 .case-intro{padding:40px 40px 0}
-.case-intro h2{font-weight:600;font-size:18px;line-height:1.3;max-width:780px;color:#FAF9F5}
-.case-intro h2 em{font-style:normal;color:#C4F542}
-.case-intro p{margin-top:14px;color:#8B8A85;font-size:18px;max-width:720px}
-.case-tabs{display:flex;gap:6px;padding:26px 40px 0;border-bottom:1px solid rgba(255,255,255,0.09);overflow-x:auto;scrollbar-width:none}
+.case-intro h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3vw,34px);line-height:1.14;max-width:780px}
+.case-intro h2 em{font-style:italic;color:var(--accent)}
+.case-intro p{margin-top:14px;color:var(--muted);font-size:15px;max-width:700px}
+.case-tabs{display:flex;gap:6px;padding:26px 40px 0;border-bottom:1px solid var(--hairline);overflow-x:auto;scrollbar-width:none}
 .case-tabs::-webkit-scrollbar{display:none}
-.ctab{font-family:var(--sans);background:none;border:none;border-bottom:2px solid transparent;color:#8B8A85;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:14px 16px;min-height:44px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
-.ctab:hover{color:#FAF9F5}
-.ctab.active{color:#C4F542;border-bottom-color:#C4F542}
+.ctab{font-family:var(--sans);background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:13px 16px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.ctab:hover{color:var(--cream)}
+.ctab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .cpanel{display:none;padding:40px}
 .cpanel.active{display:grid;grid-template-columns:1fr 262px;gap:36px;align-items:start;animation:fade .4s ease}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .cpanel .viz{min-width:0}
-.cpanel .viz h3{font-weight:600;font-size:18px;line-height:1.3;margin-bottom:6px;color:#FAF9F5}
-.cpanel .viz .sub{font-size:18px;color:#8B8A85;margin-bottom:24px}
-.qr{border-left:1px solid rgba(255,255,255,0.09);padding-left:26px;display:flex;flex-direction:column;gap:18px;position:sticky;top:88px}
-.qr .eyebrow{color:#C4F542}
-.qr .big{font-weight:600;font-size:18px;line-height:1.35;color:#FAF9F5}
-.qr .big em{font-style:normal;color:#C4F542}
+.cpanel .viz h3{font-family:var(--serif);font-weight:400;font-size:22px;line-height:1.2;margin-bottom:6px}
+.cpanel .viz .sub{font-size:13.5px;color:var(--muted);margin-bottom:24px}
+.qr{border-left:1px solid var(--hairline);padding-left:26px;display:flex;flex-direction:column;gap:18px;position:sticky;top:88px}
+.qr .eyebrow{color:var(--accent)}
+.qr .big{font-family:var(--serif);font-size:19px;line-height:1.35;color:var(--cream)}
+.qr .big em{font-style:italic;color:var(--accent)}
 .qr ul{list-style:none;display:flex;flex-direction:column;gap:11px}
-.qr li{font-size:12px;color:#8B8A85;padding-left:16px;position:relative}
-.qr li::before{content:"";position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:#C4F542}
-.qr .stat{border-top:1px solid rgba(255,255,255,0.09);padding-top:16px}
-.qr .stat .n{font-size:32px;font-weight:600;line-height:1;color:#C4F542}
-.qr .stat .l{font-size:12px;color:#8B8A85;margin-top:5px}
-.qr-cta{display:block;border:1px solid #C4F542;border-radius:12px;padding:16px 18px;background:rgba(196,245,66,0.06);transition:transform .2s,box-shadow .2s;min-height:44px}
-.qr-cta:hover{transform:translateY(-2px);box-shadow:0 0 24px -8px rgba(196,245,66,.6)}
-.qr-cta-l{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8B8A85;margin-bottom:8px}
-.qr-cta-b{display:block;font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#C4F542}
+.qr li{font-size:13px;color:var(--muted);padding-left:16px;position:relative}
+.qr li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.qr .stat{border-top:1px solid var(--hairline);padding-top:16px}
+.qr .stat .n{font-family:var(--serif);font-size:30px;line-height:1;color:var(--accent)}
+.qr .stat .l{font-size:11px;color:var(--muted);margin-top:5px}
 .legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:20px}
-.legend span{font-size:12px;color:#8B8A85;display:flex;align-items:center;gap:7px}
+.legend span{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
 .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
-.chart-label{font-size:11px;fill:#8B8A85;font-family:'Inter',sans-serif}
-.chart-strong{font-size:11.5px;fill:#FAF9F5;font-family:'Inter',sans-serif;font-weight:600}
-.so-what{display:flex;gap:12px;align-items:baseline;margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.09);font-size:12px;color:#8B8A85}
-.so-what b{color:#FAF9F5;font-weight:600;white-space:nowrap;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
-.so-what b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#C4F542;margin-right:8px;vertical-align:1px}
+.chart-label{font-size:11px;fill:var(--muted);font-family:var(--sans)}
+.chart-strong{font-size:11.5px;fill:var(--cream);font-family:var(--sans);font-weight:600}
 
 /* artifacts */
 .art-group{margin-top:22px}
 .art-group:first-child{margin-top:0}
-.art-group .g-label{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#C4F542;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.09)}
+.art-group .g-label{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--hairline)}
 .art-items{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.art{background:#1E1E24;border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;transition:border-color .2s}
-.art:hover{border-color:rgba(255,255,255,.22)}
-.art .t{font-weight:500;color:#FAF9F5}
-.badge{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;white-space:nowrap}
-.badge.share{color:#9DD46A;border:1px solid rgba(157,212,106,.4)}
-.badge.nda{color:#8B8A85;border:1px solid rgba(255,255,255,0.14)}
-.access-box{background:#1E1E24;border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:18px;margin-top:4px}
-.access-box .row{display:flex;justify-content:space-between;font-size:12px;color:#8B8A85;padding:6px 0}
-.access-box .row b{color:#FAF9F5}
-.book-btn{display:block;text-align:center;background:#C4F542;color:#07070A;font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;padding:14px;border-radius:99px;margin-top:12px;transition:transform .2s}
+.art{background:var(--ink-3);border:1px solid var(--hairline);border-radius:12px;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;transition:border-color .2s}
+.art:hover{border-color:rgba(255,255,255,.2)}
+.art .t{font-weight:500}
+.badge{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:99px;white-space:nowrap}
+.badge.share{color:var(--accent-green);border:1px solid rgba(157,212,106,.35)}
+.badge.nda{color:var(--muted);border:1px solid var(--hairline)}
+.access-box{background:var(--ink-3);border:1px solid var(--hairline);border-radius:12px;padding:18px;margin-top:4px}
+.access-box .row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:6px 0}
+.access-box .row b{color:var(--cream)}
+.book-btn{display:block;text-align:center;background:var(--accent);color:var(--ink);font-weight:600;font-size:13.5px;padding:12px;border-radius:99px;margin-top:12px;transition:transform .2s}
 .book-btn:hover{transform:translateY(-2px)}
 
-/* footer (theme-aware) */
-footer{padding:90px 0 60px;border-top:1px solid var(--line)}
+/* footer */
+footer{padding:90px 0 60px;border-top:1px solid var(--hairline)}
 .foot-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
-.foot-nav .big{font-weight:600;font-size:32px;line-height:1.12;letter-spacing:-.02em;max-width:600px}
-.foot-nav .big em{font-style:normal;color:var(--accent)}
-.foot-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--ink);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:16px 26px;border-radius:99px;transition:transform .2s}
+.foot-nav .big{font-family:var(--serif);font-size:clamp(26px,3.4vw,40px);line-height:1.1;max-width:560px}
+.foot-nav .big em{font-style:italic;color:var(--accent)}
+.foot-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--ink);font-weight:600;font-size:14px;padding:14px 26px;border-radius:99px;transition:transform .2s}
 .foot-cta:hover{transform:translateY(-2px)}
-.colophon{margin-top:60px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-family:var(--sans);font-size:12px;letter-spacing:.05em;color:var(--muted-2);flex-wrap:wrap;gap:10px}
+.colophon{margin-top:64px;padding-top:24px;border-top:1px solid var(--hairline);display:flex;justify-content:space-between;font-size:12px;color:var(--muted);flex-wrap:wrap;gap:10px}
 
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none}*{transition:none!important;animation:none!important}}
-
-/* light mode — chrome flips; the dark data card stays dark */
-html.light{
-  --ink:#FFFFFF; --ink-2:#F8F8F6; --ink-3:#F3F3F0; --ink-4:#EBEBE7;
-  --cream:#1A1A1A; --muted:#626262; --muted-2:#8A8A8A;
-  --accent:#6FA300; --cool:#3F6BD0; --warm:#D9532F; --green:#55901F;
-  --line:rgba(0,0,0,0.10); --line-2:rgba(0,0,0,0.20);
-}
-html.light nav{background:rgba(255,255,255,.72)}
-html.light .case-hero h1 em,html.light .case-hero .lede b{color:inherit}
-html.light .case-hero h1 em{color:var(--accent)}
-html.light .tagpill.role{border-color:rgba(111,163,0,.4)}
-/* light-mode data card + diagrams */
-html.light .case-card{background:#FFFFFF;border-color:rgba(0,0,0,0.10);color:#1A1A1A}
-html.light .case-card .eyebrow{color:#626262}
-html.light .case-intro h2{color:#1A1A1A}
-html.light .case-intro h2 em{color:#6FA300}
-html.light .case-intro p{color:#595959}
-html.light .case-tabs{border-bottom-color:rgba(0,0,0,0.10)}
-html.light .ctab{color:#626262}
-html.light .ctab:hover{color:#1A1A1A}
-html.light .ctab.active{color:#6FA300;border-bottom-color:#6FA300}
-html.light .cpanel .viz h3{color:#1A1A1A}
-html.light .cpanel .viz .sub{color:#595959}
-html.light .qr{border-left-color:rgba(0,0,0,0.10)}
-html.light .qr .eyebrow{color:#6FA300}
-html.light .qr .big{color:#1A1A1A}
-html.light .qr .big em{color:#6FA300}
-html.light .qr li{color:#595959}
-html.light .qr li::before{background:#6FA300}
-html.light .qr .stat{border-top-color:rgba(0,0,0,0.10)}
-html.light .qr .stat .n{color:#6FA300}
-html.light .qr .stat .l{color:#595959}
-html.light .legend span{color:#595959}
-html.light .so-what{border-top-color:rgba(0,0,0,0.10);color:#595959}
-html.light .so-what b{color:#1A1A1A}
-html.light .so-what b::before{background:#6FA300}
-html.light .art-group .g-label{color:#6FA300;border-bottom-color:rgba(0,0,0,0.10)}
-html.light .art{background:#F3F3F0;border-color:rgba(0,0,0,0.10)}
-html.light .art .t{color:#1A1A1A}
-html.light .badge.share{color:#4E8A1F;border-color:rgba(78,138,31,.4)}
-html.light .badge.nda{color:#626262;border-color:rgba(0,0,0,0.16)}
-html.light .access-box{background:#F3F3F0;border-color:rgba(0,0,0,0.10)}
-html.light .access-box .row{color:#595959}
-html.light .access-box .row b{color:#1A1A1A}
-html.light .book-btn{background:#6FA300;color:#fff}
-html.light .qr-cta{border-color:rgba(111,163,0,.5);background:rgba(111,163,0,.06)}
-html.light .qr-cta-l{color:#595959}
-html.light .qr-cta-b{color:#6FA300}
-/* recolor inline SVG diagram values for a light canvas */
-html.light .case-card .chart-strong{fill:#1A1A1A}
-html.light .case-card .chart-label{fill:#595959}
-html.light .case-card [fill="#FAF9F5"]{fill:#1A1A1A}
-html.light .case-card [fill="#8B8A85"]{fill:#595959}
-html.light .case-card [fill="#C4F542"]{fill:#6FA300}
-html.light .case-card [stroke="#C4F542"]{stroke:#6FA300}
-html.light .case-card [fill="#9DD46A"]{fill:#4E8A1F}
-html.light .case-card [stroke="#9DD46A"]{stroke:#4E8A1F}
-html.light .case-card g[stroke="rgba(255,255,255,0.10)"]{stroke:rgba(0,0,0,0.16)}
-html.light .case-card [stroke="rgba(255,255,255,0.08)"]{stroke:rgba(0,0,0,0.12)}
-html.light .case-card [fill="rgba(255,255,255,0.02)"]{fill:rgba(0,0,0,0.03)}
-html.light .case-card [stroke="rgba(255,255,255,0.05)"]{stroke:rgba(0,0,0,0.07)}
-html.light .case-card [stroke="rgba(196,245,66,0.30)"]{stroke:rgba(111,163,0,0.45)}
-html.light .case-card [stroke="rgba(196,245,66,0.4)"]{stroke:rgba(111,163,0,0.5)}
-html.light .case-card [stroke="rgba(157,212,106,0.32)"]{stroke:rgba(78,138,31,0.45)}
-html.light .case-card [stroke="rgba(157,212,106,0.5)"]{stroke:rgba(78,138,31,0.55)}
-html.light .case-card [fill="rgba(196,245,66,0.08)"]{fill:rgba(111,163,0,0.10)}
-html.light .case-card [fill="rgba(196,245,66,0.06)"]{fill:rgba(111,163,0,0.09)}
-html.light .case-card [fill="rgba(196,245,66,0.25)"]{fill:rgba(111,163,0,0.28)}
-html.light .case-card [fill="rgba(157,212,106,0.10)"]{fill:rgba(78,138,31,0.14)}
-
 @media (max-width:960px){
   .cpanel.active{grid-template-columns:1fr}
-  .qr{border-left:none;border-top:1px solid rgba(255,255,255,0.09);padding-left:0;padding-top:24px;position:static}
+  .qr{border-left:none;border-top:1px solid var(--hairline);padding-left:0;padding-top:24px;position:static}
   .metric-strip{grid-template-columns:1fr 1fr}
-  .metric-cell{border-right:none;border-bottom:1px solid var(--line);padding:18px 0}
+  .metric-cell{border-right:none;border-bottom:1px solid var(--hairline);padding:18px 0}
   .art-items{grid-template-columns:1fr}
   .case-hero{padding:120px 0 40px}
-  .case-intro,.cpanel,.case-tabs{padding-left:24px;padding-right:24px}
 }
+
+.qr-cta{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--accent);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:13.5px;font-weight:600;color:var(--accent);transition:background .2s,transform .2s}
+.qr-cta span{transition:transform .2s}
+.qr-cta:hover{background:rgba(196,245,66,.08);transform:translateY(-2px)}
+.qr-cta:hover span{transform:translateX(3px)}
+html.light .qr-cta:hover{background:rgba(111,163,0,.08)}
+/* ===== light mode ===== */
+html.light{
+  --ink:#FFFFFF; --ink-2:#F8F8F6; --ink-3:#F3F3F0;
+  --cream:#1A1A1A; --muted:#5A5A63;
+  --accent:#6FA300; --accent-green:#55901F;
+  --hairline:rgba(0,0,0,0.10);
+}
+html.light body{background:var(--ink);color:var(--cream)}
+html.light nav{background:rgba(255,255,255,.82)}
+html.light .book-btn,html.light .foot-cta{color:#fff}
+html.light ::selection{background:var(--accent);color:#fff}
+html.light [fill="#8B8A85"]{fill:#5A5A63}
+html.light [fill="#9DD46A"]{fill:#55901F}
+html.light [fill="#C4F542"]{fill:#6FA300}
+html.light [fill="#FAF9F5"]{fill:#1A1A1A}
+html.light [fill="rgba(157,212,106,0.10)"]{fill:rgba(85,144,31,0.1)}
+html.light [fill="rgba(196,245,66,0.06)"]{fill:rgba(111,163,0,0.06)}
+html.light [fill="rgba(196,245,66,0.08)"]{fill:rgba(111,163,0,0.08)}
+html.light [fill="rgba(196,245,66,0.25)"]{fill:rgba(111,163,0,0.25)}
+html.light [fill="rgba(255,255,255,0.02)"]{fill:rgba(0,0,0,0.05)}
+html.light [stroke="#9DD46A"]{stroke:#55901F}
+html.light [stroke="#C4F542"]{stroke:#6FA300}
+html.light [stroke="rgba(157,212,106,0.32)"]{stroke:rgba(85,144,31,0.32)}
+html.light [stroke="rgba(157,212,106,0.5)"]{stroke:rgba(85,144,31,0.5)}
+html.light [stroke="rgba(196,245,66,0.30)"]{stroke:rgba(111,163,0,0.3)}
+html.light [stroke="rgba(196,245,66,0.4)"]{stroke:rgba(111,163,0,0.4)}
+html.light [stroke="rgba(255,255,255,0.05)"]{stroke:rgba(0,0,0,0.095)}
+html.light [stroke="rgba(255,255,255,0.08)"]{stroke:rgba(0,0,0,0.14)}
+html.light [stroke="rgba(255,255,255,0.10)"]{stroke:rgba(0,0,0,0.17)}
+/* solid weights for former-serif headings under Inter */
+.case-hero h1,.case-intro h2,.cpanel .viz h3,.qr .big,.foot-nav .big,.metric-cell .n,.qr .stat .n,.metric-cell .n{font-weight:600;letter-spacing:-.02em}
+.case-hero h1 em,.case-intro h2 em,.cpanel .viz h3 em,.qr .big em,.foot-nav .big em{font-style:normal}
+/* theme toggle */
+.nav-right{display:flex;align-items:center;gap:18px}
+.theme-toggle{width:44px;height:24px;border-radius:99px;border:1px solid var(--hairline);background:var(--ink-3);position:relative;cursor:pointer;padding:0;flex:none;transition:background .25s}
+.tt-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);transition:transform .25s}
+html.light .tt-thumb{transform:translateX(20px)}
 </style></head><body>
 <nav><div class="nav-in">
-  <a href="index.html" class="logo"><span class="dot"></span>Anupam Sarkar</a>
-  <div class="nav-right"><a href="index.html" class="back">← Back to portfolio</a><button id="themeBtn" class="theme-toggle" role="switch" aria-label="Toggle light and dark mode"><span class="tt-thumb"></span></button></div>
+  <a href="index.html" class="logo">Anupam Sarkar<i>.</i></a>
+  <div class="nav-right"><a href="index.html" class="back">← Back to portfolio</a><button id="themeBtn" class="theme-toggle" role="switch" aria-checked="false" aria-label="Toggle light and dark theme"><span class="tt-thumb"></span></button></div>
 </div></nav>
 <header class="case-hero"><div class="wrap reveal">
   <div class="hero-eyebrow"><span class="tagpill">Microsoft Teams · ServiceNow</span><span class="tagpill role">Lead Product Designer</span></div>
@@ -223,14 +178,14 @@ html.light .case-card [fill="rgba(157,212,106,0.10)"]{fill:rgba(78,138,31,0.14)}
     <div class="case-intro"><h2>The brief said “build a faster form.” <em>The form ranked last.</em></h2><p>A process audit showed the cost lived in everything around the form — re-keying into Slack, blasting email, hunting for the bridge. I named it the fragmentation tax and reframed the brief from speeding up intake to compressing the first five minutes of coordination.</p></div>
     <div class="case-tabs" role="tablist"><button class="ctab active" data-case="chain" role="tab" aria-selected="true">Causal chain</button><button class="ctab" data-case="org" role="tab" aria-selected="false">Org map</button><button class="ctab" data-case="time" role="tab" aria-selected="false">Timeline</button><button class="ctab" data-case="art" role="tab" aria-selected="false">Artifacts</button></div>
     <div class="cpanel active" id="case-chain">
-        <div class="viz"><h3>Five tool-hops and a mental-model gap collapsed into four design moves</h3><p class="sub">The fragmentation tax (red) — every manual handoff between noticing and resolving — clusters into four interventions (lime) that removed the coordination cost (green).</p><div class="legend"><span><i style="background:#E85A4F"></i>Problem gaps</span><span><i style="background:#C4F542"></i>Interventions</span><span><i style="background:#9DD46A"></i>Outcomes</span></div><svg viewBox="0 0 860 580" role="img" aria-label="Causal chain diagram"><g stroke="rgba(255,255,255,0.10)" fill="none"><path d="M230 60 C300 60,300 104.0,372 104.0"/><path d="M230 118 C300 118,300 220.0,372 220.0"/><path d="M230 176 C300 176,300 336.0,372 336.0"/><path d="M230 234 C300 234,300 452.0,372 452.0"/><path d="M230 292 C300 292,300 104.0,372 104.0"/><path d="M230 350 C300 350,300 220.0,372 220.0"/><path d="M230 408 C300 408,300 336.0,372 336.0"/><path d="M230 466 C300 466,300 452.0,372 452.0"/></g><g stroke="rgba(196,245,66,0.30)" fill="none"><line x1="588" y1="104.0" x2="650" y2="104.0"/><line x1="588" y1="220.0" x2="650" y2="220.0"/><line x1="588" y1="336.0" x2="650" y2="336.0"/><line x1="588" y1="452.0" x2="650" y2="452.0"/></g><g stroke="rgba(157,212,106,0.32)" fill="none"><path d="M810 104.0 C842 104.0,846 290.0,846 290.0"/><path d="M810 220.0 C842 220.0,846 290.0,846 290.0"/><path d="M810 336.0 C842 336.0,846 290.0,846 290.0"/><path d="M810 452.0 C842 452.0,846 290.0,846 290.0"/></g><rect x="20" y="46" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="67" class="chart-strong" font-size="11">5 disconnected tools to start</text><rect x="20" y="104" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="125" class="chart-strong" font-size="11">Web form → ServiceNow ticket</text><rect x="20" y="162" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="183" class="chart-strong" font-size="11">Slack re-created by hand</text><rect x="20" y="220" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="241" class="chart-strong" font-size="11">Email blast to responders</text><rect x="20" y="278" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="299" class="chart-strong" font-size="11">Conference bridge dialed separately</text><rect x="20" y="336" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="357" class="chart-strong" font-size="11">2 manual re-creations per incident</text><rect x="20" y="394" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="415" class="chart-strong" font-size="11">No way to see who&#x27;s responding</text><rect x="20" y="452" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="473" class="chart-strong" font-size="11">3 intentions → 5 obligations</text><rect x="372" y="78.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="100.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">The adaptive card</text><text x="388" y="117.0" font-size="10.5" fill="#8B8A85" font-family="Inter">One object: alert + status + call door</text><rect x="372" y="194.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="216.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Three invocation paths</text><text x="388" y="233.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Bot · message action · proactive card</text><rect x="372" y="310.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="332.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">ServiceNow made invisible</text><text x="388" y="349.0" font-size="10.5" fill="#8B8A85" font-family="Inter">System of record, zero re-keying</text><rect x="372" y="426.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="448.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Governed lifecycle</text><text x="388" y="465.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Workstreams + locked close</text><rect x="650" y="83.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="102.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">5 → 1 tools</text><text x="664" y="117.0" font-size="10" fill="#9DD46A" font-family="Inter">unified into Teams</text><rect x="650" y="199.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="218.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">0 fields</text><text x="664" y="233.0" font-size="10" fill="#9DD46A" font-family="Inter">re-keyed across systems</text><rect x="650" y="315.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="334.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">⅔ fewer steps</text><text x="664" y="349.0" font-size="10" fill="#9DD46A" font-family="Inter">report → war-room</text><rect x="650" y="431.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="450.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">3 paths</text><text x="664" y="465.0" font-size="10" fill="#9DD46A" font-family="Inter">every role has a way in</text><circle cx="846" cy="290.0" r="7" fill="none" stroke="#C4F542" stroke-width="2"/><text x="852" y="564" text-anchor="end" font-family="Inter" font-size="15" fill="#FAF9F5">The bet: compress the first five minutes — absorb five obligations into three intentions.</text></svg><div class="so-what"><b>So what</b><span>Cluster the handoffs, don't speed each one up. Three human intentions absorbed five system obligations — the person expresses intent, the system does the plumbing.</span></div></div>
-        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">The cost wasn't the form. It was <em>everything around it.</em></p><ul><li>Findings: re-keying ranked highest, form last</li><li>3 intentions vs 5 system obligations</li><li>The card became the atomic unit of the system</li></ul><div class="stat"><div class="n">2</div><div class="l">manual re-creations per incident, removed</div></div><a class="qr-cta" href="case-incident-bart-detail.html"><span class="qr-cta-l">Go deeper</span><span class="qr-cta-b">View detailed case study →</span></a></aside></div><div class="cpanel" id="case-org">
+        <div class="viz"><h3>Five tool-hops and a mental-model gap collapsed into four design moves</h3><p class="sub">The fragmentation tax (red) — every manual handoff between noticing and resolving — clusters into four interventions (lime) that removed the coordination cost (green).</p><div class="legend"><span><i style="background:#E85A4F"></i>Problem gaps</span><span><i style="background:#C4F542"></i>Interventions</span><span><i style="background:#9DD46A"></i>Outcomes</span></div><svg viewBox="0 0 860 580" role="img" aria-label="Causal chain diagram"><g stroke="rgba(255,255,255,0.10)" fill="none"><path d="M230 60 C300 60,300 104.0,372 104.0"/><path d="M230 118 C300 118,300 220.0,372 220.0"/><path d="M230 176 C300 176,300 336.0,372 336.0"/><path d="M230 234 C300 234,300 452.0,372 452.0"/><path d="M230 292 C300 292,300 104.0,372 104.0"/><path d="M230 350 C300 350,300 220.0,372 220.0"/><path d="M230 408 C300 408,300 336.0,372 336.0"/><path d="M230 466 C300 466,300 452.0,372 452.0"/></g><g stroke="rgba(196,245,66,0.30)" fill="none"><line x1="588" y1="104.0" x2="650" y2="104.0"/><line x1="588" y1="220.0" x2="650" y2="220.0"/><line x1="588" y1="336.0" x2="650" y2="336.0"/><line x1="588" y1="452.0" x2="650" y2="452.0"/></g><g stroke="rgba(157,212,106,0.32)" fill="none"><path d="M810 104.0 C842 104.0,846 290.0,846 290.0"/><path d="M810 220.0 C842 220.0,846 290.0,846 290.0"/><path d="M810 336.0 C842 336.0,846 290.0,846 290.0"/><path d="M810 452.0 C842 452.0,846 290.0,846 290.0"/></g><rect x="20" y="46" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="67" class="chart-strong" font-size="11">5 disconnected tools to start</text><rect x="20" y="104" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="125" class="chart-strong" font-size="11">Web form → ServiceNow ticket</text><rect x="20" y="162" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="183" class="chart-strong" font-size="11">Slack re-created by hand</text><rect x="20" y="220" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="241" class="chart-strong" font-size="11">Email blast to responders</text><rect x="20" y="278" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="299" class="chart-strong" font-size="11">Conference bridge dialed separately</text><rect x="20" y="336" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="357" class="chart-strong" font-size="11">2 manual re-creations per incident</text><rect x="20" y="394" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="415" class="chart-strong" font-size="11">No way to see who&#x27;s responding</text><rect x="20" y="452" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="473" class="chart-strong" font-size="11">3 intentions → 5 obligations</text><rect x="372" y="78.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="100.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">The adaptive card</text><text x="388" y="117.0" font-size="10.5" fill="#8B8A85" font-family="Inter">One object: alert + status + call door</text><rect x="372" y="194.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="216.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Three invocation paths</text><text x="388" y="233.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Bot · message action · proactive card</text><rect x="372" y="310.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="332.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">ServiceNow made invisible</text><text x="388" y="349.0" font-size="10.5" fill="#8B8A85" font-family="Inter">System of record, zero re-keying</text><rect x="372" y="426.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="448.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Governed lifecycle</text><text x="388" y="465.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Workstreams + locked close</text><rect x="650" y="83.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="102.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">5 → 1 tools</text><text x="664" y="117.0" font-size="10" fill="#9DD46A" font-family="Inter">unified into Teams</text><rect x="650" y="199.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="218.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">0 fields</text><text x="664" y="233.0" font-size="10" fill="#9DD46A" font-family="Inter">re-keyed across systems</text><rect x="650" y="315.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="334.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">⅔ fewer steps</text><text x="664" y="349.0" font-size="10" fill="#9DD46A" font-family="Inter">report → war-room</text><rect x="650" y="431.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="450.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">3 paths</text><text x="664" y="465.0" font-size="10" fill="#9DD46A" font-family="Inter">every role has a way in</text><circle cx="846" cy="290.0" r="7" fill="none" stroke="#C4F542" stroke-width="2"/><text x="852" y="564" text-anchor="end" font-family="Inter" font-size="17" fill="#FAF9F5" font-style="italic">The bet: compress the first five minutes — absorb five obligations into three intentions.</text></svg><div class="so-what"><b>So what</b><span>Cluster the handoffs, don't speed each one up. Three human intentions absorbed five system obligations — the person expresses intent, the system does the plumbing.</span></div></div>
+        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">The cost wasn't the form. It was <em>everything around it.</em></p><ul><li>Findings: re-keying ranked highest, form last</li><li>3 intentions vs 5 system obligations</li><li>The card became the atomic unit of the system</li></ul><div class="stat"><div class="n">2</div><div class="l">manual re-creations per incident, removed</div></div><a class="qr-cta" href="case-incident-bart-detail.html">View detailed case study<span>→</span></a></aside></div><div class="cpanel" id="case-org">
         <div class="viz"><h3>Design reached from the client's brief to three roles under pressure</h3><p class="sub">Up to the brief owner via six pointed evidence questions; across the Teams/ServiceNow/Webex systems; down to reporter, manager, and responder.</p><svg viewBox="0 0 860 488" role="img" aria-label="Organizational reach map"><text x="225.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">INTAKE</text><text x="343.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">NOTIFY</text><text x="461.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">ASSEMBLE</text><text x="579.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">RESOLVE</text><text x="697.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">CLOSE</text><rect x="20" y="48" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="82" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Client &amp; ops leadership</text><text x="36" y="102" fill="#8B8A85" font-size="11" font-family="Inter">Brief owner · system-of-record constraints</text><rect x="20" y="148" width="820" height="84" rx="12" fill="rgba(196,245,66,0.06)" stroke="#C4F542"/><text x="36" y="182" fill="#C4F542" font-weight="600" font-size="11.5" font-family="Inter">Lead Product Designer — my layer</text><text x="36" y="202" fill="#8B8A85" font-size="11" font-family="Inter">Reframed brief · service blueprint · spec</text><rect x="20" y="248" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="282" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Systems &amp; platform</text><text x="36" y="302" fill="#8B8A85" font-size="11" font-family="Inter">Teams · ServiceNow · Webex integration</text><rect x="20" y="348" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="382" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Frontline — three roles</text><text x="36" y="402" fill="#8B8A85" font-size="11" font-family="Inter">Reporter · manager · responder</text><line x1="208" y1="90.0" x2="208" y2="290.0" stroke="#C4F542" stroke-width="2"/><circle cx="208" cy="90.0" r="6" fill="#C4F542"/><circle cx="208" cy="190.0" r="6" fill="#C4F542"/><circle cx="208" cy="290.0" r="6" fill="#C4F542"/><circle cx="225.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="343.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="461.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="579.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="697.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><line x1="234.0" y1="190.0" x2="334.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="352.0" y1="190.0" x2="452.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="470.0" y1="190.0" x2="570.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="588.0" y1="190.0" x2="688.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><rect x="430" y="410" width="119.60000000000001" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="489.8" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">6 client questions</text><rect x="561.6" y="410" width="88.60000000000001" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="605.9" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">Process audit</text><rect x="662.2" y="410" width="101.0" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="712.7" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">Role interviews</text><text x="208" y="474" text-anchor="middle" fill="#C4F542" font-size="11.5" font-weight="600" font-family="Inter">Vertical reach: 3 layers</text><text x="540" y="156.0" text-anchor="middle" fill="#C4F542" font-size="11.5" font-weight="600" font-family="Inter">Horizontal reach: 5 lifecycle stages</text></svg><div class="so-what"><b>So what</b><span>Reach two layers up and one down. The six client questions grounded the brief; the three-role model shaped every invocation path.</span></div></div>
         <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">Same destination, reached from <em>wherever you already are.</em></p><ul><li>Reporter starts from the bot</li><li>Teammate uses a message action mid-thread</li><li>System posts a proactive card itself</li></ul><div class="stat"><div class="n">6</div><div class="l">client questions became design constraints</div></div></aside></div><div class="cpanel" id="case-time">
         <div class="viz"><h3>A five-phase sprint, two-thirds spent understanding before any pixels</h3><p class="sub">In incident response a wrong information model costs more than a wrong colour — so framing and structure led. Two forks settled the shape of the product.</p><svg viewBox="0 0 860 400" role="img" aria-label="Project timeline with decision forks"><text x="200.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P1</text><text x="355.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P2</text><line x1="355.0" y1="40" x2="355.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="510.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P3</text><line x1="510.0" y1="40" x2="510.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="665.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P4</text><line x1="665.0" y1="40" x2="665.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="820.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">P5</text><line x1="820.0" y1="40" x2="820.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="20" y="89.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Frame &amp; reframe</text><rect x="200.0" y="72.0" width="186.0" height="26" rx="13" fill="rgba(124,163,255,0.30)"/><text x="20" y="179.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Structure &amp; explore</text><rect x="355.0" y="162.0" width="155.0" height="26" rx="13" fill="rgba(255,122,92,0.30)"/><rect x="510.0" y="162.0" width="111.60000000000002" height="26" rx="13" fill="rgba(255,122,92,0.30)"/><text x="20" y="269.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Compose &amp; specify</text><rect x="572.0" y="252.0" width="136.39999999999998" height="26" rx="13" fill="rgba(196,245,66,0.25)"/><rect x="708.4" y="252.0" width="111.60000000000002" height="26" rx="13" fill="rgba(196,245,66,0.25)"/><line x1="336.4" y1="46" x2="336.4" y2="324" stroke="#C4F542" stroke-dasharray="5 5" stroke-width="1.5"/><text x="336.4" y="336" text-anchor="start" fill="#C4F542" font-size="11" font-weight="600" font-family="Inter">Fork · faster form vs first 5 minutes</text><line x1="510.0" y1="46" x2="510.0" y2="346" stroke="#C4F542" stroke-dasharray="5 5" stroke-width="1.5"/><text x="510.0" y="358" text-anchor="middle" fill="#C4F542" font-size="11" font-weight="600" font-family="Inter">Fork · one path vs three</text><circle cx="708.4" cy="265.0" r="6" fill="#9DD46A"/><text x="696.4" y="249.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">hi-fi card</text><circle cx="820.0" cy="265.0" r="6" fill="#9DD46A"/><text x="808.0" y="249.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">build-ready spec</text><circle cx="621.6" cy="175.0" r="6" fill="#9DD46A"/><text x="609.6" y="159.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">3 paths shipped</text></svg><div class="so-what"><b>So what</b><span>Front-loading the model was the leadership call. Shipping all three invocation paths — not one — meant every role had a natural way in.</span></div></div>
         <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">Each phase ended in <em>an artifact a stakeholder could react to.</em></p><ul><li>Fork 1: faster form → compress first 5 min</li><li>Fork 2: shipped 3 invocation paths, not 1</li><li>2/3 of timeline on framing + structure</li></ul><div class="stat"><div class="n">5</div><div class="l">phases · each a build-ready output</div></div></aside></div><div class="cpanel" id="case-art">
         <div class="viz"><div class="art-grid"><div class="art-group"><div class="g-label">Research → the reframe</div><div class="art-items"><div class="art"><span class="t">Process audit (where the minutes go)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Six client evidence questions</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Findings ranked by time-to-respond</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Mental-model gap map</span><span class="badge share">Shareable</span></div></div></div><div class="art-group"><div class="g-label">Frameworks → the forks</div><div class="art-items"><div class="art"><span class="t">Effort/impact on invocation paths</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Service blueprint (front/backstage)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">In-scope vs out-of-scope cut</span><span class="badge share">Shareable</span></div></div></div><div class="art-group"><div class="g-label">Design + outcomes → spec</div><div class="art-items"><div class="art"><span class="t">The adaptive card anatomy</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">8 reconstructed end-to-end screens</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Before/after task flow (5→1)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Build-ready handoff spec</span><span class="badge nda">NDA</span></div></div></div></div><div class="so-what"><b>So what</b><span>Grouped by decision. The ranked findings and the mental-model gap are load-bearing — they justify the reframe that the whole product rests on.</span></div></div>
-        <aside class="qr"><p class="eyebrow">Access</p><div class="access-box"><div class="row"><span>Shareable now</span><b>9 artifacts</b></div><div class="row"><span>Under NDA — walkthrough</span><b>1 artifact</b></div><a class="book-btn" href="index.html#contact">Book 20 min →</a></div><p style="font-size:12px;color:#8B8A85">Screens reconstructed faithfully from the design source.</p></aside></div>
+        <aside class="qr"><p class="eyebrow">Access</p><div class="access-box"><div class="row"><span>Shareable now</span><b>9 artifacts</b></div><div class="row"><span>Under NDA — walkthrough</span><b>1 artifact</b></div><a class="book-btn" href="index.html#contact">Book 20 min →</a></div><p style="font-size:13px;color:var(--muted)">Screens reconstructed faithfully from the design source.</p></aside></div>
   </div>
 </div></section>
 <footer><div class="wrap">
@@ -238,7 +193,7 @@ html.light .case-card [fill="rgba(157,212,106,0.10)"]{fill:rgba(78,138,31,0.14)}
     <div class="big">Want the decisions behind the screens? <em>Let's talk.</em></div>
     <a class="foot-cta" href="index.html#contact">Get in touch →</a>
   </div>
-  <div class="colophon"><span>© 2026 ANUPAM SARKAR · BENGALURU</span><span>MICROSOFT TEAMS · SERVICENOW · LEAD PRODUCT DESIGNER</span></div>
+  <div class="colophon"><span>© 2026 Anupam Sarkar · Bengaluru</span><span>Microsoft Teams · ServiceNow · Lead Product Designer</span></div>
 </div></footer>
 <script>
 document.querySelectorAll('.ctab[data-case]').forEach(b=>b.addEventListener('click',()=>{
@@ -249,11 +204,6 @@ document.querySelectorAll('.ctab[data-case]').forEach(b=>b.addEventListener('cli
 }));
 const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-document.querySelectorAll('[data-goto]').forEach(a=>a.addEventListener('click',e=>{
-  e.preventDefault();
-  const t=document.querySelector('.ctab[data-case="'+a.dataset.goto+'"]');
-  if(t){t.click();document.querySelector('.case-card').scrollIntoView({behavior:'smooth',block:'start'});}
-}));
-(function(){var b=document.getElementById('themeBtn');function sync(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light'));}
-b.onclick=function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');sync();};sync();})();
+
+(function(){var b=document.getElementById('themeBtn');if(!b)return;function s(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light')?'true':'false')}s();b.addEventListener('click',function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');s()})})();
 </script></body></html>

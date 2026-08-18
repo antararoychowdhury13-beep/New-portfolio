@@ -1,54 +1,204 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>#NextWork — Case Study — Anupam Sarkar</title>
-<meta name="description" content="Siemens #NextWork: designing the operating system around a transformation methodology.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="case.css">
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siemens #NextWork — Anupam Sarkar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 <script>if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light");</script>
-</head>
-<body>
+<style>
+:root{
+  --ink:#0B0B0E; --ink-2:#15151A; --ink-3:#1E1E24;
+  --cream:#FAF9F5; --muted:#8B8A85;
+  --accent:#C4F542; --accent-warm:#FF7A5C; --accent-cool:#7CA3FF;
+  --accent-green:#9DD46A; --danger:#E85A4F;
+  --hairline:rgba(255,255,255,0.08);
+  --serif:'Inter',-apple-system,sans-serif;
+  --sans:'Inter',-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+svg{display:block;max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.so-what{display:flex;gap:12px;align-items:baseline;margin-top:22px;padding-top:16px;border-top:1px solid var(--hairline);font-size:14px;color:var(--muted)}
+.so-what b{color:var(--cream);font-weight:600;white-space:nowrap;font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.so-what b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:1px}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(11,11,14,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline)}
+.nav-in{max-width:1180px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.logo i{font-style:normal;color:var(--accent)}
+.back{font-size:13px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:7px;transition:color .2s}
+.back:hover{color:var(--accent)}
+
+/* hero */
+.case-hero{padding:150px 0 56px}
+.hero-eyebrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:22px}
+.tagpill{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border:1px solid var(--hairline);padding:6px 13px;border-radius:99px}
+.tagpill.role{color:var(--accent);border-color:rgba(196,245,66,.3)}
+.case-hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6.2vw,80px);line-height:1.04;letter-spacing:-.015em;max-width:980px}
+.case-hero h1 em{font-style:italic;color:var(--accent)}
+.case-hero .lede{margin-top:26px;max-width:660px;font-size:17px;color:var(--muted)}
+.case-hero .lede b{color:var(--cream);font-weight:600}
+.metric-strip{margin-top:54px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--hairline)}
+.metric-cell{padding:24px 22px 0 0;border-right:1px solid var(--hairline)}
+.metric-cell:last-child{border-right:none}
+.metric-cell .n{font-family:var(--serif);font-size:38px;line-height:1;color:var(--accent)}
+.metric-cell .l{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.45}
+
+/* case card / tabs */
+.case-card{background:var(--ink-2);border:1px solid var(--hairline);border-radius:16px;overflow:hidden;margin-bottom:90px}
+.case-intro{padding:40px 40px 0}
+.case-intro h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3vw,34px);line-height:1.14;max-width:780px}
+.case-intro h2 em{font-style:italic;color:var(--accent)}
+.case-intro p{margin-top:14px;color:var(--muted);font-size:15px;max-width:700px}
+.case-tabs{display:flex;gap:6px;padding:26px 40px 0;border-bottom:1px solid var(--hairline);overflow-x:auto;scrollbar-width:none}
+.case-tabs::-webkit-scrollbar{display:none}
+.ctab{font-family:var(--sans);background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:13px 16px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.ctab:hover{color:var(--cream)}
+.ctab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.cpanel{display:none;padding:40px}
+.cpanel.active{display:grid;grid-template-columns:1fr 262px;gap:36px;align-items:start;animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.cpanel .viz{min-width:0}
+.cpanel .viz h3{font-family:var(--serif);font-weight:400;font-size:22px;line-height:1.2;margin-bottom:6px}
+.cpanel .viz .sub{font-size:13.5px;color:var(--muted);margin-bottom:24px}
+.qr{border-left:1px solid var(--hairline);padding-left:26px;display:flex;flex-direction:column;gap:18px;position:sticky;top:88px}
+.qr .eyebrow{color:var(--accent)}
+.qr .big{font-family:var(--serif);font-size:19px;line-height:1.35;color:var(--cream)}
+.qr .big em{font-style:italic;color:var(--accent)}
+.qr ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.qr li{font-size:13px;color:var(--muted);padding-left:16px;position:relative}
+.qr li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.qr .stat{border-top:1px solid var(--hairline);padding-top:16px}
+.qr .stat .n{font-family:var(--serif);font-size:30px;line-height:1;color:var(--accent)}
+.qr .stat .l{font-size:11px;color:var(--muted);margin-top:5px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:20px}
+.legend span{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.chart-label{font-size:11px;fill:var(--muted);font-family:var(--sans)}
+.chart-strong{font-size:11.5px;fill:var(--cream);font-family:var(--sans);font-weight:600}
+
+/* artifacts */
+.art-group{margin-top:22px}
+.art-group:first-child{margin-top:0}
+.art-group .g-label{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+.art-items{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.art{background:var(--ink-3);border:1px solid var(--hairline);border-radius:12px;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;transition:border-color .2s}
+.art:hover{border-color:rgba(255,255,255,.2)}
+.art .t{font-weight:500}
+.badge{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:99px;white-space:nowrap}
+.badge.share{color:var(--accent-green);border:1px solid rgba(157,212,106,.35)}
+.badge.nda{color:var(--muted);border:1px solid var(--hairline)}
+.access-box{background:var(--ink-3);border:1px solid var(--hairline);border-radius:12px;padding:18px;margin-top:4px}
+.access-box .row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:6px 0}
+.access-box .row b{color:var(--cream)}
+.book-btn{display:block;text-align:center;background:var(--accent);color:var(--ink);font-weight:600;font-size:13.5px;padding:12px;border-radius:99px;margin-top:12px;transition:transform .2s}
+.book-btn:hover{transform:translateY(-2px)}
+
+/* footer */
+footer{padding:90px 0 60px;border-top:1px solid var(--hairline)}
+.foot-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.foot-nav .big{font-family:var(--serif);font-size:clamp(26px,3.4vw,40px);line-height:1.1;max-width:560px}
+.foot-nav .big em{font-style:italic;color:var(--accent)}
+.foot-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--ink);font-weight:600;font-size:14px;padding:14px 26px;border-radius:99px;transition:transform .2s}
+.foot-cta:hover{transform:translateY(-2px)}
+.colophon{margin-top:64px;padding-top:24px;border-top:1px solid var(--hairline);display:flex;justify-content:space-between;font-size:12px;color:var(--muted);flex-wrap:wrap;gap:10px}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none}*{transition:none!important;animation:none!important}}
+@media (max-width:960px){
+  .cpanel.active{grid-template-columns:1fr}
+  .qr{border-left:none;border-top:1px solid var(--hairline);padding-left:0;padding-top:24px;position:static}
+  .metric-strip{grid-template-columns:1fr 1fr}
+  .metric-cell{border-right:none;border-bottom:1px solid var(--hairline);padding:18px 0}
+  .art-items{grid-template-columns:1fr}
+  .case-hero{padding:120px 0 40px}
+}
+
+/* ===== light mode ===== */
+html.light{
+  --ink:#FFFFFF; --ink-2:#F8F8F6; --ink-3:#F3F3F0;
+  --cream:#1A1A1A; --muted:#5A5A63;
+  --accent:#6FA300; --accent-green:#55901F;
+  --hairline:rgba(0,0,0,0.10);
+}
+html.light body{background:var(--ink);color:var(--cream)}
+html.light nav{background:rgba(255,255,255,.82)}
+html.light .book-btn,html.light .foot-cta{color:#fff}
+html.light ::selection{background:var(--accent);color:#fff}
+html.light [fill="#8B8A85"]{fill:#5A5A63}
+html.light [fill="#9DD46A"]{fill:#55901F}
+html.light [fill="#C4F542"]{fill:#6FA300}
+html.light [fill="#FAF9F5"]{fill:#1A1A1A}
+html.light [fill="rgba(157,212,106,0.10)"]{fill:rgba(85,144,31,0.1)}
+html.light [fill="rgba(196,245,66,0.06)"]{fill:rgba(111,163,0,0.06)}
+html.light [fill="rgba(196,245,66,0.08)"]{fill:rgba(111,163,0,0.08)}
+html.light [fill="rgba(196,245,66,0.25)"]{fill:rgba(111,163,0,0.25)}
+html.light [fill="rgba(255,255,255,0.02)"]{fill:rgba(0,0,0,0.05)}
+html.light [stroke="#9DD46A"]{stroke:#55901F}
+html.light [stroke="#C4F542"]{stroke:#6FA300}
+html.light [stroke="rgba(157,212,106,0.32)"]{stroke:rgba(85,144,31,0.32)}
+html.light [stroke="rgba(157,212,106,0.5)"]{stroke:rgba(85,144,31,0.5)}
+html.light [stroke="rgba(196,245,66,0.30)"]{stroke:rgba(111,163,0,0.3)}
+html.light [stroke="rgba(196,245,66,0.4)"]{stroke:rgba(111,163,0,0.4)}
+html.light [stroke="rgba(255,255,255,0.05)"]{stroke:rgba(0,0,0,0.095)}
+html.light [stroke="rgba(255,255,255,0.08)"]{stroke:rgba(0,0,0,0.14)}
+html.light [stroke="rgba(255,255,255,0.10)"]{stroke:rgba(0,0,0,0.17)}
+/* solid weights for former-serif headings under Inter */
+.case-hero h1,.case-intro h2,.cpanel .viz h3,.qr .big,.foot-nav .big,.metric-cell .n,.qr .stat .n,.metric-cell .n{font-weight:600;letter-spacing:-.02em}
+.case-hero h1 em,.case-intro h2 em,.cpanel .viz h3 em,.qr .big em,.foot-nav .big em{font-style:normal}
+/* theme toggle */
+.nav-right{display:flex;align-items:center;gap:18px}
+.theme-toggle{width:44px;height:24px;border-radius:99px;border:1px solid var(--hairline);background:var(--ink-3);position:relative;cursor:pointer;padding:0;flex:none;transition:background .25s}
+.tt-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);transition:transform .25s}
+html.light .tt-thumb{transform:translateX(20px)}
+</style></head><body>
 <nav><div class="nav-in">
-  <div class="brand"><span class="dot"></span>Anupam Sarkar</div>
-  <div class="nav-right"><a class="back" href="index.html">&larr; Back to portfolio</a><button id="themeBtn" class="theme-toggle" role="switch" aria-label="Toggle light and dark mode"><span class="tt-thumb"></span></button></div>
+  <a href="index.html" class="logo">Anupam Sarkar<i>.</i></a>
+  <div class="nav-right"><a href="index.html" class="back">← Back to portfolio</a><button id="themeBtn" class="theme-toggle" role="switch" aria-checked="false" aria-label="Toggle light and dark theme"><span class="tt-thumb"></span></button></div>
 </div></nav>
-<header><div class="wrap">
-  <span class="tag">CASE FILE &middot; SIEMENS &middot; #NEXTWORK</span>
-  <h1>Built the operating system around the methodology &mdash; <em>without rebuilding the methodology.</em></h1>
-  <p class="sub"><b>Lead Product Designer.</b> A workplace-transformation methodology that worked in workshops but had no product operating system around it. I designed the governance, critique cadence and decision rights that let it scale &mdash; reaching two layers up and one down.</p>
-  <div class="rolebar"><span class="chip"><b>Role</b> Lead Product Designer</span><span class="chip"><b>Reach</b> 2 up &middot; 1 down</span><span class="chip"><b>Domain</b> Future of work</span></div>
+<header class="case-hero"><div class="wrap reveal">
+  <div class="hero-eyebrow"><span class="tagpill">Siemens AG · #NextWork</span><span class="tagpill role">Lead Product Designer</span></div>
+  <h1>Siemens had the workforce method. <em>The operating system around it was broken.</em></h1>
+  <p class="lede"><b>32% of jobs change radically by 2030 — and no one knew which.</b> Siemens' #NextWork methodology answered that on paper. Over 11 months I led design on the multi-persona product that made it operable for 8 stakeholder archetypes across an HR ecosystem serving 300,000+ employees.</p>
+  <div class="metric-strip"><div class="metric-cell"><div class="n">72%</div><div class="l">of 550 reskilled in place · Bad Neustadt</div></div><div class="metric-cell"><div class="n">120+</div><div class="l">workstreams · 30+ countries</div></div><div class="metric-cell"><div class="n">14→6wk</div><div class="l">HR planning cycle time</div></div><div class="metric-cell"><div class="n">61→84</div><div class="l">SUS · paper to hi-fi</div></div></div>
 </div></header>
-<section><div class="wrap">
-  <p class="sec-label">01 &middot; Quantified outcomes</p>
-  <div class="grid"><div class="cell"><div class="n">72%</div><div class="l">methodology adoption across pilot teams</div></div><div class="cell cool"><div class="n">95%</div><div class="l">cross-functional workshop alignment</div></div><div class="cell warm"><div class="n">2&uarr;1&darr;</div><div class="l">layers of organizational reach</div></div><div class="cell green"><div class="n">3-in-a-box</div><div class="l">governance model installed</div></div></div>
-</div></section>
-<section><div class="wrap">
-  <p class="sec-label">02 &middot; The decisions that mattered</p>
-  <div class="decision"><h4>Designed the operating system, not more screens</h4>
-    <div class="row"><b>Why</b><span>The methodology was sound; what failed was how teams operated around it &mdash; unclear decision rights and no critique cadence.</span></div>
-    <div class="row"><b>Trade-off</b><span>Spent design capacity on governance and rituals instead of visible UI, a harder sell to stakeholders expecting mockups.</span></div>
-    <div class="row res"><b>Result</b><span>72% adoption &middot; 95% workshop alignment &middot; model reused beyond the pilot.</span></div></div>
-</div></section>
-<section><div class="wrap">
-  <div class="note">
-  <div class="nl"><span class="live"></span>Case file &middot; indexing in progress</div>
-  <p>This is the <b>leadership case study summary</b> the agent resolves to. The full case study &mdash; causal chain, org map, timeline and artifacts &mdash; is walked through <b>live, under NDA</b>. Outcomes are normalized to protect confidential business data; measurement method retained.</p>
-</div>
-  <div class="actions">
-  <a class="primary" href="mailto:ar.anupamsarkar@gmail.com">Request the full walk-through</a>
-  <a href="index.html#work">All work</a>
-</div>
+<section style="padding-bottom:40px"><div class="wrap">
+  <div class="case-card reveal">
+    <div class="case-intro"><h2>The temptation was to redesign the methodology. <em>The job was to leave it intact.</em></h2><p>For three months the team treated #NextWork as raw material — renaming phases, adding a sixth. The owners pushed back, rightly. The unlock came in week 11: the real risk wasn't a clumsy UI, it was software de-skilling the HRBPs trained to apply judgement. That reframed everything.</p></div>
+    <div class="case-tabs" role="tablist"><button class="ctab active" data-case="chain" role="tab" aria-selected="true">Causal chain</button><button class="ctab" data-case="org" role="tab" aria-selected="false">Org map</button><button class="ctab" data-case="time" role="tab" aria-selected="false">Timeline</button><button class="ctab" data-case="art" role="tab" aria-selected="false">Artifacts</button></div>
+    <div class="cpanel active" id="case-chain">
+        <div class="viz"><h3>A right methodology, strangled by a broken data layer — clustered into four moves</h3><p class="sub">Macro forces and a fragmented HR data layer (red) cluster into the four product bets (lime) that produced Siemens' public outcomes (green).</p><div class="legend"><span><i style="background:#E85A4F"></i>Problem gaps</span><span><i style="background:#C4F542"></i>Interventions</span><span><i style="background:#9DD46A"></i>Outcomes</span></div><svg viewBox="0 0 860 580" role="img" aria-label="Causal chain diagram"><g stroke="rgba(255,255,255,0.10)" fill="none"><path d="M230 60 C300 60,300 104.0,372 104.0"/><path d="M230 118 C300 118,300 220.0,372 220.0"/><path d="M230 176 C300 176,300 336.0,372 336.0"/><path d="M230 234 C300 234,300 452.0,372 452.0"/><path d="M230 292 C300 292,300 104.0,372 104.0"/><path d="M230 350 C300 350,300 220.0,372 220.0"/><path d="M230 408 C300 408,300 336.0,372 336.0"/><path d="M230 466 C300 466,300 452.0,372 452.0"/></g><g stroke="rgba(196,245,66,0.30)" fill="none"><line x1="588" y1="104.0" x2="650" y2="104.0"/><line x1="588" y1="220.0" x2="650" y2="220.0"/><line x1="588" y1="336.0" x2="650" y2="336.0"/><line x1="588" y1="452.0" x2="650" y2="452.0"/></g><g stroke="rgba(157,212,106,0.32)" fill="none"><path d="M810 104.0 C842 104.0,846 290.0,846 290.0"/><path d="M810 220.0 C842 220.0,846 290.0,846 290.0"/><path d="M810 336.0 C842 336.0,846 290.0,846 290.0"/><path d="M810 452.0 C842 452.0,846 290.0,846 290.0"/></g><rect x="20" y="46" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="67" class="chart-strong" font-size="11">32% of jobs change by 2030</text><rect x="20" y="104" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="125" class="chart-strong" font-size="11">Skill data in 5+ systems</text><rect x="20" y="162" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="183" class="chart-strong" font-size="11">HRBPs: 60% time reconciling</text><rect x="20" y="220" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="241" class="chart-strong" font-size="11">Execs see plans 14 weeks late</text><rect x="20" y="278" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="299" class="chart-strong" font-size="11">Employees unaware of any plan</text><rect x="20" y="336" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="357" class="chart-strong" font-size="11">5 different skill taxonomies</text><rect x="20" y="394" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="415" class="chart-strong" font-size="11">No single source of truth</text><rect x="20" y="452" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="473" class="chart-strong" font-size="11">Methodology lived on paper only</text><rect x="372" y="78.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="100.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">One data model, 4 render rules</text><text x="388" y="117.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Same data, role-shaped views</text><rect x="372" y="194.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="216.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Persona lens toggle</text><text x="388" y="233.0" font-size="10.5" fill="#8B8A85" font-family="Inter">8 archetypes, one spine</text><rect x="372" y="310.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="332.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Methodology stepper</text><text x="388" y="349.0" font-size="10.5" fill="#8B8A85" font-family="Inter">5 phases stay visible, not hidden</text><rect x="372" y="426.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="448.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Named-person card</text><text x="388" y="465.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Plans about people, not headcount</text><rect x="650" y="83.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="102.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">72% reskilled</text><text x="664" y="117.0" font-size="10" fill="#9DD46A" font-family="Inter">550 ppl · Bad Neustadt</text><rect x="650" y="199.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="218.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">120+ workstreams</text><text x="664" y="233.0" font-size="10" fill="#9DD46A" font-family="Inter">30+ countries</text><rect x="650" y="315.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="334.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">14wk → 6wk</text><text x="664" y="349.0" font-size="10" fill="#9DD46A" font-family="Inter">HR planning cycle</text><rect x="650" y="431.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="450.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">SUS 61 → 84</text><text x="664" y="465.0" font-size="10" fill="#9DD46A" font-family="Inter">V1 paper → V3 hi-fi</text><circle cx="846" cy="290.0" r="7" fill="none" stroke="#C4F542" stroke-width="2"/><text x="852" y="564" text-anchor="end" font-family="Inter" font-size="17" fill="#FAF9F5" font-style="italic">The bet: build the operating system around the methodology — don&#x27;t rebuild the methodology.</text></svg><div class="so-what"><b>So what</b><span>The outcome belongs to the whole programme; the product made the methodology operable at scale. Build the system around the method.</span></div></div>
+        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">Skill data in <em>5+ systems</em>, zero single source of truth.</p><ul><li>HRBPs spent 60% of cycle time reconciling</li><li>Execs saw plans 14 weeks too late</li><li>One data model, four rendering rules fixed it</li></ul><div class="stat"><div class="n">8</div><div class="l">stakeholder archetypes served</div></div></aside></div><div class="cpanel" id="case-org">
+        <div class="viz"><h3>Design reached from the BU CEO to a cafeteria worker's reskilling path</h3><p class="sub">Up to methodology owners and works council (political, handled carefully); across the build team; down to 8 employee shadows.</p><svg viewBox="0 0 860 488" role="img" aria-label="Organizational reach map"><text x="225.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">HRBP</text><text x="343.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">MANAGER</text><text x="461.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">EXECUTIVE</text><text x="579.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">L&amp;D</text><text x="697.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">WORKS COUNCIL</text><rect x="20" y="48" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="82" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Siemens BU leadership + methodology owners</text><text x="36" y="102" fill="#8B8A85" font-size="11" font-family="Inter">#NextWork framework IP · works council partnership</text><rect x="20" y="148" width="820" height="84" rx="12" fill="rgba(196,245,66,0.06)" stroke="#C4F542"/><text x="36" y="182" fill="#C4F542" font-weight="600" font-size="11.5" font-family="Inter">Lead Product Designer — my layer</text><text x="36" y="202" fill="#8B8A85" font-size="11" font-family="Inter">Strategy · service design · multi-persona UX</text><rect x="20" y="248" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="282" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Cross-functional team</text><text x="36" y="302" fill="#8B8A85" font-size="11" font-family="Inter">1 PM · 2 Eng · 3 Designers · 1 Researcher</text><rect x="20" y="348" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="382" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Frontline — employees &amp; HRBPs</text><text x="36" y="402" fill="#8B8A85" font-size="11" font-family="Inter">8 archetypes · 8 shadows · Bianca&#x27;s path</text><line x1="208" y1="90.0" x2="208" y2="290.0" stroke="#C4F542" stroke-width="2"/><circle cx="208" cy="90.0" r="6" fill="#C4F542"/><circle cx="208" cy="190.0" r="6" fill="#C4F542"/><circle cx="208" cy="290.0" r="6" fill="#C4F542"/><circle cx="225.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="343.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="461.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="579.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="697.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><line x1="234.0" y1="190.0" x2="334.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="352.0" y1="190.0" x2="452.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="470.0" y1="190.0" x2="570.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="588.0" y1="190.0" x2="688.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><rect x="430" y="410" width="88.60000000000001" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="474.3" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">22 interviews</text><rect x="530.6" y="410" width="119.60000000000001" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="590.4" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">8 employee shadows</text><rect x="662.2" y="410" width="88.60000000000001" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="706.5" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">2,400 tickets</text><text x="208" y="474" text-anchor="middle" fill="#C4F542" font-size="11.5" font-weight="600" font-family="Inter">Vertical reach: 3 layers</text><text x="540" y="156.0" text-anchor="middle" fill="#C4F542" font-size="11.5" font-weight="600" font-family="Inter">Horizontal reach: 8 archetypes</text></svg><div class="so-what"><b>So what</b><span>Reach two layers up and one down. Bianca — cafeteria worker to mechatronics technician — is the proof the system reached the frontline.</span></div></div>
+        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">Three got <em>hero design.</em> Five got supporting views.</p><ul><li>Up: methodology owners + works council</li><li>Across: PM, 2 eng, 3 designers, researcher</li><li>Down: 8 shadows surfaced the named-person pattern</li></ul><div class="stat"><div class="n">11</div><div class="l">months · team of 7</div></div></aside></div><div class="cpanel" id="case-time">
+        <div class="viz"><h3>Six chapters, 11 months — and a week-11 conversation that rewrote the brief</h3><p class="sub">The decisive fork wasn't a feature choice. It was asking the framework's author what she feared we'd break — and getting 'de-skilling' as the answer.</p><svg viewBox="0 0 860 400" role="img" aria-label="Project timeline with decision forks"><text x="200.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">M1</text><text x="324.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">M3</text><line x1="324.0" y1="40" x2="324.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="448.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">M5</text><line x1="448.0" y1="40" x2="448.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="572.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">M7</text><line x1="572.0" y1="40" x2="572.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="696.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">M9</text><line x1="696.0" y1="40" x2="696.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="820.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">M11</text><line x1="820.0" y1="40" x2="820.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="20" y="89.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Discover &amp; define</text><rect x="200.0" y="72.0" width="235.60000000000002" height="26" rx="13" fill="rgba(124,163,255,0.30)"/><text x="20" y="179.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Develop — concepts &amp; IA</text><rect x="386.0" y="162.0" width="124.0" height="26" rx="13" fill="rgba(255,122,92,0.30)"/><rect x="510.0" y="162.0" width="136.39999999999998" height="26" rx="13" fill="rgba(255,122,92,0.30)"/><text x="20" y="269.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Deliver &amp; measure</text><rect x="584.4" y="252.0" width="142.60000000000002" height="26" rx="13" fill="rgba(196,245,66,0.25)"/><rect x="727.0" y="252.0" width="93.0" height="26" rx="13" fill="rgba(196,245,66,0.25)"/><line x1="373.6" y1="46" x2="373.6" y2="324" stroke="#C4F542" stroke-dasharray="5 5" stroke-width="1.5"/><text x="373.6" y="336" text-anchor="start" fill="#C4F542" font-size="11" font-weight="600" font-family="Inter">Fork · rename phases vs preserve them</text><line x1="510.0" y1="46" x2="510.0" y2="346" stroke="#C4F542" stroke-dasharray="5 5" stroke-width="1.5"/><text x="510.0" y="358" text-anchor="middle" fill="#C4F542" font-size="11" font-weight="600" font-family="Inter">Fork · de-skill risk → stepper as contract</text><circle cx="727.0" cy="265.0" r="6" fill="#9DD46A"/><text x="715.0" y="249.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">6 hero screens</text><circle cx="801.4" cy="265.0" r="6" fill="#9DD46A"/><text x="789.4" y="249.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">72% reskilled in place</text><circle cx="646.4" cy="175.0" r="6" fill="#9DD46A"/><text x="634.4" y="159.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">card sort agreement 0.74</text></svg><div class="so-what"><b>So what</b><span>Holding the fork open mattered more than moving fast. The 5-phase stepper became a contract, not a nav widget.</span></div></div>
+        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">The fork that <em>reframed the project.</em></p><ul><li>Killed the renamed-phases approach early</li><li>Week 11: de-skill risk surfaced the real bet</li><li>Methodology stays visible became Principle 05</li></ul><div class="stat"><div class="n">0.74</div><div class="l">card-sort agreement score</div></div></aside></div><div class="cpanel" id="case-art">
+        <div class="viz"><div class="art-grid"><div class="art-group"><div class="g-label">Research → the operating-system thesis</div><div class="art-items"><div class="art"><span class="t">14-week research programme (5 methods)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Ecosystem map · 8 systems</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Stakeholder map · influence × interest</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Card sort dendrogram (n=18)</span><span class="badge nda">NDA</span></div></div></div><div class="art-group"><div class="g-label">Frameworks → persona &amp; IA forks</div><div class="art-items"><div class="art"><span class="t">3 critical user flows + branch logic</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">#NextWork Matrix (2×2)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Cost-of-Inaction model</span><span class="badge nda">NDA</span></div></div></div><div class="art-group"><div class="g-label">Design + outcomes → shipped</div><div class="art-items"><div class="art"><span class="t">6 hero screens + 4 patterns</span><span class="badge nda">NDA</span></div><div class="art"><span class="t">Future-state service blueprint</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Impact grid (attribution-tagged)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Bianca path · cafeteria → mechatronics</span><span class="badge share">Shareable</span></div></div></div></div><div class="so-what"><b>So what</b><span>Grouped by decision. Note the attribution honesty: the Siemens numbers belong to the whole programme — the product made the method operable.</span></div></div>
+        <aside class="qr"><p class="eyebrow">Access</p><div class="access-box"><div class="row"><span>Shareable now</span><b>8 artifacts</b></div><div class="row"><span>Under NDA — walkthrough</span><b>3 artifacts</b></div><a class="book-btn" href="index.html#contact">Book 20 min →</a></div><p style="font-size:13px;color:var(--muted)">The polished consulting-grade deck exists separately from the sketchbook.</p></aside></div>
+  </div>
 </div></section>
 <footer><div class="wrap">
-  <div class="colophon"><span>&copy; 2026 ANUPAM SARKAR &middot; BENGALURU</span><span>PRODUCT DESIGN MANAGER</span></div>
+  <div class="foot-nav">
+    <div class="big">Want the decisions behind the screens? <em>Let's talk.</em></div>
+    <a class="foot-cta" href="index.html#contact">Get in touch →</a>
+  </div>
+  <div class="colophon"><span>© 2026 Anupam Sarkar · Bengaluru</span><span>Siemens AG · #NextWork · Lead Product Designer</span></div>
 </div></footer>
 <script>
-(function(){var b=document.getElementById('themeBtn');function sync(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light'));}
-b.onclick=function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');sync();};sync();})();
-</script>
-</body>
-</html>
+document.querySelectorAll('.ctab[data-case]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.ctab').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false')});
+  b.classList.add('active');b.setAttribute('aria-selected','true');
+  document.querySelectorAll('.cpanel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('case-'+b.dataset.case).classList.add('active');
+}));
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+(function(){var b=document.getElementById('themeBtn');if(!b)return;function s(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light')?'true':'false')}s();b.addEventListener('click',function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');s()})})();
+</script></body></html>

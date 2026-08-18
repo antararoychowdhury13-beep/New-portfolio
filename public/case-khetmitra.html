@@ -1,54 +1,204 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KhetMitra — Case Study — Anupam Sarkar</title>
-<meta name="description" content="John Deere India / KhetMitra: an offline-first decision assistant that raised crop yield 17.3%.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="case.css">
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KhetMitra — Anupam Sarkar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 <script>if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light");</script>
-</head>
-<body>
+<style>
+:root{
+  --ink:#0B0B0E; --ink-2:#15151A; --ink-3:#1E1E24;
+  --cream:#FAF9F5; --muted:#8B8A85;
+  --accent:#C4F542; --accent-warm:#FF7A5C; --accent-cool:#7CA3FF;
+  --accent-green:#9DD46A; --danger:#E85A4F;
+  --hairline:rgba(255,255,255,0.08);
+  --serif:'Inter',-apple-system,sans-serif;
+  --sans:'Inter',-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+svg{display:block;max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.so-what{display:flex;gap:12px;align-items:baseline;margin-top:22px;padding-top:16px;border-top:1px solid var(--hairline);font-size:14px;color:var(--muted)}
+.so-what b{color:var(--cream);font-weight:600;white-space:nowrap;font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.so-what b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:1px}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(11,11,14,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline)}
+.nav-in{max-width:1180px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.logo i{font-style:normal;color:var(--accent)}
+.back{font-size:13px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:7px;transition:color .2s}
+.back:hover{color:var(--accent)}
+
+/* hero */
+.case-hero{padding:150px 0 56px}
+.hero-eyebrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:22px}
+.tagpill{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border:1px solid var(--hairline);padding:6px 13px;border-radius:99px}
+.tagpill.role{color:var(--accent);border-color:rgba(196,245,66,.3)}
+.case-hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6.2vw,80px);line-height:1.04;letter-spacing:-.015em;max-width:980px}
+.case-hero h1 em{font-style:italic;color:var(--accent)}
+.case-hero .lede{margin-top:26px;max-width:660px;font-size:17px;color:var(--muted)}
+.case-hero .lede b{color:var(--cream);font-weight:600}
+.metric-strip{margin-top:54px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--hairline)}
+.metric-cell{padding:24px 22px 0 0;border-right:1px solid var(--hairline)}
+.metric-cell:last-child{border-right:none}
+.metric-cell .n{font-family:var(--serif);font-size:38px;line-height:1;color:var(--accent)}
+.metric-cell .l{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.45}
+
+/* case card / tabs */
+.case-card{background:var(--ink-2);border:1px solid var(--hairline);border-radius:16px;overflow:hidden;margin-bottom:90px}
+.case-intro{padding:40px 40px 0}
+.case-intro h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3vw,34px);line-height:1.14;max-width:780px}
+.case-intro h2 em{font-style:italic;color:var(--accent)}
+.case-intro p{margin-top:14px;color:var(--muted);font-size:15px;max-width:700px}
+.case-tabs{display:flex;gap:6px;padding:26px 40px 0;border-bottom:1px solid var(--hairline);overflow-x:auto;scrollbar-width:none}
+.case-tabs::-webkit-scrollbar{display:none}
+.ctab{font-family:var(--sans);background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:13px 16px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.ctab:hover{color:var(--cream)}
+.ctab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.cpanel{display:none;padding:40px}
+.cpanel.active{display:grid;grid-template-columns:1fr 262px;gap:36px;align-items:start;animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.cpanel .viz{min-width:0}
+.cpanel .viz h3{font-family:var(--serif);font-weight:400;font-size:22px;line-height:1.2;margin-bottom:6px}
+.cpanel .viz .sub{font-size:13.5px;color:var(--muted);margin-bottom:24px}
+.qr{border-left:1px solid var(--hairline);padding-left:26px;display:flex;flex-direction:column;gap:18px;position:sticky;top:88px}
+.qr .eyebrow{color:var(--accent)}
+.qr .big{font-family:var(--serif);font-size:19px;line-height:1.35;color:var(--cream)}
+.qr .big em{font-style:italic;color:var(--accent)}
+.qr ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.qr li{font-size:13px;color:var(--muted);padding-left:16px;position:relative}
+.qr li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.qr .stat{border-top:1px solid var(--hairline);padding-top:16px}
+.qr .stat .n{font-family:var(--serif);font-size:30px;line-height:1;color:var(--accent)}
+.qr .stat .l{font-size:11px;color:var(--muted);margin-top:5px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:20px}
+.legend span{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.chart-label{font-size:11px;fill:var(--muted);font-family:var(--sans)}
+.chart-strong{font-size:11.5px;fill:var(--cream);font-family:var(--sans);font-weight:600}
+
+/* artifacts */
+.art-group{margin-top:22px}
+.art-group:first-child{margin-top:0}
+.art-group .g-label{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+.art-items{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.art{background:var(--ink-3);border:1px solid var(--hairline);border-radius:12px;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;transition:border-color .2s}
+.art:hover{border-color:rgba(255,255,255,.2)}
+.art .t{font-weight:500}
+.badge{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:99px;white-space:nowrap}
+.badge.share{color:var(--accent-green);border:1px solid rgba(157,212,106,.35)}
+.badge.nda{color:var(--muted);border:1px solid var(--hairline)}
+.access-box{background:var(--ink-3);border:1px solid var(--hairline);border-radius:12px;padding:18px;margin-top:4px}
+.access-box .row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:6px 0}
+.access-box .row b{color:var(--cream)}
+.book-btn{display:block;text-align:center;background:var(--accent);color:var(--ink);font-weight:600;font-size:13.5px;padding:12px;border-radius:99px;margin-top:12px;transition:transform .2s}
+.book-btn:hover{transform:translateY(-2px)}
+
+/* footer */
+footer{padding:90px 0 60px;border-top:1px solid var(--hairline)}
+.foot-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.foot-nav .big{font-family:var(--serif);font-size:clamp(26px,3.4vw,40px);line-height:1.1;max-width:560px}
+.foot-nav .big em{font-style:italic;color:var(--accent)}
+.foot-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--ink);font-weight:600;font-size:14px;padding:14px 26px;border-radius:99px;transition:transform .2s}
+.foot-cta:hover{transform:translateY(-2px)}
+.colophon{margin-top:64px;padding-top:24px;border-top:1px solid var(--hairline);display:flex;justify-content:space-between;font-size:12px;color:var(--muted);flex-wrap:wrap;gap:10px}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none}*{transition:none!important;animation:none!important}}
+@media (max-width:960px){
+  .cpanel.active{grid-template-columns:1fr}
+  .qr{border-left:none;border-top:1px solid var(--hairline);padding-left:0;padding-top:24px;position:static}
+  .metric-strip{grid-template-columns:1fr 1fr}
+  .metric-cell{border-right:none;border-bottom:1px solid var(--hairline);padding:18px 0}
+  .art-items{grid-template-columns:1fr}
+  .case-hero{padding:120px 0 40px}
+}
+
+/* ===== light mode ===== */
+html.light{
+  --ink:#FFFFFF; --ink-2:#F8F8F6; --ink-3:#F3F3F0;
+  --cream:#1A1A1A; --muted:#5A5A63;
+  --accent:#6FA300; --accent-green:#55901F;
+  --hairline:rgba(0,0,0,0.10);
+}
+html.light body{background:var(--ink);color:var(--cream)}
+html.light nav{background:rgba(255,255,255,.82)}
+html.light .book-btn,html.light .foot-cta{color:#fff}
+html.light ::selection{background:var(--accent);color:#fff}
+html.light [fill="#8B8A85"]{fill:#5A5A63}
+html.light [fill="#9DD46A"]{fill:#55901F}
+html.light [fill="#C4F542"]{fill:#6FA300}
+html.light [fill="#FAF9F5"]{fill:#1A1A1A}
+html.light [fill="rgba(157,212,106,0.10)"]{fill:rgba(85,144,31,0.1)}
+html.light [fill="rgba(196,245,66,0.06)"]{fill:rgba(111,163,0,0.06)}
+html.light [fill="rgba(196,245,66,0.08)"]{fill:rgba(111,163,0,0.08)}
+html.light [fill="rgba(196,245,66,0.25)"]{fill:rgba(111,163,0,0.25)}
+html.light [fill="rgba(255,255,255,0.02)"]{fill:rgba(0,0,0,0.05)}
+html.light [stroke="#9DD46A"]{stroke:#55901F}
+html.light [stroke="#C4F542"]{stroke:#6FA300}
+html.light [stroke="rgba(157,212,106,0.32)"]{stroke:rgba(85,144,31,0.32)}
+html.light [stroke="rgba(157,212,106,0.5)"]{stroke:rgba(85,144,31,0.5)}
+html.light [stroke="rgba(196,245,66,0.30)"]{stroke:rgba(111,163,0,0.3)}
+html.light [stroke="rgba(196,245,66,0.4)"]{stroke:rgba(111,163,0,0.4)}
+html.light [stroke="rgba(255,255,255,0.05)"]{stroke:rgba(0,0,0,0.095)}
+html.light [stroke="rgba(255,255,255,0.08)"]{stroke:rgba(0,0,0,0.14)}
+html.light [stroke="rgba(255,255,255,0.10)"]{stroke:rgba(0,0,0,0.17)}
+/* solid weights for former-serif headings under Inter */
+.case-hero h1,.case-intro h2,.cpanel .viz h3,.qr .big,.foot-nav .big,.metric-cell .n,.qr .stat .n,.metric-cell .n{font-weight:600;letter-spacing:-.02em}
+.case-hero h1 em,.case-intro h2 em,.cpanel .viz h3 em,.qr .big em,.foot-nav .big em{font-style:normal}
+/* theme toggle */
+.nav-right{display:flex;align-items:center;gap:18px}
+.theme-toggle{width:44px;height:24px;border-radius:99px;border:1px solid var(--hairline);background:var(--ink-3);position:relative;cursor:pointer;padding:0;flex:none;transition:background .25s}
+.tt-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);transition:transform .25s}
+html.light .tt-thumb{transform:translateX(20px)}
+</style></head><body>
 <nav><div class="nav-in">
-  <div class="brand"><span class="dot"></span>Anupam Sarkar</div>
-  <div class="nav-right"><a class="back" href="index.html">&larr; Back to portfolio</a><button id="themeBtn" class="theme-toggle" role="switch" aria-label="Toggle light and dark mode"><span class="tt-thumb"></span></button></div>
+  <a href="index.html" class="logo">Anupam Sarkar<i>.</i></a>
+  <div class="nav-right"><a href="index.html" class="back">← Back to portfolio</a><button id="themeBtn" class="theme-toggle" role="switch" aria-checked="false" aria-label="Toggle light and dark theme"><span class="tt-thumb"></span></button></div>
 </div></nav>
-<header><div class="wrap">
-  <span class="tag">CASE FILE &middot; JOHN DEERE INDIA &middot; KHETMITRA</span>
-  <h1>Stopped showing data and showed <em>the next move.</em></h1>
-  <p class="sub"><b>Design Lead.</b> The brief asked for a farm-data dashboard. Field research said otherwise: not one farmer opened more than two data sources before deciding. So I overrode the brief and built an offline-first decision assistant instead.</p>
-  <div class="rolebar"><span class="chip"><b>Role</b> Design Lead</span><span class="chip"><b>Users</b> Smallholder farmers</span><span class="chip"><b>Constraint</b> Offline-first</span></div>
+<header class="case-hero"><div class="wrap reveal">
+  <div class="hero-eyebrow"><span class="tagpill">John Deere · India AgTech</span><span class="tagpill role">Design Lead</span></div>
+  <h1>Stop showing data. <em>Show the next move.</em></h1>
+  <p class="lede"><b>India's smallholder farmers aren't starved of data — they're drowning in fragmented signals they can't act on, in fields with no signal.</b> The team wanted a dashboard. The field demanded a decision. I led the pivot to an action-first, offline-first advisor — and convinced leadership to fund it.</p>
+  <div class="metric-strip"><div class="metric-cell"><div class="n">41→87%</div><div class="l">Task completion across iterations</div></div><div class="metric-cell"><div class="n">+17.3%</div><div class="l">Yield · 250-farmer Punjab pilot</div></div><div class="metric-cell"><div class="n">Phase 2</div><div class="l">Funded after the pilot</div></div><div class="metric-cell"><div class="n">8 langs</div><div class="l">Visual-first + voice</div></div></div>
 </div></header>
-<section><div class="wrap">
-  <p class="sec-label">01 &middot; Quantified outcomes</p>
-  <div class="grid"><div class="cell"><div class="n">+17.3%</div><div class="l">crop yield in pilot</div></div><div class="cell cool"><div class="n">41&rarr;87%</div><div class="l">task completion</div></div><div class="cell warm"><div class="n">2</div><div class="l">max data sources a farmer consulted</div></div><div class="cell green"><div class="n">Phase 2</div><div class="l">funded on pilot results</div></div></div>
-</div></section>
-<section><div class="wrap">
-  <p class="sec-label">02 &middot; The decisions that mattered</p>
-  <div class="decision"><h4>Overrode the brief</h4>
-    <div class="row"><b>Why</b><span>Field truth: not one farmer opened more than two data sources before deciding. A dashboard would add load, not remove it.</span></div>
-    <div class="row"><b>Trade-off</b><span>Contradicted the stakeholder ask for a dashboard; had to re-sell leadership on a decision assistant.</span></div>
-    <div class="row res"><b>Result</b><span>41&rarr;87% task completion &middot; +17.3% yield &middot; funded to phase 2.</span></div></div>
-</div></section>
-<section><div class="wrap">
-  <div class="note">
-  <div class="nl"><span class="live"></span>Case file &middot; indexing in progress</div>
-  <p>This is the <b>leadership case study summary</b> the agent resolves to. The full case study &mdash; causal chain, org map, timeline and artifacts &mdash; is walked through <b>live, under NDA</b>. Outcomes are normalized to protect confidential business data; measurement method retained.</p>
-</div>
-  <div class="actions">
-  <a class="primary" href="mailto:ar.anupamsarkar@gmail.com">Request the full walk-through</a>
-  <a href="index.html#work">All work</a>
-</div>
+<section style="padding-bottom:40px"><div class="wrap">
+  <div class="case-card reveal">
+    <div class="case-intro"><h2>The business asked for a dashboard. <em>I changed what we were building.</em></h2><p>In 12 field shadows, not one farmer opened more than two data sources before deciding — they wanted a verdict, fast. A dashboard adds cognitive load to people already overloaded. The defensible bet was to remove choices, not add views — and I made that argument to leadership.</p></div>
+    <div class="case-tabs" role="tablist"><button class="ctab active" data-case="chain" role="tab" aria-selected="true">Causal chain</button><button class="ctab" data-case="org" role="tab" aria-selected="false">Org map</button><button class="ctab" data-case="time" role="tab" aria-selected="false">Timeline</button><button class="ctab" data-case="art" role="tab" aria-selected="false">Artifacts</button></div>
+    <div class="cpanel active" id="case-chain">
+        <div class="viz"><h3>Fragmented signals and field realities collapsed into four design moves</h3><p class="sub">What farmers couldn't do and couldn't trust (red) clusters into the four bets (lime) that lifted completion and yield (green).</p><div class="legend"><span><i style="background:#E85A4F"></i>Problem gaps</span><span><i style="background:#C4F542"></i>Interventions</span><span><i style="background:#9DD46A"></i>Outcomes</span></div><svg viewBox="0 0 860 580" role="img" aria-label="Causal chain diagram"><g stroke="rgba(255,255,255,0.10)" fill="none"><path d="M230 60 C300 60,300 104.0,372 104.0"/><path d="M230 118 C300 118,300 220.0,372 220.0"/><path d="M230 176 C300 176,300 336.0,372 336.0"/><path d="M230 234 C300 234,300 452.0,372 452.0"/><path d="M230 292 C300 292,300 104.0,372 104.0"/><path d="M230 350 C300 350,300 220.0,372 220.0"/><path d="M230 408 C300 408,300 336.0,372 336.0"/><path d="M230 466 C300 466,300 452.0,372 452.0"/></g><g stroke="rgba(196,245,66,0.30)" fill="none"><line x1="588" y1="104.0" x2="650" y2="104.0"/><line x1="588" y1="220.0" x2="650" y2="220.0"/><line x1="588" y1="336.0" x2="650" y2="336.0"/><line x1="588" y1="452.0" x2="650" y2="452.0"/></g><g stroke="rgba(157,212,106,0.32)" fill="none"><path d="M810 104.0 C842 104.0,846 290.0,846 290.0"/><path d="M810 220.0 C842 220.0,846 290.0,846 290.0"/><path d="M810 336.0 C842 336.0,846 290.0,846 290.0"/><path d="M810 452.0 C842 452.0,846 290.0,846 290.0"/></g><rect x="20" y="46" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="67" class="chart-strong" font-size="11">Data in 5 apps, no signal</text><rect x="20" y="104" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="125" class="chart-strong" font-size="11">68% hit daily disruption</text><rect x="20" y="162" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="183" class="chart-strong" font-size="11">Decisions made on guesswork</text><rect x="20" y="220" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="241" class="chart-strong" font-size="11">“Too many numbers, no answer”</text><rect x="20" y="278" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="299" class="chart-strong" font-size="11">Farmers distrust a black box</text><rect x="20" y="336" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="357" class="chart-strong" font-size="11">Mixed literacy in one household</text><rect x="20" y="394" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="415" class="chart-strong" font-size="11">12–18% lost to downtime</text><rect x="20" y="452" width="210" height="34" rx="8" fill="rgba(232,90,79,0.10)" stroke="rgba(232,90,79,0.45)"/><text x="34" y="473" class="chart-strong" font-size="11">A late call costs a season</text><rect x="372" y="78.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="100.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Decision assistant, not dashboard</text><text x="388" y="117.0" font-size="10.5" fill="#8B8A85" font-family="Inter">One next-best action, not a wall of dials</text><rect x="372" y="194.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="216.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Offline-first edge layer</text><text x="388" y="233.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Cached answer with zero connectivity</text><rect x="372" y="310.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="332.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">Visual-first + voice</text><text x="388" y="349.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Reads without literacy, 8 languages</text><rect x="372" y="426.0" width="216" height="52" rx="10" fill="rgba(196,245,66,0.08)" stroke="#C4F542"/><text x="388" y="448.0" font-size="11.5" font-weight="600" fill="#C4F542" font-family="Inter">“Why am I seeing this?”</text><text x="388" y="465.0" font-size="10.5" fill="#8B8A85" font-family="Inter">Sources + confidence build trust</text><rect x="650" y="83.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="102.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">41% → 87%</text><text x="664" y="117.0" font-size="10" fill="#9DD46A" font-family="Inter">task completion</text><rect x="650" y="199.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="218.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">+17.3% yield</text><text x="664" y="233.0" font-size="10" fill="#9DD46A" font-family="Inter">250-farmer Punjab pilot</text><rect x="650" y="315.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="334.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">Funded</text><text x="664" y="349.0" font-size="10" fill="#9DD46A" font-family="Inter">to phase 2</text><rect x="650" y="431.0" width="170" height="42" rx="10" fill="rgba(157,212,106,0.10)" stroke="rgba(157,212,106,0.5)"/><text x="664" y="450.0" font-size="11.5" font-weight="600" fill="#9DD46A" font-family="Inter">90%</text><text x="664" y="465.0" font-size="10" fill="#9DD46A" font-family="Inter">sessions need action, not data</text><circle cx="846" cy="290.0" r="7" fill="none" stroke="#C4F542" stroke-width="2"/><text x="852" y="564" text-anchor="end" font-family="Inter" font-size="17" fill="#FAF9F5" font-style="italic">The bet: remove choices, don&#x27;t add views. Act-first, offline-first.</text></svg><div class="so-what"><b>So what</b><span>Cluster the overload, don't add a view. The dashboard would have added cognitive load; the action card removed it.</span></div></div>
+        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">Farmers wanted a <em>verdict,</em> not a chart.</p><ul><li>68% hit a daily internet disruption</li><li>Not one farmer opened >2 sources before deciding</li><li>“Why am I seeing this?” answered the trust gap</li></ul><div class="stat"><div class="n">90%</div><div class="l">of sessions needed support, not exploration</div></div></aside></div><div class="cpanel" id="case-org">
+        <div class="viz"><h3>Design reached from the leadership pitch to 250 farmers in Punjab</h3><p class="sub">Up to leadership (won buy-in for offline-first); across PM and 8 engineers (facilitated the architecture workshop); down to 45 interviews across 4 regions.</p><svg viewBox="0 0 860 488" role="img" aria-label="Organizational reach map"><text x="225.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">CROP</text><text x="343.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">EQUIPMENT</text><text x="461.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">WEATHER</text><text x="579.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">MARKET</text><text x="697.0" y="30" text-anchor="middle" class="chart-label" font-size="10" letter-spacing="1">COMMUNITY</text><rect x="20" y="48" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="82" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Business &amp; leadership</text><text x="36" y="102" fill="#8B8A85" font-size="11" font-family="Inter">Asked for a dashboard · funded the pivot</text><rect x="20" y="148" width="820" height="84" rx="12" fill="rgba(196,245,66,0.06)" stroke="#C4F542"/><text x="36" y="182" fill="#C4F542" font-weight="600" font-size="11.5" font-family="Inter">Design Lead — my layer</text><text x="36" y="202" fill="#8B8A85" font-size="11" font-family="Inter">Vision · research · the leadership pitch</text><rect x="20" y="248" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="282" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Build — product &amp; engineering</text><text x="36" y="302" fill="#8B8A85" font-size="11" font-family="Inter">1 PM · 8 engineers · edge–cloud spine</text><rect x="20" y="348" width="820" height="84" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/><text x="36" y="382" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Frontline — 250 farmers</text><text x="36" y="402" fill="#8B8A85" font-size="11" font-family="Inter">4 regions · 45 interviews · 12 shadows</text><line x1="208" y1="90.0" x2="208" y2="290.0" stroke="#C4F542" stroke-width="2"/><circle cx="208" cy="90.0" r="6" fill="#C4F542"/><circle cx="208" cy="190.0" r="6" fill="#C4F542"/><circle cx="208" cy="290.0" r="6" fill="#C4F542"/><circle cx="225.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="343.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="461.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="579.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><circle cx="697.0" cy="190.0" r="9" fill="none" stroke="#C4F542" stroke-width="1.5"/><line x1="234.0" y1="190.0" x2="334.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="352.0" y1="190.0" x2="452.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="470.0" y1="190.0" x2="570.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><line x1="588.0" y1="190.0" x2="688.0" y2="190.0" stroke="rgba(196,245,66,0.4)"/><rect x="430" y="410" width="88.60000000000001" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="474.3" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">45 interviews</text><rect x="530.6" y="410" width="107.2" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="584.2" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">12 field shadows</text><rect x="649.8000000000001" y="410" width="107.2" height="28" rx="8" fill="none" stroke="#9DD46A"/><text x="703.4000000000001" y="428" text-anchor="middle" fill="#9DD46A" font-size="10.5" font-family="Inter">250-farmer pilot</text><text x="208" y="474" text-anchor="middle" fill="#C4F542" font-size="11.5" font-weight="600" font-family="Inter">Vertical reach: 3 layers</text><text x="540" y="156.0" text-anchor="middle" fill="#C4F542" font-size="11.5" font-weight="600" font-family="Inter">Horizontal reach: 5 domains</text></svg><div class="so-what"><b>So what</b><span>Reach two layers up and one down. The offline-first requirement was framed so tightly it became the engineering team's design constraint, not an afterthought.</span></div></div>
+        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">I changed <em>what</em> we built, not just how.</p><ul><li>Up: defended the pivot + offline-first to leadership</li><li>Across: facilitated the edge–cloud workshop</li><li>Down: 45 interviews, 12 shadows, 4 regions</li></ul><div class="stat"><div class="n">250</div><div class="l">farmers in the Punjab pilot</div></div></aside></div><div class="cpanel" id="case-time">
+        <div class="viz"><h3>Three usability rounds — and a V1 that failed on purpose</h3><p class="sub">The first design (a data dashboard) failed, and that failure is the most useful thing in the case. Two forks — the strategic pivot and the RICE cut — set the product.</p><svg viewBox="0 0 860 400" role="img" aria-label="Project timeline with decision forks"><text x="200.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">R1</text><text x="324.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">concept</text><line x1="324.0" y1="40" x2="324.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="448.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">R2</text><line x1="448.0" y1="40" x2="448.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="572.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">mid-fi</text><line x1="572.0" y1="40" x2="572.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="696.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">R3</text><line x1="696.0" y1="40" x2="696.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="820.0" y="28" text-anchor="middle" class="chart-label" font-size="10.5">hi-fi</text><line x1="820.0" y1="40" x2="820.0" y2="310" stroke="rgba(255,255,255,0.05)"/><text x="20" y="89.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Usability rounds</text><rect x="200.0" y="72.0" width="204.60000000000002" height="26" rx="13" fill="rgba(124,163,255,0.30)"/><rect x="404.6" y="72.0" width="204.60000000000002" height="26" rx="13" fill="rgba(124,163,255,0.30)"/><rect x="609.2" y="72.0" width="210.79999999999995" height="26" rx="13" fill="rgba(124,163,255,0.30)"/><text x="20" y="179.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">Strategic pivot</text><rect x="311.6" y="162.0" width="136.39999999999998" height="26" rx="13" fill="rgba(255,122,92,0.30)"/><text x="20" y="269.0" fill="#FAF9F5" font-weight="600" font-size="11.5" font-family="Inter">RICE prioritization</text><rect x="386.0" y="252.0" width="155.0" height="26" rx="13" fill="rgba(196,245,66,0.25)"/><line x1="324.0" y1="46" x2="324.0" y2="324" stroke="#C4F542" stroke-dasharray="5 5" stroke-width="1.5"/><text x="324.0" y="336" text-anchor="start" fill="#C4F542" font-size="11" font-weight="600" font-family="Inter">Fork · dashboard vs decision assistant</text><line x1="460.4" y1="46" x2="460.4" y2="346" stroke="#C4F542" stroke-dasharray="5 5" stroke-width="1.5"/><text x="460.4" y="358" text-anchor="start" fill="#C4F542" font-size="11" font-weight="600" font-family="Inter">Fork · RICE — cut AR &amp; drones</text><circle cx="609.2" cy="85.0" r="6" fill="#9DD46A"/><text x="597.2" y="69.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">task 41→87%</text><circle cx="820.0" cy="85.0" r="6" fill="#9DD46A"/><text x="808.0" y="69.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">+17.3% yield</text><circle cx="448.0" cy="175.0" r="6" fill="#9DD46A"/><text x="436.0" y="159.0" text-anchor="end" fill="#9DD46A" font-size="10.5" font-family="Inter">offline-first won</text></svg><div class="so-what"><b>So what</b><span>The pivot from dashboard to decision assistant, and the RICE math that cut AR and drones, were both leadership calls made about evidence, not taste.</span></div></div>
+        <aside class="qr"><p class="eyebrow">Quick read</p><p class="big">We <em>earned</em> the simplicity.</p><ul><li>V1 data dashboard: 7 of 8 testers overwhelmed</li><li>Pivot: dashboard → decision assistant</li><li>RICE cut AR + drones on low reach × confidence</li></ul><div class="stat"><div class="n">41→87%</div><div class="l">task completion, V1 to V2</div></div></aside></div><div class="cpanel" id="case-art">
+        <div class="viz"><div class="art-grid"><div class="art-group"><div class="g-label">Research → the pivot</div><div class="art-items"><div class="art"><span class="t">45 interviews · 12 shadows · 4 regions</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Affinity synthesis · 312 observations</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Current-state journey (emotion curve)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">“Not one farmer opened &gt;2 sources” finding</span><span class="badge share">Shareable</span></div></div></div><div class="art-group"><div class="g-label">Frameworks → the forks</div><div class="art-items"><div class="art"><span class="t">RICE prioritization (cut AR &amp; drones)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Seven system principles</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Edge–cloud architecture (offline-first)</span><span class="badge share">Shareable</span></div></div></div><div class="art-group"><div class="g-label">Design + outcomes → validated</div><div class="art-items"><div class="art"><span class="t">Next-best-action card</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Four-module product (KhetMitra)</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">V1→V2 iteration evidence</span><span class="badge share">Shareable</span></div><div class="art"><span class="t">Punjab pilot report · +17.3% yield</span><span class="badge share">Shareable</span></div></div></div></div><div class="so-what"><b>So what</b><span>Grouped by decision. The 'not one farmer opened >2 sources' finding and the RICE matrix are load-bearing — they justify the pivot and the cuts.</span></div></div>
+        <aside class="qr"><p class="eyebrow">Access</p><div class="access-box"><div class="row"><span>Shareable now</span><b>10 artifacts</b></div><div class="row"><span>Under NDA — walkthrough</span><b>0 artifacts</b></div><a class="book-btn" href="index.html#contact">Book 20 min →</a></div><p style="font-size:13px;color:var(--muted)">Swap exact team/region specifics for your real details before publishing.</p></aside></div>
+  </div>
 </div></section>
 <footer><div class="wrap">
-  <div class="colophon"><span>&copy; 2026 ANUPAM SARKAR &middot; BENGALURU</span><span>PRODUCT DESIGN MANAGER</span></div>
+  <div class="foot-nav">
+    <div class="big">Want the decisions behind the screens? <em>Let's talk.</em></div>
+    <a class="foot-cta" href="index.html#contact">Get in touch →</a>
+  </div>
+  <div class="colophon"><span>© 2026 Anupam Sarkar · Bengaluru</span><span>John Deere · India AgTech · Design Lead</span></div>
 </div></footer>
 <script>
-(function(){var b=document.getElementById('themeBtn');function sync(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light'));}
-b.onclick=function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');sync();};sync();})();
-</script>
-</body>
-</html>
+document.querySelectorAll('.ctab[data-case]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.ctab').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false')});
+  b.classList.add('active');b.setAttribute('aria-selected','true');
+  document.querySelectorAll('.cpanel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('case-'+b.dataset.case).classList.add('active');
+}));
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+(function(){var b=document.getElementById('themeBtn');if(!b)return;function s(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light')?'true':'false')}s();b.addEventListener('click',function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');s()})})();
+</script></body></html>
