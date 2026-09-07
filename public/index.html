@@ -44,20 +44,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:40;backdrop-filter:blur(16px);-w
 .nav-links a:hover{color:var(--accent)}
 .nav-right{display:flex;align-items:center;gap:16px}
 .nav-status{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--cool);white-space:nowrap}
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:4px;width:38px;height:38px;min-height:44px;min-width:44px;border-radius:8px;border:1px solid var(--line-2);background:var(--ink-4);cursor:pointer;padding:0;flex:none}
+.nav-hamburger span{display:block;width:16px;height:2px;background:var(--cream);border-radius:2px;transition:transform .25s,opacity .2s}
+.nav-hamburger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav-hamburger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav-hamburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 
 /* hero */
-.hero{padding:150px 0 60px;position:relative;z-index:2}
+.hero{padding:104px 0 40px;position:relative;z-index:2}
 .hero .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
 .hero h1{font-weight:600;font-size:32px;line-height:1.08;letter-spacing:-.02em;max-width:900px}
 .hero h1 em{font-style:normal;color:var(--accent)}
-.hero .sub{margin-top:22px;max-width:640px;font-size:18px;color:var(--muted)}
+.hero .sub{margin-top:18px;max-width:640px;font-size:18px;color:var(--muted)}
 .hero .sub b{color:var(--cream);font-weight:600}
-.hero .focus{margin-top:16px;max-width:640px;font-size:12px;font-family:var(--mono);letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.hero .focus{margin-top:12px;max-width:640px;font-size:12px;font-family:var(--mono);letter-spacing:.04em;color:var(--muted);line-height:1.7}
 .hero .focus b{color:var(--cream);font-weight:600}
-.sysbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:28px}
+.sysbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:20px}
 .sysbar .chip-sys{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line-2);border-radius:99px;padding:8px 14px}
 .sysbar .chip-sys b{color:var(--cream);font-weight:600}
-.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.scroll-cue{display:flex;align-items:center;gap:6px;margin-top:22px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.scroll-cue:hover{color:var(--accent)}
+.scroll-cue svg{width:12px;height:12px;animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 .hero-actions a{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;border:1px solid var(--line-2);border-radius:10px;padding:14px 22px;min-height:44px;display:inline-flex;align-items:center;gap:8px;transition:transform .18s,border-color .18s,background .18s}
 .hero-actions a.primary{background:var(--accent);color:var(--ink);border-color:var(--accent)}
 .hero-actions a:not(.primary):hover{border-color:var(--accent)}
@@ -308,7 +317,11 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
 /* mobile information hierarchy */
 @media (max-width:860px){
   .work-grid{grid-template-columns:1fr}
+  .nav-hamburger{display:flex}
   .nav-links{display:none}
+  nav.menu-open .nav-links{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:var(--ink);border-bottom:1px solid var(--line);padding:8px 24px 20px;gap:0;max-height:calc(100vh - 62px);overflow-y:auto}
+  nav.menu-open .nav-links a{min-height:48px;border-bottom:1px solid var(--line);width:100%}
+  nav.menu-open .nav-links a:last-child{border-bottom:none}
   .hero{padding:120px 0 50px}
   section{padding:64px 0}
   .fcard{grid-template-columns:1fr}
@@ -321,6 +334,10 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
 @media (max-width:600px){
   .wrap{padding-inline:20px}
   .nav-status{display:none}
+  .nav-in{padding:0 16px;gap:8px}
+  .nav-right{gap:8px}
+  .mode-switch{padding:2px}
+  .mode-opt{padding:5px 7px;font-size:9.5px}
   .hero h1{font-size:28px}
   .sec-head h2,footer h2,.a-statement,.a-cell .n,.wcard .m,.impact strong{font-size:26px}
   .hero-actions,.foot-links{flex-direction:column}
@@ -338,13 +355,14 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
 
 <nav aria-label="Primary navigation"><div class="nav-in">
   <a class="brand" href="#top"><span class="dot"></span>Anupam Sarkar</a>
-  <div class="nav-links">
+  <div class="nav-links" id="navLinks">
     <a href="#work" class="nav-pf">Selected work</a><a href="#leadership" class="nav-pf">Leadership</a><a href="#agent" class="nav-ag">Ask my portfolio</a><a href="career-journey.html">Experience</a><a href="#contact">Contact</a>
   </div>
   <div class="nav-right">
     <span class="nav-status" role="status">● OPEN TO DESIGN LEADERSHIP ROLES</span>
     <div class="mode-switch" role="tablist" aria-label="View mode"><button id="modePortfolio" class="mode-opt" role="tab" aria-selected="true" type="button">Portfolio</button><button id="modeAgent" class="mode-opt" role="tab" aria-selected="false" type="button">Agent</button></div>
     <button id="themeBtn" class="theme-toggle" role="switch" aria-label="Toggle light and dark mode"><span class="tt-thumb"></span></button>
+    <button id="navHamburger" class="nav-hamburger" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
 </div></nav>
 
@@ -362,8 +380,10 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
   <div class="hero-actions reveal">
     <a class="primary" href="#work">View selected work</a>
     <a href="#leadership">How I lead</a>
-    <a href="anupam-sarkar-resume.pdf">Download résumé</a>
+    <!-- TODO: swap href back to anupam-sarkar-resume.pdf once the real file is supplied -->
+    <a href="mailto:ar.anupamsarkar@gmail.com?subject=Resume%20request">Request résumé</a>
   </div>
+  <a class="scroll-cue reveal" href="#work">See the work <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </div></header>
 
 <section id="agent"><div class="wrap">
@@ -406,7 +426,7 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
 <section id="work"><div class="wrap">
   <div class="sec-head reveal">
     <p class="mono"><span class="hl">01</span> · Selected work</p>
-    <h2>Three cases at <em>leadership altitude.</em></h2>
+    <h2>Four cases at <em>leadership altitude.</em></h2>
     <p class="lead">Featured projects where I owned strategy, decisions and the team. Each links to a full leadership case study.</p>
   </div>
   <div class="featured" id="featuredgrid"></div>
@@ -437,7 +457,7 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
   <noscript>
     <ul style="margin-top:20px;line-height:2">
       <li><a href="case-ibm-power.html">IBM · Power Systems — design systems &amp; team leadership</a></li>
-      <li><a href="case-smart-mining.html">Siemens · Smart Mining — strategy &amp; decision design</a></li>
+      <li><a href="case-smart-mining.html">IBM · PowerVC — notification &amp; severity design</a></li>
       <li><a href="case-incident-bart.html">Microsoft Teams · BART — incident response</a></li>
       <li><a href="case-bt-billing.html">BT Business · Billing — service redesign</a></li>
       <li><a href="case-nextwork.html">Siemens · #NextWork — operating model</a></li>
@@ -451,8 +471,10 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
   <h2 class="reveal">Hiring for a design leader who works at the <em>system level?</em> Let’s talk.</h2>
   <div class="foot-links reveal">
     <a class="primary" href="mailto:ar.anupamsarkar@gmail.com">ar.anupamsarkar@gmail.com</a>
-    <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="anupam-sarkar-resume.pdf">Résumé</a>
+    <!-- TODO: swap href to real LinkedIn profile URL and restore label to "LinkedIn" once supplied -->
+    <a href="mailto:ar.anupamsarkar@gmail.com?subject=LinkedIn%20connect">Connect</a>
+    <!-- TODO: swap href back to anupam-sarkar-resume.pdf once the real file is supplied -->
+    <a href="mailto:ar.anupamsarkar@gmail.com?subject=Resume%20request">Request résumé</a>
     <a href="career-journey.html">Experience</a>
   </div>
   <div class="colophon"><span>© 2026 ANUPAM SARKAR · BENGALURU</span><span>PRODUCT DESIGN MANAGER</span></div>
@@ -507,7 +529,7 @@ function thumbHTML(w){
 /* featured (three leadership cases) */
 const FEATURED=[
   {cli:'IBM · Power Systems',h:'Unified four squads around one design language without slowing delivery.',role:'Product Design Manager',scope:'4 designers managed · 4 product & engineering squads',duration:'12 months',metric:'20% less',metricLabel:'documented UI inconsistency',href:'case-ibm-power.html',motif:'grid',tint:'#7CA3FF'},
-  {cli:'Siemens · Smart Mining',h:'Reframed eight operational gaps into four fundable interventions.',role:'Design Lead',scope:'Design across 3 organizational layers',metric:'67% faster',metricLabel:'safety-decision completion',href:'case-smart-mining.html',motif:'nodes',tint:'#7CA3FF',img:'assets/smart-mining.jpg'},
+  {cli:'IBM · PowerVC',h:'Turned every system alert into an actionable severity system across five parallel workstreams.',role:'UX Design Lead',scope:'Notification, certificate & recovery flows · 5 parallel workstreams',duration:'6 months · H1 2026',metric:'72+ screens',metricLabel:'designed across H1 2026',href:'case-smart-mining.html',motif:'nodes',tint:'#7CA3FF'},
   {cli:'Microsoft Teams · BART',h:'Compressed the first five minutes of incident response.',role:'Lead Product Designer',scope:'Five triage tools consolidated into one surface',metric:'5 → 1',metricLabel:'tools at incident triage',href:'case-incident-bart.html',motif:'converge',tint:'#7CA3FF',img:'assets/bart.jpg'},
   {cli:'BT Business · Billing',h:'Rebuilt an inescapable billing portal around a single source of truth.',role:'Lead Product Designer',scope:'End-to-end service redesign · 5 functions aligned',duration:'Independent diagnostic',metric:'120K+',metricLabel:'reviews coded into one root cause',href:'case-bt-billing.html',motif:'orbit',tint:'#7CA3FF'}
 ];
@@ -553,7 +575,7 @@ syncThemeBtn();
 /* ===== Agent console ===== */
 const CASELIB={
   'ibm-power':{cli:'IBM · Power Systems',t:'Unified four squads around one design language.',m:'20% less UI drift',href:'case-ibm-power.html'},
-  'smart-mining':{cli:'Siemens · Smart Mining',t:'Reframed eight gaps into four fundable interventions.',m:'67% faster decisions',href:'case-smart-mining.html'},
+  'smart-mining':{cli:'IBM · PowerVC',t:'Turned every system alert into an actionable severity system.',m:'72+ screens · H1 2026',href:'case-smart-mining.html'},
   'nextwork':{cli:'Siemens · #NextWork',t:'Built the operating system around the methodology.',m:'72% adoption',href:'case-nextwork.html'},
   'khetmitra':{cli:'John Deere India · KhetMitra',t:'Showed the next move instead of the data.',m:'+17.3% pilot yield',href:'case-khetmitra.html'},
   'deere-pioneers':{cli:'John Deere · Farm Pioneers',t:'A wordless interface a 7-year-old masters.',m:'91% task success',href:'case-deere-pioneers.html'},
@@ -587,17 +609,17 @@ const INTENTS={
         <div class="a-cell cool"><div class="n">60→85%</div><div class="l">prototype validation rate · Siemens</div></div>
         <div class="a-cell warm"><div class="n">500K+</div><div class="l">business users served · BT billing</div></div>
         <div class="a-cell green"><div class="n">+17.3%</div><div class="l">yield for pilot participants · KhetMitra</div></div>
-        <div class="a-cell"><div class="n">67% faster</div><div class="l">safety-decision completion · Smart Mining</div></div>
+        <div class="a-cell"><div class="n">72+ screens</div><div class="l">designed across H1 2026 · IBM PowerVC</div></div>
         <div class="a-cell cool"><div class="n">5→1</div><div class="l">tools at incident triage · BART</div></div>
       </div>
       <p class="a-note">Outcomes are normalized to protect confidential business data; measurement method is retained. For KhetMitra, pilot participants recorded 17.3% higher yield — the design contribution was improved recommendation adoption. Open the linked case to verify context.</p>
       ${caseCards(['ibm-power','smart-mining','khetmitra'])}`},
   decision:{label:'Show a difficult trade-off',tag:'HIGHEST-COST TRADE-OFF',
     line:'resolving → highest-cost trade-offs in the archive…',
-    body:()=>`<div class="decision"><h4>Killed a concept that tested well — Siemens Smart Mining</h4>
-        <div class="row"><b>Why</b><span>The alert-centric concept amplified the exact alert fatigue it was meant to cure.</span></div>
-        <div class="row"><b>Trade-off</b><span>Threw away a fast-validating concept and absorbed a timeline hit to pivot to a spatial canvas.</span></div>
-        <div class="row res"><b>Result</b><span>67% faster safety decisions · 240→18 daily alerts · SUS 92.</span></div></div>
+    body:()=>`<div class="decision"><h4>Chose delivery breadth over research depth — IBM PowerVC</h4>
+        <div class="row"><b>Why</b><span>Five parallel workstreams needed to keep shipping; formal discovery time was the scarce resource, not design capacity.</span></div>
+        <div class="row"><b>Trade-off</b><span>Ran H1 on one formal discovery session while screen output and feedback rounds both climbed, instead of pausing workstreams to schedule more research.</span></div>
+        <div class="row res"><b>Result</b><span>72+ screens shipped · feedback rounds grew 2.5× Jan→Jun · the research-coverage gap was logged as an explicit H2 watch item, not hidden.</span></div></div>
       <div class="decision"><h4>Overrode the brief — KhetMitra / John Deere India</h4>
         <div class="row"><b>Why</b><span>Field research: no farmer consulted more than two data sources before deciding. A dashboard would add load.</span></div>
         <div class="row"><b>Trade-off</b><span>Contradicted the stakeholder ask for a dashboard; had to re-sell leadership on a decision assistant.</span></div>
@@ -763,6 +785,19 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')ask(input.value);});
   bA.addEventListener('click',()=>set(true));
   sync();
   if(root.classList.contains('agentic'))document.querySelectorAll('#agent .reveal').forEach(e=>e.classList.add('in'));
+})();
+
+/* ===== mobile nav drawer ===== */
+(function(){
+  const nav=document.querySelector('nav'), btn=document.getElementById('navHamburger'), links=document.getElementById('navLinks');
+  if(!nav||!btn||!links)return;
+  function close(){nav.classList.remove('menu-open');btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','Open menu');}
+  function open(){nav.classList.add('menu-open');btn.setAttribute('aria-expanded','true');btn.setAttribute('aria-label','Close menu');}
+  btn.addEventListener('click',()=>{nav.classList.contains('menu-open')?close():open();});
+  links.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+  document.addEventListener('click',e=>{if(nav.classList.contains('menu-open')&&!nav.contains(e.target))close();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav.classList.contains('menu-open')){close();btn.focus();}});
+  window.addEventListener('resize',()=>{if(window.innerWidth>860)close();});
 })();
 
 /* reveals */
