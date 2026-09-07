@@ -155,6 +155,19 @@ section{padding:88px 0;position:relative;z-index:2}
 .voice-btn.live{background:#E5484D;color:#fff;box-shadow:0 0 26px -6px rgba(229,72,77,.7)}
 .voice-btn.live .vb-dot{background:#fff;opacity:1;animation:pulse 1s infinite}
 .voice-btn.connecting{opacity:.75;pointer-events:none}
+.mute-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-height:44px;min-width:44px;border-radius:10px;border:1px solid var(--line-2);background:var(--ink-4);color:var(--cream);cursor:pointer;transition:background .2s,border-color .2s,color .2s;flex:none}
+.mute-btn:hover{border-color:var(--accent)}
+.mute-btn svg{width:18px;height:18px;display:block}
+.mute-btn .mic-slash{display:none}
+.mute-btn.muted{background:#E5484D;border-color:#E5484D;color:#fff}
+.mute-btn.muted .mic-open{display:none}
+.mute-btn.muted .mic-slash{display:block}
+html.light .mute-btn.muted{background:#D9432F;border-color:#D9432F}
+.voice-wave{display:none;align-items:flex-end;gap:3px;height:22px;flex:none}
+.voice-wave.active{display:flex}
+.voice-wave span{width:3px;background:var(--accent);border-radius:2px;height:4px;transition:height .09s linear}
+.voice-btn.live ~ .voice-wave span{background:#fff}
+.call-timer{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted);min-width:38px}
 .voice-status{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted)}
 .voice-log{margin:14px 4px 0;display:flex;flex-direction:column;gap:8px;max-height:240px;overflow:auto}
 .voice-log .vl{font-size:18px;line-height:1.45;padding:10px 14px;border-radius:12px;max-width:88%}
@@ -408,6 +421,12 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
       </div>
       <div class="voice-controls">
         <button id="callBtn" class="voice-btn" type="button" aria-pressed="false"><span class="vb-dot"></span><span class="vb-label">Start a call</span></button>
+        <div id="voiceWave" class="voice-wave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <button id="muteBtn" class="mute-btn" type="button" aria-pressed="false" aria-label="Mute microphone" hidden>
+          <svg class="mic-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/><path d="M19 11v1a7 7 0 0 1-14 0v-1"/><path d="M12 19v3"/></svg>
+          <svg class="mic-slash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 2l20 20"/><path d="M12 15a3 3 0 0 0 3-3v-1m0-4.5V6a3 3 0 0 0-5.9-.8"/><path d="M9 9v3a3 3 0 0 0 4.24 2.73"/><path d="M19 11v1a7 7 0 0 1-9.9 6.36"/><path d="M5 11v1a7 7 0 0 0 .34 2.17"/><path d="M12 19v3"/></svg>
+        </button>
+        <span id="callTimer" class="call-timer" role="timer" hidden>00:00</span>
         <span id="callStatus" class="voice-status" role="status">Voice &middot; ElevenLabs</span>
       </div>
       <div id="callLog" class="voice-log" aria-live="polite" hidden></div>
@@ -739,12 +758,62 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')ask(input.value);});
 (function(){
   const AGENT_ID='agent_3001kzzbtvkzfsgtmftsfr3zgmd2';
   const btn=document.getElementById('callBtn'), statusEl=document.getElementById('callStatus'),
-        log=document.getElementById('callLog'), panel=document.querySelector('.voice-console');
+        log=document.getElementById('callLog'), panel=document.querySelector('.voice-console'),
+        muteBtn=document.getElementById('muteBtn'), waveEl=document.getElementById('voiceWave'),
+        timerEl=document.getElementById('callTimer');
   if(!btn)return;
-  let convo=null;
+  let convo=null, muted=false, vizRaf=null, timerInt=null, startTime=null;
   const setLabel=t=>{btn.querySelector('.vb-label').textContent=t;};
   function addLine(who,text){ if(!text)return; log.hidden=false; const d=document.createElement('div'); d.className='vl '+(who==='agent'?'agent':'you'); d.textContent=text; log.appendChild(d); log.scrollTop=log.scrollHeight; }
-  function reset(msg){ convo=null; btn.classList.remove('live','connecting'); btn.setAttribute('aria-pressed','false'); setLabel('Start a call'); if(panel)panel.classList.remove('speaking'); if(msg)statusEl.textContent=msg; }
+
+  function fmtTime(s){ const m=Math.floor(s/60), r=s%60; return String(m).padStart(2,'0')+':'+String(r).padStart(2,'0'); }
+  function startTimer(){ startTime=Date.now(); timerEl.hidden=false; timerEl.textContent='00:00'; timerInt=setInterval(()=>{ timerEl.textContent=fmtTime(Math.floor((Date.now()-startTime)/1000)); },500); }
+  function stopTimer(){ if(timerInt)clearInterval(timerInt); timerInt=null; const elapsed=startTime?Math.floor((Date.now()-startTime)/1000):0; startTime=null; return elapsed; }
+
+  function avgFreq(arr){ if(!arr||!arr.length)return 0; let s=0; for(let i=0;i<arr.length;i++)s+=arr[i]; return s/arr.length; }
+  function startViz(){
+    const bars=waveEl.querySelectorAll('span');
+    const supported=typeof convo.getOutputByteFrequencyData==='function'||typeof convo.getInputByteFrequencyData==='function';
+    if(!supported)return;
+    waveEl.classList.add('active');
+    (function tick(){
+      if(!convo)return;
+      let out=null, inp=null;
+      try{ if(typeof convo.getOutputByteFrequencyData==='function')out=convo.getOutputByteFrequencyData(); }catch(e){}
+      try{ if(typeof convo.getInputByteFrequencyData==='function')inp=convo.getInputByteFrequencyData(); }catch(e){}
+      const outAvg=avgFreq(out), inAvg=avgFreq(inp);
+      const use=outAvg>=inAvg?out:inp;
+      if(use&&use.length){
+        const step=Math.max(1,Math.floor(use.length/bars.length));
+        bars.forEach((b,i)=>{ const v=use[i*step]||0; b.style.height=(4+Math.round((v/255)*22))+'px'; });
+      }else{
+        bars.forEach(b=>b.style.height='4px');
+      }
+      vizRaf=requestAnimationFrame(tick);
+    })();
+  }
+  function stopViz(){ if(vizRaf)cancelAnimationFrame(vizRaf); vizRaf=null; waveEl.classList.remove('active'); waveEl.querySelectorAll('span').forEach(b=>b.style.height='4px'); }
+
+  function resetMute(){ muted=false; muteBtn.hidden=true; muteBtn.classList.remove('muted'); muteBtn.setAttribute('aria-pressed','false'); muteBtn.setAttribute('aria-label','Mute microphone'); }
+  muteBtn.addEventListener('click',()=>{
+    if(!convo||typeof convo.setMicMuted!=='function')return;
+    muted=!muted;
+    try{ convo.setMicMuted(muted); }catch(e){}
+    muteBtn.classList.toggle('muted',muted);
+    muteBtn.setAttribute('aria-pressed',muted?'true':'false');
+    muteBtn.setAttribute('aria-label',muted?'Unmute microphone':'Mute microphone');
+  });
+
+  function reset(msg){
+    const already=convo===null;
+    convo=null; btn.classList.remove('live','connecting'); btn.setAttribute('aria-pressed','false'); setLabel('Start a call');
+    if(panel)panel.classList.remove('speaking');
+    if(already)return; // end() and the SDK's onDisconnect can both call reset(); only the first should apply
+    stopViz(); resetMute();
+    const elapsed=stopTimer(); timerEl.hidden=true;
+    if(msg==='Call ended'&&elapsed>0)statusEl.textContent='Call ended · '+fmtTime(elapsed);
+    else if(msg)statusEl.textContent=msg;
+  }
   async function start(){
     btn.classList.add('connecting'); statusEl.textContent='Connecting…';
     try{
@@ -752,9 +821,15 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')ask(input.value);});
       const mod=await import('https://cdn.jsdelivr.net/npm/@elevenlabs/client/+esm');
       convo=await mod.Conversation.startSession({
         agentId:AGENT_ID, connectionType:'webrtc',
-        onConnect:()=>{btn.classList.remove('connecting');btn.classList.add('live');btn.setAttribute('aria-pressed','true');setLabel('End call');statusEl.textContent='Connected — listening';},
+        onConnect:()=>{
+          btn.classList.remove('connecting');btn.classList.add('live');btn.setAttribute('aria-pressed','true');setLabel('End call');
+          statusEl.textContent='Connected — listening';
+          startTimer();
+          if(typeof convo.setMicMuted==='function'){muteBtn.hidden=false;}
+          startViz();
+        },
         onDisconnect:()=>reset('Call ended'),
-        onError:(e)=>{statusEl.textContent='Error: '+((e&&e.message)||e);btn.classList.remove('connecting');},
+        onError:(e)=>{const msg='Error: '+((e&&e.message)||e); if(btn.classList.contains('live')){reset(msg);}else{statusEl.textContent=msg;btn.classList.remove('connecting');}},
         onModeChange:(m)=>{const sp=m&&m.mode==='speaking';statusEl.textContent=sp?'Agent speaking…':'Listening…';if(panel)panel.classList.toggle('speaking',sp);},
         onMessage:(m)=>{ if(m&&m.message)addLine(m.source==='ai'?'agent':'you', m.message); }
       });
