@@ -1,0 +1,39 @@
+# Re-captures the screen walkthroughs on the Workflows page from the live site.
+# Runs on the 1st of every month, and on demand from the Actions tab
+# ("Capture screens" → "Run workflow"). Commits only when screens changed;
+# Cloudflare then redeploys the site with the fresh captures.
+name: Capture screens
+
+on:
+  schedule:
+    - cron: "30 3 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install browser
+        run: |
+          npm install --no-save playwright@1
+          npx playwright install --with-deps chromium
+      - name: Capture from the live site
+        env:
+          BASE: https://new-portfolio.ar-anupamsarkar.workers.dev
+        run: node scripts/capture.mjs
+      - name: Commit new screens
+        run: |
+          if git diff --quiet -- public/shots; then echo "No changes"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/shots
+          git commit -m "Refresh workflow screen captures"
+          git push

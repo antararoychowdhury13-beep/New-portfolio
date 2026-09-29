@@ -68,3 +68,16 @@ The Cloudflare Workers service `new-portfolio` is connected to this repository;
 deploys run `npx wrangler deploy`, which publishes the Worker and uploads
 `public/` as static assets. Trigger a deploy from the dashboard (Builds tab) or
 run `wrangler deploy` with a Cloudflare API token.
+
+## Screen captures on the Workflows page
+
+`workflows.html` shows auto-playing screen walkthroughs of the live demos.
+The screens are captured by `scripts/capture.mjs`, which drives the live site in
+a real browser and writes `public/shots/*.jpg` plus `public/shots/manifest.json`.
+The page reads the manifest, so a new capture updates the screens, captions and
+"captured on" date with no HTML changes.
+
+- Automatic: `.github/workflows/capture-screens.yml` re-captures on the 1st of
+  every month and commits only if something changed.
+- On demand: GitHub → Actions → **Capture screens** → **Run workflow**.
+- Locally: `npm i playwright && npx playwright install chromium && node scripts/capture.mjs`

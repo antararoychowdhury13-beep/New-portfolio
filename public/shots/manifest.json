@@ -1,0 +1,72 @@
+{
+  "capturedAt": "2026-09-29T09:50:05.000Z",
+  "base": "https://new-portfolio.ar-anupamsarkar.workers.dev",
+  "sets": {
+    "synthetic": [
+      {
+        "src": "shots/lab-1-setup.jpg",
+        "caption": "Setup: pick a project and see what needs attention"
+      },
+      {
+        "src": "shots/lab-2-upload.jpg",
+        "caption": "Upload: before-and-after screens, analysed into flows"
+      },
+      {
+        "src": "shots/lab-3-personas.jpg",
+        "caption": "Personas: a generated panel, locked by a person before testing"
+      },
+      {
+        "src": "shots/lab-4-testing.jpg",
+        "caption": "Testing: choose the test types to run"
+      },
+      {
+        "src": "shots/lab-5-kpi.jpg",
+        "caption": "KPI matrix: before versus after per persona, measured from 120 simulated sessions"
+      },
+      {
+        "src": "shots/lab-6-report.jpg",
+        "caption": "Report: issues ranked by measured severity, each with a recommended fix"
+      }
+    ],
+    "agent": [
+      {
+        "src": "shots/agent-1-console.jpg",
+        "caption": "Ask by typing or by voice call"
+      },
+      {
+        "src": "shots/agent-2-answer.jpg",
+        "caption": "A grounded answer, with the matching pages attached"
+      }
+    ],
+    "daily": [
+      {
+        "src": "shots/daily-1-top.jpg",
+        "caption": "Daily AI Updates: the brief as it arrives"
+      },
+      {
+        "src": "shots/daily-2-scroll.jpg",
+        "caption": "Daily AI Updates: every item carries its source"
+      },
+      {
+        "src": "shots/daily-3-phone.jpg",
+        "caption": "Daily AI Updates: on a phone",
+        "phone": true
+      }
+    ],
+    "scout": [
+      {
+        "src": "shots/scout-1-top.jpg",
+        "caption": "AI Scout: the brief as it arrives"
+      },
+      {
+        "src": "shots/scout-2-scroll.jpg",
+        "caption": "AI Scout: every item carries its source"
+      },
+      {
+        "src": "shots/scout-3-phone.jpg",
+        "caption": "AI Scout: on a phone",
+        "phone": true
+      }
+    ]
+  }
+}

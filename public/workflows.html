@@ -42,6 +42,33 @@
   .week .d.we{display:none}
   .week .d .t{font-size:12px}
 }
+/* ===== screen players ===== */
+.player{margin-top:18px;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--ink)}
+.player[hidden]{display:none}
+.pl-bar{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);background:var(--ink-4)}
+.pl-dots{display:flex;gap:6px;flex:none}.pl-dots i{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
+.pl-url{flex:1;min-width:0;font-size:12px;color:var(--muted);background:var(--ink-2);border:1px solid var(--line);border-radius:6px;padding:4px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-stage{position:relative;aspect-ratio:16/10;background:#050507;cursor:zoom-in}
+.pl-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .6s ease}
+.pl-stage img.on{opacity:1}
+.pl-stage img.phone{padding:14px 0}
+.pl-progress{position:absolute;left:0;bottom:0;height:2px;background:var(--accent);width:0}
+.pl-foot{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.pl-cap{flex:1;min-width:200px;font-size:15px;line-height:1.4;color:var(--cream)}
+.pl-cap small{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.pl-ctrl{display:flex;align-items:center;gap:6px}
+.pl-ctrl button{appearance:none;background:var(--ink-3);border:1px solid var(--line-2);color:var(--cream);border-radius:8px;min-width:36px;height:36px;font:600 14px/1 Inter,sans-serif;cursor:pointer}
+.pl-ctrl button:hover{border-color:var(--accent)}
+.pl-steps{display:flex;gap:5px;padding:0 14px 12px}
+.pl-steps button{flex:1;height:4px;border:0;border-radius:3px;background:var(--line-2);cursor:pointer;padding:0}
+.pl-steps button.on{background:var(--accent)}
+.pl-meta{font-size:12px;color:var(--muted-2);padding:0 14px 12px}
+html.light .pl-stage{background:#EDEDEA}
+.lb{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+.lb.open{display:flex}
+.lb img{max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.lb .x{position:absolute;top:14px;right:16px;color:#fff;font:600 13px/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.12);border:0;border-radius:99px;padding:10px 14px;cursor:pointer}
+@media (max-width:640px){.pl-cap{font-size:14px}.pl-url{display:none}}
 </style>
 </head>
 <body>
@@ -106,6 +133,7 @@
         <div class="stg"><div class="sn">Deliver</div><p>Page by email, plus a short summary that leads with the day's biggest item.</p></div>
       </div>
       <p style="margin-top:14px"><b>Design decision:</b> on a genuinely quiet day, it says so. A feed that pads teaches people to skim, and then they miss the day that matters.</p>
+      <div class="player" data-set="daily" data-url="new-portfolio…/samples/daily-ai-updates" hidden aria-label="Screen walkthrough: Daily AI Updates" role="region"></div>
       <div class="sample"><a class="status st-live" href="samples/daily-ai-updates.html" style="text-decoration:none">See a sample output &#8599;</a></div>
     </div>
   </article>
@@ -125,6 +153,7 @@
         <div class="stg"><div class="sn">Deliver</div><p>Sent, and a saved copy is refreshed in place.</p></div>
       </div>
       <p style="margin-top:14px"><b>Design decision:</b> verification happens <em>before</em> writing, not after. While producing the sample below, a secondary news digest had misreported one item (146 skills instead of the real 75). Checking the original source caught it, and the correct number is what's printed.</p>
+      <div class="player" data-set="scout" data-url="new-portfolio…/samples/ai-scout-designers" hidden aria-label="Screen walkthrough: AI Scout" role="region"></div>
       <div class="sample"><a class="status st-live" href="samples/ai-scout-designers.html" style="text-decoration:none">See a sample: the "For designers" section &#8599;</a></div>
     </div>
   </article>
@@ -152,6 +181,7 @@
       <div class="chain">
         <span class="c"><b>1</b>Upload before / after</span><span class="a">&rarr;</span><span class="c"><b>2</b>Analyse flows</span><span class="a">&rarr;</span><span class="c"><b>3</b>Generate persona panel</span><span class="a">&rarr;</span><span class="c human"><b>4</b>Lock the panel</span><span class="a">&rarr;</span><span class="c"><b>5</b>Simulated sessions</span><span class="a">&rarr;</span><span class="c"><b>6</b>KPI matrix + report</span><span class="a">&rarr;</span><span class="c human"><b>7</b>Verify with real users</span>
       </div>
+      <div class="player" data-set="synthetic" data-url="new-portfolio…/uxkpi-lab" hidden aria-label="Screen walkthrough: Synthetic usability testing" role="region"></div>
       <div class="sample"><a class="status st-live" href="uxkpi-lab.html" style="text-decoration:none">Try it &#8599;</a></div>
     </div>
   </article>
@@ -203,6 +233,7 @@
       <div class="chain">
         <span class="c"><b>1</b>Question</span><span class="a">&rarr;</span><span class="c"><b>2</b>GPT-4o mini</span><span class="a">&rarr;</span><span class="c"><b>3</b>Fallback model</span><span class="a">&rarr;</span><span class="c"><b>4</b>Offline index</span><span class="a">&rarr;</span><span class="c"><b>5</b>Answer + matching case study</span>
       </div>
+      <div class="player" data-set="agent" data-url="new-portfolio…/?mode=agent" hidden aria-label="Screen walkthrough: Portfolio agent" role="region"></div>
       <div class="sample"><a class="status st-live" href="index.html?mode=agent#agent" style="text-decoration:none">Ask it &#8599;</a></div>
     </div>
   </article>
@@ -223,5 +254,54 @@
   </div>
 </div></section>
 
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged screen"><button class="x" type="button">Close</button><img alt=""></div>
+<script>
+(function(){
+  var players=[].slice.call(document.querySelectorAll('.player[data-set]'));
+  if(!players.length||!window.fetch)return;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, DWELL=4200;
+  var lb=document.getElementById('lb'), lbImg=lb.querySelector('img');
+  function closeLb(){lb.classList.remove('open');}
+  lb.addEventListener('click',closeLb);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb();});
+  fetch('shots/manifest.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(m){
+    if(!m||!m.sets)return;
+    var when=new Date(m.capturedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    players.forEach(function(el){
+      var shots=m.sets[el.dataset.set]; if(!shots||!shots.length)return;
+      el.innerHTML='<div class="pl-bar"><span class="pl-dots"><i></i><i></i><i></i></span><span class="pl-url">'+el.dataset.url+'</span></div>'+
+        '<div class="pl-stage" tabindex="0" aria-label="Enlarge screen">'+shots.map(function(s,i){return '<img src="'+s.src+'" alt="'+s.caption.replace(/"/g,'&quot;')+'" loading="lazy" decoding="async"'+(s.phone?' class="phone"':'')+'>';}).join('')+'<span class="pl-progress"></span></div>'+
+        '<div class="pl-foot"><div class="pl-cap" aria-live="polite"></div><div class="pl-ctrl"><button type="button" data-a="prev" aria-label="Previous screen">&#8249;</button><button type="button" data-a="play" aria-label="Pause">&#10074;&#10074;</button><button type="button" data-a="next" aria-label="Next screen">&#8250;</button></div></div>'+
+        '<div class="pl-steps">'+shots.map(function(s,i){return '<button type="button" aria-label="Screen '+(i+1)+'"></button>';}).join('')+'</div>'+
+        '<div class="pl-meta">Captured automatically from the live site &middot; '+when+' &middot; '+(matchMedia('(hover: none)').matches?'tap':'click')+' a screen to enlarge</div>';
+      el.hidden=false;
+      var imgs=el.querySelectorAll('.pl-stage img'), cap=el.querySelector('.pl-cap'), dots=el.querySelectorAll('.pl-steps button'),
+          bar=el.querySelector('.pl-progress'), playBtn=el.querySelector('[data-a=play]'), stage=el.querySelector('.pl-stage');
+      var i=0, playing=!reduce, visible=false, hover=false, t=null, start=0;
+      function show(n){i=(n+shots.length)%shots.length;
+        imgs.forEach(function(im,k){im.classList.toggle('on',k===i);});
+        dots.forEach(function(d,k){d.classList.toggle('on',k<=i);});
+        cap.innerHTML='<small>Screen '+(i+1)+' of '+shots.length+'</small>'+shots[i].caption;
+        start=performance.now();}
+      function tick(now){ if(playing&&visible&&!hover){var p=Math.min(1,(now-start)/DWELL);bar.style.width=(p*100)+'%';if(p>=1)show(i+1);} else {start=now-(parseFloat(bar.style.width)||0)/100*DWELL;}
+        t=requestAnimationFrame(tick);}
+      function setPlay(v){playing=v;playBtn.innerHTML=v?'&#10074;&#10074;':'&#9654;';playBtn.setAttribute('aria-label',v?'Pause':'Play');if(!v)bar.style.width='0';}
+      el.addEventListener('click',function(e){var a=e.target.closest('[data-a]');if(!a)return;
+        if(a.dataset.a==='prev'){show(i-1);bar.style.width='0';}
+        if(a.dataset.a==='next'){show(i+1);bar.style.width='0';}
+        if(a.dataset.a==='play')setPlay(!playing);});
+      dots.forEach(function(d,k){d.addEventListener('click',function(){show(k);bar.style.width='0';});});
+      el.addEventListener('mouseenter',function(){hover=true;}); el.addEventListener('mouseleave',function(){hover=false;});
+      el.addEventListener('focusin',function(){hover=true;}); el.addEventListener('focusout',function(){hover=false;});
+      function zoom(){lbImg.src=shots[i].src;lbImg.alt=shots[i].caption;lb.classList.add('open');lb.querySelector('.x').focus();}
+      stage.addEventListener('click',zoom); stage.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();zoom();}});
+      var sx=0; stage.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+      stage.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40){e.preventDefault();show(i+(dx<0?1:-1));bar.style.width='0';}});
+      new IntersectionObserver(function(es){visible=es[0].isIntersecting;},{threshold:.4}).observe(el);
+      setPlay(playing); show(0); t=requestAnimationFrame(tick);
+    });
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>
