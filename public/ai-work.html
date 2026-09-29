@@ -67,13 +67,46 @@ table.idx a{color:var(--accent);text-decoration:underline;text-underline-offset:
 .jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
 .jump a{font-size:12px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line-2);border-radius:99px;padding:8px 13px;color:var(--muted);transition:all .18s}
 .jump a:hover{border-color:var(--accent);color:var(--cream)}
+.pipe{display:flex;align-items:stretch;gap:0;margin-top:14px;flex-wrap:nowrap}
+.pipe .stg{flex:1 1 0;background:var(--ink-3);border:1px solid var(--line);border-radius:10px;padding:12px 12px;min-width:0}
+.pipe .stg .sn{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:4px}
+.pipe .stg p{font-size:14px !important;line-height:1.45;color:var(--muted)}
+.pipe .arr{flex:0 0 22px;display:flex;align-items:center;justify-content:center;color:var(--muted-2);font-size:14px}
+.pipe .stg.gate{border-color:rgba(124,163,255,.45)}
+.pipe .stg.gate .sn{color:var(--cool)}
+.sched{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.sched span{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line-2);border-radius:99px;padding:5px 10px}
+.st-run{color:var(--green);border-color:rgba(157,212,106,.45);background:rgba(157,212,106,.08)}
+html.light .st-run{border-color:rgba(85,144,31,.4);background:rgba(85,144,31,.07)}
+.ops,.wf2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+.ops .item{background:var(--ink-3);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.ops .item .k{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--cool);margin-bottom:6px}
+.ops .item h4{font-size:18px;font-weight:600;line-height:1.3;margin-bottom:6px}
+.ops .item p{color:var(--muted)}
+.ops .item p b{color:var(--cream);font-weight:600}
+.ops .item .src{font-size:12px;color:var(--muted-2);margin-top:8px}
+.ops .item .src a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.loop{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}
+.loop div{background:var(--ink-3);border:1px solid var(--line);border-radius:10px;padding:10px 8px;text-align:center;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.loop div b{display:block;color:var(--accent);font-size:12px;margin-bottom:2px}
+.loop div.hot{border-color:rgba(196,245,66,.45);color:var(--cream)}
+section[id]{scroll-margin-top:70px}
+.grid.words .cell .n{font-size:20px;line-height:1.2}
+@media (max-width:760px){
+  .ops,.wf2{grid-template-columns:1fr}
+  .pipe{flex-direction:column}
+  .pipe .arr{flex-basis:20px;transform:rotate(90deg)}
+  .loop{grid-template-columns:repeat(2,1fr)}
+}
 @media (max-width:640px){
   .wrap,.nav-in{padding:0 16px}
   .demo-top,.demo-body{padding-left:18px;padding-right:18px}
   .rung{grid-template-columns:1fr}
   .pov .p{grid-template-columns:1fr;gap:4px}
   .brand,.back{white-space:nowrap}
-  .brand{font-size:16px}
+  .brand{font-size:15px}
+  .back{font-size:11px;letter-spacing:.04em}
+  .nav-in .nav-right{gap:10px}
 }
 </style>
 </head>
@@ -94,7 +127,7 @@ table.idx a{color:var(--accent);text-decoration:underline;text-underline-offset:
     <div><dt>Leadership angle</dt><dd>Workflow, standards and a course for designers</dd></div>
   </dl>
   <div class="jump" role="navigation" aria-label="On this page">
-    <a href="#live">Live demos</a><a href="#saanjh">AI product design</a><a href="#workflow">My AI workflow</a><a href="#pov">Where I draw the line</a><a href="#index">Evidence index</a>
+    <a href="#live">Live demos</a><a href="#saanjh">AI product design</a><a href="#workflow">My AI workflow</a><a href="#ops">Design operations</a><a href="#scheduled">Scheduled workflows</a><a href="#research">AI research &amp; synthesis</a><a href="#pov">Where I draw the line</a><a href="#index">Evidence index</a>
   </div>
 </div></header>
 
@@ -220,8 +253,104 @@ table.idx a{color:var(--accent);text-decoration:underline;text-underline-offset:
   </div>
 </div></section>
 
+<section id="ops"><div class="wrap">
+  <p class="sec-label">05 &middot; Design operations &mdash; how I run the work</p>
+  <p class="lede">A design team is a production system. I run it the way I'd design any system: make the work visible, put decisions where the knowledge is, and measure the flow, not just the output.</p>
+  <div class="ops">
+    <div class="item"><div class="k">Visibility</div><h4>Progress reporting as a design tool</h4><p>On IBM PowerVC I ran six months of work across <b>five parallel workstreams</b> from one tracker. It paired screen output with research and quality signals, on a monthly audit rhythm. It showed what was complete, what needed to converge, and where dependencies were piling up.</p><div class="src">Evidence: <a href="case-smart-mining.html">PowerVC case</a> &middot; 72+ screens &middot; feedback rounds 2.5&times; Jan&rarr;Jun</div></div>
+    <div class="item"><div class="k">Decision rights</div><h4>Governance instead of a bottleneck</h4><p>On IBM Power Systems, I put <b>3-in-a-box governance</b> (design, product and engineering deciding together) and a fixed critique cadence in place of a central approval queue. Four squads converged on one design language without slowing down.</p><div class="src">Evidence: <a href="case-ibm-power.html">Power Systems case</a> &middot; +35% first-pass approvals &middot; ~20% less UI drift</div></div>
+    <div class="item"><div class="k">Quality at handoff</div><h4>Parity: agree the contract, then check it</h4><p>Design QA used to be a debate at the end. With Parity, the design and the build are checked against an agreed <b>handoff contract</b> in a validation console, so a mismatch is caught by the tool before it becomes a meeting.</p><div class="src">Status: internal tool &middot; walk-through on request</div></div>
+    <div class="item"><div class="k">Measurement</div><h4>Complexity measured, not argued</h4><p>I built a UX complexity analysis tool based on IBM's <b>Sobiesiak/O'Keefe</b> method, so a debate about whether a flow is "too complex" becomes a score the team can compare before and after a change.</p><div class="src">Status: internal tool &middot; walk-through on request</div></div>
+  </div>
+  <div class="decision"><h4>The trade-off I made openly: delivery breadth over research depth</h4>
+    <div class="row"><b>Why</b><span>Five workstreams had to keep shipping, and formal discovery time was the scarce resource.</span></div>
+    <div class="row"><b>Trade-off</b><span>I ran H1 on one formal discovery session and logged the research gap as an explicit watch item for H2, rather than hiding it.</span></div>
+    <div class="row res"><b>Result</b><span>That gap is exactly why I invested in the AI research tooling below: making research cheap enough that it stops being the thing we trade away.</span></div></div>
+</div></section>
+
+<section id="scheduled"><div class="wrap">
+  <p class="sec-label">06 &middot; Scheduled AI workflows &mdash; running every weekday</p>
+  <p class="lede">The difference between <b>using</b> AI and <b>operating</b> it is whether the work happens without you. These two run on a schedule every weekday morning at 7:00 IST, research the last day of news, check their own output, and deliver before my day starts.</p>
+
+  <article class="demo">
+    <div class="demo-top">
+      <div><div class="what">Team intelligence feed</div><h3>Daily AI Updates &mdash; a card report, in my inbox by 7:00</h3></div>
+      <span class="status st-run">Running since Aug 2026</span>
+    </div>
+    <div class="demo-body">
+      <div class="sched"><span>Weekdays &middot; 07:00 IST</span><span>Covers the weekend on Mondays</span><span>Email + phone notification</span></div>
+      <div class="pipe" aria-label="Workflow stages">
+        <div class="stg"><div class="sn">1 &middot; Trigger</div><p>Runs on a schedule. No memory of past runs, so every brief starts clean.</p></div><div class="arr" aria-hidden="true">&rarr;</div>
+        <div class="stg"><div class="sn">2 &middot; Research</div><p>Web search for new tools, features and research from the last 24&ndash;72 hours.</p></div><div class="arr" aria-hidden="true">&rarr;</div>
+        <div class="stg"><div class="sn">3 &middot; Filter</div><p>Keeps 8&ndash;12 genuinely new items. Rumours without a real source are dropped.</p></div><div class="arr" aria-hidden="true">&rarr;</div>
+        <div class="stg"><div class="sn">4 &middot; Design</div><p>A scannable card grid: title, category tag, a two-line "why it matters", source link.</p></div><div class="arr" aria-hidden="true">&rarr;</div>
+        <div class="stg gate"><div class="sn">5 &middot; Deliver</div><p>The page, plus a 5&ndash;8 line summary that leads with the day's single biggest item.</p></div>
+      </div>
+      <p style="margin-top:14px">The rule I care most about: <b>if the day is genuinely quiet, the brief says so</b> instead of padding. A feed that pads trains people to stop reading it.</p>
+    </div>
+  </article>
+
+  <article class="demo">
+    <div class="demo-top">
+      <div><div class="what">Verified research brief</div><h3>AI Scout &mdash; India edition, with a built-in quality check</h3></div>
+      <span class="status st-run">Running since Aug 2026</span>
+    </div>
+    <div class="demo-body">
+      <div class="sched"><span>Weekdays &middot; 07:00 IST</span><span>5 sections &middot; 10&ndash;20 items each</span><span>Tuned for designers in India</span></div>
+      <div class="pipe" aria-label="Workflow stages">
+        <div class="stg"><div class="sn">1 &middot; Research</div><p>Several searches, about 8 candidates each, across tools, earning, productivity, trends and design.</p></div><div class="arr" aria-hidden="true">&rarr;</div>
+        <div class="stg gate"><div class="sn">2 &middot; Verify</div><p>Every tool must exist and every item must carry a working source link. Anything that can't be linked is dropped.</p></div><div class="arr" aria-hidden="true">&rarr;</div>
+        <div class="stg"><div class="sn">3 &middot; Compose</div><p>An editorial two-column page to a fixed visual spec, ending with one move you can make in under 10 minutes.</p></div><div class="arr" aria-hidden="true">&rarr;</div>
+        <div class="stg gate"><div class="sn">4 &middot; Self-check</div><p>It renders the page in a real browser, looks at the screenshot, and confirms counts and links before sending.</p></div><div class="arr" aria-hidden="true">&rarr;</div>
+        <div class="stg"><div class="sn">5 &middot; Deliver</div><p>Sent to me, and a saved copy is refreshed in place.</p></div>
+      </div>
+      <p style="margin-top:14px">Two design decisions make it trustworthy enough to run unattended. <b>Verification comes before writing</b>, so an invented tool never reaches the page. And <b>the agent checks its own visual output</b>, the same way a designer would glance at a build before sharing it.</p>
+    </div>
+  </article>
+
+  <div class="note" style="margin-top:16px">
+    <div class="nl"><span class="live"></span>Why this matters for a team</div>
+    <p>These are personal today, but the pattern is what I'd bring to a team: <b>a scheduled trigger, a research step, a verification gate, a designed output, and an honest "nothing today"</b>. The same shape works for a weekly competitor scan, a research-repository digest, or a design-debt report.</p>
+  </div>
+</div></section>
+
+<section id="research"><div class="wrap">
+  <p class="sec-label">07 &middot; AI for research &mdash; faster, without getting sloppier</p>
+  <p class="lede">AI makes research cheap. The risk is that it also makes research careless: invented quotes, overclaimed samples, insights nobody can trace. I've built my research tooling around <b>stopping</b> that, not just around speed.</p>
+
+  <article class="demo">
+    <div class="demo-top">
+      <div><div class="what">Research partner &middot; full lifecycle</div><h3>An AI UX researcher that questions the brief first</h3></div>
+      <span class="status st-walk">Walk-through</span>
+    </div>
+    <div class="demo-body">
+      <p>I built a reusable AI research partner that covers the whole research loop. Its first job is to <b>question the research question</b>: what decision will this inform, what do we already believe, and what evidence would change our mind? Research that can't change a decision is theatre, so it says so before producing anything.</p>
+      <div class="loop" aria-label="Research lifecycle">
+        <div class="hot"><b>1</b>Frame</div><div><b>2</b>Method</div><div><b>3</b>Plan</div><div><b>4</b>Instruments</div><div><b>5</b>Conduct</div><div class="hot"><b>6</b>Synthesise</div><div><b>7</b>Land it</div>
+      </div>
+      <div class="grid words" style="margin-top:14px">
+        <div class="cell"><div class="n">Evidence &ne; insight</div><div class="l">observations and interpretations kept visibly separate, every insight traceable to its evidence</div></div>
+        <div class="cell cool"><div class="n">Confidence</div><div class="l">every finding tagged with how strong its support is</div></div>
+        <div class="cell warm"><div class="n">No overclaiming</div><div class="l">5 interviews can find a real problem, not a percentage, and it says so</div></div>
+      </div>
+    </div>
+  </article>
+
+  <div class="wf wf2" style="margin-top:12px">
+    <div class="item"><span class="status st-live">Live</span><h4>Synthetic usability testing</h4><p>The Testing Lab above: a cheap first pass that shows where to point real research, with measured confidence intervals rather than a single guess.</p></div>
+    <div class="item"><span class="status st-walk">Walk-through</span><h4>Researcher agent pipeline</h4><p>An agent pipeline that works through research planning and synthesis in stages, with a human reviewing between them.</p></div>
+    <div class="item"><span class="status st-walk">Walk-through</span><h4>Video annotation tool</h4><p>For tagging moments in session recordings, so synthesis starts from observed behaviour instead of memory.</p></div>
+    <div class="item"><span class="status st-walk">Walk-through</span><h4>GazeLab</h4><p>Eye-tracking usability testing using just a webcam in the browser, with no lab hardware.</p></div>
+  </div>
+
+  <div class="decision"><h4>Where I deliberately don't use AI</h4>
+    <div class="row"><b>Why</b><span>On BT Business Billing the synthesis <em>was</em> the argument: one root cause behind thousands of complaints, which had to survive a senior room.</span></div>
+    <div class="row"><b>Trade-off</b><span>The complaint coding was done by hand. Slower, but I own every code and can defend each one.</span></div>
+    <div class="row res"><b>Result</b><span>AI speeds up the parts where speed is safe. The judgement calls stay with a person. <a href="case-bt-billing.html" style="color:var(--accent);text-decoration:underline">See the BT case</a></span></div></div>
+</div></section>
+
 <section id="pov"><div class="wrap">
-  <p class="sec-label">05 &middot; Where I draw the line</p>
+  <p class="sec-label">08 &middot; Where I draw the line</p>
   <div class="pov">
     <div class="p"><span class="nm">01</span><span><b>Synthetic users predict; they don't replace.</b> The Lab tells you where to point real research. It never stands in for it.</span></div>
     <div class="p"><span class="nm">02</span><span><b>No invented numbers.</b> If a target isn't known yet, I leave the gap visible and set it with the team.</span></div>
@@ -232,7 +361,7 @@ table.idx a{color:var(--accent);text-decoration:underline;text-underline-offset:
 </div></section>
 
 <section id="index"><div class="wrap">
-  <p class="sec-label">06 &middot; Evidence index</p>
+  <p class="sec-label">09 &middot; Evidence index</p>
   <div class="index-wrap"><table class="idx">
     <thead><tr><th>Evidence</th><th>Status</th><th>Open</th></tr></thead>
     <tbody>
@@ -241,6 +370,9 @@ table.idx a{color:var(--accent);text-decoration:underline;text-underline-offset:
       <tr><td>Ask my portfolio (text + voice)</td><td><span class="status st-live">Live</span></td><td><a href="index.html?mode=agent#agent">Open</a> &middot; <a href="https://github.com/antararoychowdhury13-beep/New-portfolio">Code</a></td></tr>
       <tr><td>DFD devotional app</td><td><span class="status st-live">Live</span></td><td><a href="https://antararoychowdhury13-beep.github.io/DFDV2/">Open</a></td></tr>
       <tr><td>Saanjh elder-care voice agent</td><td><span class="status st-concept">Concept</span></td><td><a href="#saanjh">Summary</a> &middot; full brief on request</td></tr>
+      <tr><td>Scheduled AI workflows (2)</td><td><span class="status st-run">Running</span></td><td><a href="#scheduled">How they work</a> &middot; sample brief on request</td></tr>
+      <tr><td>Design operations (PowerVC, Power Systems)</td><td><span class="status st-live">Live</span></td><td><a href="case-smart-mining.html">PowerVC</a> &middot; <a href="case-ibm-power.html">Power Systems</a></td></tr>
+      <tr><td>AI research partner, researcher pipeline, GazeLab</td><td><span class="status st-walk">Walk-through</span></td><td><a href="#research">Summary</a> &middot; demo on request</td></tr>
       <tr><td>Parity, Figma&harr;code, plugins, AI skills</td><td><span class="status st-walk">Walk-through</span></td><td><a href="mailto:ar.anupamsarkar@gmail.com?subject=AI%20workflow%20walk-through">Book a walk-through</a></td></tr>
       <tr><td>Leadership case studies</td><td><span class="status st-live">Live</span></td><td><a href="index.html#work">All work</a></td></tr>
     </tbody>
