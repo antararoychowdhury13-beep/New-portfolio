@@ -75,6 +75,27 @@ nav{position:fixed;top:0;left:0;right:0;z-index:40;backdrop-filter:blur(16px);-w
 /* sections */
 section{padding:88px 0;position:relative;z-index:2}
 .sec-head{margin-bottom:40px}
+.nav-links a{white-space:nowrap}
+@media(min-width:601px){.brand{white-space:nowrap}}
+@media(max-width:1240px){.nav-status{display:none}.nav-links{gap:18px}}
+.wfx{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.wfx a.wx{display:flex;flex-direction:column;gap:10px;background:var(--ink-3);border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;transition:border-color .2s,transform .2s}
+.wfx a.wx:hover{border-color:var(--accent);transform:translateY(-2px)}
+.wx .wk{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.wx .pill{font-size:12px;font-weight:600;letter-spacing:.06em;border-radius:99px;padding:4px 10px;border:1px solid}
+.wx .pill.run{color:var(--green);border-color:rgba(157,212,106,.45)}
+.wx .pill.live{color:var(--accent);border-color:rgba(196,245,66,.45)}
+.wx .pill.use{color:var(--cool);border-color:rgba(124,163,255,.45)}
+.wx h3{font-size:20px;font-weight:600;line-height:1.3;color:var(--cream)}
+.wx p{color:var(--muted);font-size:16px;line-height:1.55}
+.wx .steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.wx .steps span{border:1px solid var(--line-2);border-radius:6px;padding:4px 8px}
+.wx .steps i{font-style:normal;color:var(--muted-2)}
+.wx .go{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-top:auto}
+.wfx-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.wfx-cta a{font-size:12px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line-2);border-radius:10px;padding:12px 16px;color:var(--cream)}
+.wfx-cta a.primary{background:var(--accent);color:var(--ink);border-color:var(--accent);font-weight:600}
+@media(max-width:760px){.wfx{grid-template-columns:1fr}}
 .sec-head h2{font-weight:600;font-size:32px;line-height:1.1;letter-spacing:-.02em;max-width:720px;margin-top:12px}
 .sec-head h2 em{font-style:normal;color:var(--accent)}
 .sec-head .lead{margin-top:14px;max-width:620px;color:var(--muted);font-size:18px}
@@ -293,7 +314,7 @@ body,nav,.wcard,.wbody,.wthumb,.fcard,.a-cell,.console,.console-bar,.field-stage
 /* ===== view mode: portfolio <-> agentic ===== */
 #agent{display:none}
 html.agentic #agent{display:block;padding-top:118px}
-html.agentic .hero,html.agentic #work,html.agentic #leadership,html.agentic #more{display:none}
+html.agentic .hero,html.agentic #work,html.agentic #leadership,html.agentic #workflows,html.agentic #more{display:none}
 html.agentic .nav-pf{display:none}
 .nav-ag{display:none!important}
 html.agentic .nav-ag{display:flex!important}
@@ -467,9 +488,49 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
 </div></section>
 
 
+<section id="workflows"><div class="wrap">
+  <div class="sec-head reveal">
+    <p class="mono"><span class="hl">03</span> · AI workflows</p>
+    <h2>AI that runs <em>on a schedule, not on a whim.</em></h2>
+    <p class="lead">Two workflows run every weekday at 7:00 without me. The rest are AI pipelines I use across research, testing and handoff, each with a human checkpoint where judgement belongs.</p>
+  </div>
+  <div class="wfx reveal">
+    <a class="wx" href="workflows.html#daily-updates">
+      <div class="wk"><span>Scheduled · weekdays 07:00</span><span class="pill run">Running</span></div>
+      <h3>Daily AI Updates</h3>
+      <p>Researches the last day of AI news, keeps only sourced items, and delivers a designed card report before my day starts. On a quiet day it says so instead of padding.</p>
+      <div class="steps"><span>Trigger</span><i>→</i><span>Research</span><i>→</i><span>Filter</span><i>→</i><span>Design</span><i>→</i><span>Deliver</span></div>
+      <span class="go">See the workflow + a sample →</span>
+    </a>
+    <a class="wx" href="workflows.html#ai-scout">
+      <div class="wk"><span>Scheduled · weekdays 07:00</span><span class="pill run">Running</span></div>
+      <h3>AI Scout — verified brief</h3>
+      <p>Five sections, 10–20 items each. Every item needs a working source or it's dropped, and the agent opens its own page in a browser to check it before sending.</p>
+      <div class="steps"><span>Research</span><i>→</i><span>Verify</span><i>→</i><span>Compose</span><i>→</i><span>Self-check</span><i>→</i><span>Deliver</span></div>
+      <span class="go">See the workflow + a sample →</span>
+    </a>
+    <a class="wx" href="workflows.html#research">
+      <div class="wk"><span>On demand · research</span><span class="pill use">In use</span></div>
+      <h3>AI research partner</h3>
+      <p>Questions the brief before planning anything, then handles method, guide and synthesis. Every finding carries its evidence and a confidence level.</p>
+      <div class="steps"><span>Frame</span><i>→</i><span>Plan</span><i>→</i><span>Run (human)</span><i>→</i><span>Synthesise</span><i>→</i><span>Decide (human)</span></div>
+      <span class="go">See the pipeline →</span>
+    </a>
+    <a class="wx" href="workflows.html#synthetic">
+      <div class="wk"><span>On demand · testing</span><span class="pill live">Live</span></div>
+      <h3>Synthetic usability testing</h3>
+      <p>Persona panels run simulated sessions on before-and-after screens, with results measured rather than guessed, to aim real research where it matters.</p>
+      <div class="steps"><span>Upload</span><i>→</i><span>Personas</span><i>→</i><span>Sessions</span><i>→</i><span>Report</span><i>→</i><span>Verify (human)</span></div>
+      <span class="go">See the pipeline →</span>
+    </a>
+  </div>
+  <div class="wfx-cta reveal"><a class="primary" href="workflows.html">All 9 workflows, stage by stage</a><a href="ai-work.html">All AI work</a></div>
+</div></section>
+
+
 <section id="more"><div class="wrap">
   <div class="sec-head reveal">
-    <p class="mono"><span class="hl">03</span> · Additional work</p>
+    <p class="mono"><span class="hl">04</span> · Additional work</p>
     <h2>More projects <em>across industries.</em></h2>
     <p class="lead">Further case studies in decision tools, zero-to-one products and workplace transformation.</p>
   </div>
@@ -594,6 +655,7 @@ syncThemeBtn();
 
 /* ===== Agent console ===== */
 const CASELIB={
+  'workflows':{cli:'AI workflows',t:'Two scheduled workflows and seven AI pipelines, stage by stage.',m:'9 workflows',href:'workflows.html',btn:'See workflows'},
   'ai-work':{cli:'AI work · overview',t:'What I design and build with AI — live demos, concepts and workflow.',m:'4 live demos',href:'ai-work.html',btn:'See AI work'},
   'uxkpi-lab':{cli:'Live demo · synthetic testing',t:'Synthetic usability testing with measured, not guessed, results.',m:'60 simulated sessions',href:'uxkpi-lab.html',btn:'Try the lab'},
   'buddy':{cli:'Live demo · proactive AI',t:'Buddy — an assistant that earns the right to interrupt.',m:'4 trust tiers',href:'demos/buddy/index.html',btn:'Open Buddy'},
@@ -675,7 +737,7 @@ const INTENTS={
         <div class="a-cell cool"><div class="n">Ops</div><div class="l">Parity handoff QA · 3-in-a-box governance · Figma ↔ code via MCP</div></div>
       </div>
       <p class="a-note">Every item is labelled live, code or concept. Synthetic results are framed as predictions to verify with real users — never as a replacement for them.</p>
-      ${caseCards(['ai-work','uxkpi-lab','buddy'])}`},
+      ${caseCards(['workflows','ai-work','uxkpi-lab'])}`},
   ifu:{label:'What is Intent-First UX?',tag:'ORIGINAL FRAMEWORK',
     line:'resolving → original framework you are currently inside…',
     body:()=>`<div class="a-statement">Every UI framework starts <em>after</em> intent. Intent-First UX starts before it.</div>

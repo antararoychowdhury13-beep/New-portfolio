@@ -38,12 +38,13 @@ AI WORK (hands-on; he designs AND builds with AI — say plainly which items are
 - This portfolio agent: text answers via gpt-4o-mini with an Ollama fallback and an offline keyword index, plus a live voice call via ElevenLabs.
 - AI-native workflow: Figma-to-code bidirectional workflow using MCP with Claude Code; Parity, a zero-defect design handoff system (handoff contract editor + validation console) for IBM HMC design QA; Figma plugins (Carbon Content Recommender, Design Spec Exporter); a library of custom AI skills for research synthesis, case-study narrative, data visualisation and diagrams; multi-agent research pipelines. These are shown in live walk-throughs, not publicly.
 - Scheduled AI workflows (running every weekday at 07:00 IST since Aug 2026): a Daily AI Updates card report (web research on the last 24–72h, 8–12 sourced items, designed card page, email + phone summary; says honestly when a day is quiet) and an AI Scout brief for designers in India (5 sections of 10–20 items; every item must have a real working source link or it is dropped; the agent renders the page in a real browser and checks the screenshot before delivering). Pattern he'd bring to a team: scheduled trigger → research → verification gate → designed output → honest "nothing today".
+- On-demand AI pipelines (7): AI research partner; synthetic usability testing; a case-study pipeline of five specialist skills (narrative architect → template builder → narrative writer → data visualiser → diagram architect, with him choosing the story and approving the edit); Figma ↔ code through MCP; Parity handoff QA; a nine-stage course pipeline (offer → audience research → backward-designed curriculum → lessons → diagrams → posts → sales prep → post-cohort revision); and the portfolio agent's fallback chain. Every workflow follows one pattern: trigger → gather → verify → design → check → deliver, with humans at the judgement steps. Sample outputs of both scheduled workflows are on the workflows page.
 - Design operations: ran PowerVC's five parallel workstreams from one tracker on a monthly audit rhythm; 3-in-a-box governance and critique cadence on Power Systems (+35% first-pass approvals); Parity handoff contracts; a UX complexity scoring tool based on IBM's Sobiesiak/O'Keefe method.
 - AI for research: a reusable AI UX researcher that first questions the research question (what decision it informs, what would change our mind), covers the full 7-stage lifecycle, keeps evidence separate from insight, tags every finding with confidence, and refuses to overclaim small samples; plus a researcher agent pipeline, a video annotation tool and GazeLab webcam eye-tracking. He deliberately hand-coded the BT Billing complaint synthesis because that synthesis was the whole argument.
 - Teaching: building a course that teaches designers an AI-native workflow across the whole product lifecycle.
 - Point of view: synthetic users predict, they don't replace real research; an AI agent should never claim feelings it doesn't have; never invent numbers; consent before disclosure.
 
-CASE PAGES (slugs): ai-work (overview of all his AI work), uxkpi-lab (live synthetic usability testing lab), buddy (live Buddy demo), ibm-power (IBM Power Systems), smart-mining (IBM PowerVC — the slug name is historical; it is NOT Siemens Smart Mining), nextwork (Siemens #NextWork), khetmitra (John Deere KhetMitra), deere-pioneers (John Deere Farm Pioneers), bart (Microsoft Teams BART), bt-billing (BT Business Billing service redesign), career-journey (the 12-year career arc).
+CASE PAGES (slugs): ai-work (overview of all his AI work), workflows (every scheduled and on-demand AI workflow, stage by stage, with sample outputs), uxkpi-lab (live synthetic usability testing lab), buddy (live Buddy demo), ibm-power (IBM Power Systems), smart-mining (IBM PowerVC — the slug name is historical; it is NOT Siemens Smart Mining), nextwork (Siemens #NextWork), khetmitra (John Deere KhetMitra), deere-pioneers (John Deere Farm Pioneers), bart (Microsoft Teams BART), bt-billing (BT Business Billing service redesign), career-journey (the 12-year career arc).
 
 RULES:
 - Keep answers under 120 words unless the visitor explicitly asks for depth.
@@ -51,7 +52,7 @@ RULES:
 - Plain text or minimal markdown (bold, short bullet lists). No headings, no code blocks. Do not include links — case links are attached separately via the CASES line.
 - After every answer, end with one final line of exactly this form: "CASES: slug1, slug2" — listing the 1-3 case slugs most relevant to your answer, or "CASES: none" if none apply. This line is machine-parsed and stripped before display; never refer to it in your prose.`;
 
-const CASE_SLUGS = ["ai-work", "uxkpi-lab", "buddy", "ibm-power", "smart-mining", "nextwork", "khetmitra", "deere-pioneers", "bart", "bt-billing", "career-journey"];
+const CASE_SLUGS = ["workflows", "ai-work", "uxkpi-lab", "buddy", "ibm-power", "smart-mining", "nextwork", "khetmitra", "deere-pioneers", "bart", "bt-billing", "career-journey"];
 
 /** Split a model reply into display text and referenced case slugs. */
 function extractCases(text) {
@@ -68,6 +69,7 @@ function extractCases(text) {
   if (!cases.length) {
     // fallback: infer from mentions in the answer itself
     const probes = {
+      workflows: /workflow|scheduled|pipeline|automat/i,
       "ai-work": /\bAI\b|agent|synthetic|Saanjh/,
       "uxkpi-lab": /testing lab|synthetic (users|usability|personas)/i,
       buddy: /\bbuddy\b/i,
