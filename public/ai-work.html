@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Work — Anupam Sarkar</title>
+<meta name="description" content="What Anupam Sarkar designs and builds with AI: live demos of synthetic usability testing and a proactive AI assistant, an elder-care voice agent concept, and an AI-native design workflow.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="case.css">
+<script>if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light");</script>
+<style>
+.lede{max-width:680px;color:var(--muted)}
+.lede b{color:var(--cream);font-weight:600}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.pillar{background:var(--ink-3);border:1px solid var(--line);border-radius:12px;padding:20px}
+.pillar .k{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.pillar p{color:var(--muted)}
+.pillar p b{color:var(--cream);font-weight:600}
+.demo{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:16px}
+.demo-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 24px 0;flex-wrap:wrap}
+.demo h3{font-size:18px;font-weight:600;line-height:1.3}
+.demo .what{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.status{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:5px 11px;white-space:nowrap;border:1px solid}
+.st-live{color:var(--accent);border-color:rgba(196,245,66,.4);background:rgba(196,245,66,.07)}
+.st-code{color:var(--cool);border-color:rgba(124,163,255,.4);background:rgba(124,163,255,.07)}
+.st-concept{color:var(--warm);border-color:rgba(255,122,92,.4);background:rgba(255,122,92,.07)}
+.st-walk{color:var(--muted);border-color:var(--line-2)}
+html.light .st-live{border-color:rgba(111,163,0,.4);background:rgba(111,163,0,.08)}
+html.light .st-code{border-color:rgba(63,107,208,.35);background:rgba(63,107,208,.06)}
+html.light .st-concept{border-color:rgba(217,83,47,.35);background:rgba(217,83,47,.06)}
+.demo-body{padding:14px 24px 22px}
+.demo-body p{color:var(--muted);max-width:680px}
+.demo-body p b{color:var(--cream);font-weight:600}
+.try{margin-top:14px;border-top:1px dashed var(--line-2);padding-top:14px}
+.try .tl{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--cool);margin-bottom:8px}
+.try ol{padding-left:22px;color:var(--muted)}
+.try li{margin-bottom:4px}
+.try li b{color:var(--cream);font-weight:600}
+.demo .grid{margin-top:14px}
+.demo .actions{margin-top:16px}
+.ladder{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:14px}
+.rung{display:grid;grid-template-columns:120px 1fr;border-top:1px solid var(--line)}
+.rung:first-child{border-top:0}
+.rung b{font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:12px 14px;background:var(--ink-3);color:var(--cream);font-weight:600}
+.rung span{padding:12px 14px;color:var(--muted)}
+.rung.r0 b{border-left:3px solid var(--muted-2)} .rung.r2 b{border-left:3px solid var(--green)}
+.rung.r3 b{border-left:3px solid var(--cool)} .rung.r5 b{border-left:3px solid var(--warm)}
+.wf{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:4px}
+.wf .item{background:var(--ink-3);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.wf .item h4{font-size:18px;font-weight:600;line-height:1.3}
+.wf .item p{color:var(--muted)}
+.wf .item .status{align-self:flex-start}
+.pov{display:flex;flex-direction:column;gap:10px}
+.pov .p{display:grid;grid-template-columns:44px 1fr;gap:10px;background:var(--ink-3);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.pov .p .nm{font-size:12px;color:var(--accent);font-weight:600;padding-top:4px}
+.pov .p span{color:var(--muted)}
+.pov .p span b{color:var(--cream);font-weight:600}
+.index-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table.idx{width:100%;border-collapse:collapse;min-width:560px}
+table.idx th,table.idx td{text-align:left;padding:12px 14px;border-top:1px solid var(--line);vertical-align:top}
+table.idx th{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-top:0;background:var(--ink-3);font-weight:600}
+table.idx td{color:var(--muted)}
+table.idx td:first-child{color:var(--cream);font-weight:500}
+table.idx a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.jump a{font-size:12px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line-2);border-radius:99px;padding:8px 13px;color:var(--muted);transition:all .18s}
+.jump a:hover{border-color:var(--accent);color:var(--cream)}
+@media (max-width:640px){
+  .wrap,.nav-in{padding:0 16px}
+  .demo-top,.demo-body{padding-left:18px;padding-right:18px}
+  .rung{grid-template-columns:1fr}
+  .pov .p{grid-template-columns:1fr;gap:4px}
+  .brand,.back{white-space:nowrap}
+  .brand{font-size:16px}
+}
+</style>
+</head>
+<body>
+<nav><div class="nav-in">
+  <div class="brand"><span class="dot"></span>Anupam Sarkar</div>
+  <div class="nav-right"><a class="back" href="index.html">&larr; Back to portfolio</a><button id="themeBtn" class="theme-toggle" role="switch" aria-label="Toggle light and dark mode"><span class="tt-thumb"></span></button></div>
+</div></nav>
+
+<header><div class="wrap">
+  <span class="tag">AI-NATIVE PRACTICE &middot; EVIDENCE YOU CAN OPEN</span>
+  <h1>I design with AI as the material &mdash; <em>and I build the prototypes myself.</em></h1>
+  <p class="sub"><b>Product Design Manager at IBM.</b> Over the past year I've rebuilt my own design practice around AI, designed AI-native products end to end, and started turning that into a method other designers can learn. Every item below is labelled <b>live</b>, <b>code</b>, <b>concept</b> or <b>walk-through</b>, so you know exactly what you're looking at.</p>
+  <dl class="case-facts">
+    <div><dt>Live demos</dt><dd>4 &mdash; open them in this browser</dd></div>
+    <div><dt>Public code</dt><dd>3 repositories</dd></div>
+    <div><dt>Built with</dt><dd>Claude, GPT-4o mini, ElevenLabs, Whisper, MCP</dd></div>
+    <div><dt>Leadership angle</dt><dd>Workflow, standards and a course for designers</dd></div>
+  </dl>
+  <div class="jump" role="navigation" aria-label="On this page">
+    <a href="#live">Live demos</a><a href="#saanjh">AI product design</a><a href="#workflow">My AI workflow</a><a href="#pov">Where I draw the line</a><a href="#index">Evidence index</a>
+  </div>
+</div></header>
+
+<section><div class="wrap">
+  <p class="sec-label">01 &middot; The through-line</p>
+  <div class="pillars">
+    <div class="pillar"><div class="k">Rebuild the workflow</div><p>I use AI to change <b>how design work gets done</b> &mdash; handoff, QA, research synthesis &mdash; not just to make screens faster.</p></div>
+    <div class="pillar"><div class="k">Design AI products</div><p>Trust, confidence, consent and failure states are <b>the design problem</b> in AI products. That's where I spend my time.</p></div>
+    <div class="pillar"><div class="k">Scale it through people</div><p>Frameworks, standards and a course, so a team's <b>default way of working</b> becomes AI-native &mdash; not one person's.</p></div>
+  </div>
+</div></section>
+
+<section id="live"><div class="wrap">
+  <p class="sec-label">02 &middot; Live &mdash; try them now</p>
+  <p class="lede">These run in your browser. No sign-up, and nothing uses your data.</p>
+
+  <article class="demo" id="uxkpi">
+    <div class="demo-top">
+      <div><div class="what">Synthetic usability testing</div><h3>UX KPI Testing Lab</h3></div>
+      <span class="status st-live">Live</span>
+    </div>
+    <div class="demo-body">
+      <p>Usability research is slow and usually happens too late to change a decision. The Lab predicts where a redesign will fail <b>before</b> it reaches users. You upload before-and-after screens and build a persona panel. Each persona then expands into a group of simulated participants who attempt the task.</p>
+      <p style="margin-top:10px">The design choice I care most about: <b>every number is measured from those simulated sessions, not guessed by a single prompt.</b> That means success rates come with confidence intervals, and a before-versus-after difference can be traced to the design change. The report says clearly that these are predictions to check with real users.</p>
+      <div class="grid">
+        <div class="cell"><div class="n">5</div><div class="l">personas generated from the flow</div></div>
+        <div class="cell cool"><div class="n">60</div><div class="l">simulated sessions in one run</div></div>
+        <div class="cell warm"><div class="n">95% CI</div><div class="l">on every persona's task success</div></div>
+        <div class="cell green"><div class="n">Ranked</div><div class="l">issues with a recommended fix each</div></div>
+      </div>
+      <div class="try"><div class="tl">Try it in about 2 minutes</div>
+        <ol><li>Open the Lab and click <b>Resume setup</b>.</li><li>Click <b>Continue to Upload</b>, then <b>Load sample flow</b> and <b>Analyze flows</b>.</li><li>Click <b>Generate 5 personas</b>, then <b>Lock panel</b>.</li><li>Click <b>Run Tests</b>, then <b>Start Test Run</b>. Open <b>Report</b> when it finishes.</li></ol>
+      </div>
+      <div class="actions"><a class="primary" href="uxkpi-lab.html">Open the Testing Lab</a><a href="https://github.com/antararoychowdhury13-beep/UX-KPI-tool">Full app code</a></div>
+    </div>
+  </article>
+
+  <article class="demo" id="buddy">
+    <div class="demo-top">
+      <div><div class="what">Proactive AI assistant</div><h3>Buddy &mdash; an assistant that earns the right to interrupt</h3></div>
+      <span class="status st-live">Live demo</span>
+    </div>
+    <div class="demo-body">
+      <p>Proactive assistants usually fail the same way: they interrupt too often, and people learn to ignore them. Buddy treats every nudge as a claim that has to earn attention. A <b>trust engine</b> scores each possible insight on how direct its source is, how established the evidence is, how accurate that life area has been, and what's at stake. It then sorts the insight into one of four tiers: <b>silent, passive, ambient or proactive</b>. Only the top tier interrupts you.</p>
+      <p style="margin-top:10px">Confirming or dismissing an insight retunes trust for that area of life. Claude writes the daily briefing from whatever clears the bar. Voice runs <b>on the device</b> (Whisper to listen, Kokoro to speak), so what you say doesn't leave your device just to be heard.</p>
+      <div class="try"><div class="tl">What to look at</div>
+        <ol><li>On <b>Home</b>, the daily plan shows what Buddy chose to surface, and what it held back.</li><li>Open <b>Today</b> and <b>Life</b> to see nudges grouped by life domain.</li><li>Tap the mic to open <b>Ask Buddy</b>.</li></ol>
+      </div>
+      <div class="actions"><a class="primary" href="demos/buddy/index.html">Open Buddy</a><a href="https://github.com/antararoychowdhury13-beep/Buddy-app">Code</a></div>
+    </div>
+  </article>
+
+  <article class="demo" id="agent">
+    <div class="demo-top">
+      <div><div class="what">Conversational portfolio</div><h3>Ask my portfolio &mdash; by text or voice</h3></div>
+      <span class="status st-live">Live</span>
+    </div>
+    <div class="demo-body">
+      <p>My portfolio is itself an AI product. Instead of browsing, you ask a question and it answers from my documented work, attaching the matching case study. Typed questions go to GPT-4o mini. If that's unavailable it falls back to a second model, then to an offline index, so it <b>never shows a blank error</b>. The voice call runs on ElevenLabs.</p>
+      <div class="actions"><a class="primary" href="index.html?mode=agent#agent">Ask it something</a><a href="https://github.com/antararoychowdhury13-beep/New-portfolio">Code</a></div>
+    </div>
+  </article>
+
+  <article class="demo" id="dfd">
+    <div class="demo-top">
+      <div><div class="what">Founder &middot; shipped end to end</div><h3>DFD &mdash; Digital First Devotional</h3></div>
+      <span class="status st-live">Live</span>
+    </div>
+    <div class="demo-body">
+      <p>A devotional app I took from idea to production as a bootstrapped founder. It includes a Panchang recommendation engine built on a <b>six-layer scoring model</b>, a mala counter, streaks, shloka cards, and an admin system with feature flags. Building it myself taught me what shipping really costs &mdash; data, infrastructure and releases, not just the design layer.</p>
+      <div class="actions"><a class="primary" href="https://antararoychowdhury13-beep.github.io/DFDV2/">Open the web version</a></div>
+    </div>
+  </article>
+</div></section>
+
+<section id="saanjh"><div class="wrap">
+  <p class="sec-label">03 &middot; Designing an AI product where trust is the whole product</p>
+  <article class="demo">
+    <div class="demo-top">
+      <div><div class="what">Voice agent &middot; elderly care</div><h3>Saanjh &mdash; a companion that is read like an instrument</h3></div>
+      <span class="status st-concept">Design concept</span>
+    </div>
+    <div class="demo-body">
+      <p>Voice is the right way in for an older adult: nothing to learn, no fine motor control needed. But when older adults were asked about the voice agents built for them, their words were <b>"childish," "patronizing" and "shallow."</b> The failure was one of tone, not technology. Saanjh is designed against that failure.</p>
+    </div>
+  </article>
+
+  <div class="decision"><h4>One agent, one conversation, four readings &mdash; not four features</h4>
+    <div class="row"><b>Why</b><span>The obvious build is a companion, a pill reminder, a safety monitor and a family dashboard. That creates four modes, and modes break voice interfaces because there's no screen to show which one you're in.</span></div>
+    <div class="row"><b>Trade-off</b><span>One warm voice she simply talks to. Four reads run quietly over the same conversation: wellbeing, clinical, risk, and the shape of her speech. None of them can act on its own.</span></div>
+    <div class="row res"><b>Result</b><span>Health and safety signals come from the conversation she's already having, so she's never asked twice and never spoken to as a patient.</span></div></div>
+
+  <div class="decision"><h4>She is told before anyone else is</h4>
+    <div class="row"><b>Why</b><span>Silent reporting teaches her the machine is on someone else's side. After that, she stops speaking freely and the signal is gone.</span></div>
+    <div class="row"><b>Trade-off</b><span>Families ask for transcripts. They get a 40-word weekly summary and one thing to do instead. If she refuses to share something, that refusal is respected, and the family only learns that a boundary exists.</span></div>
+    <div class="row res"><b>Result</b><span>Protecting the conversation <em>is</em> protecting the data. Only the family view loses detail by design; she never loses her privacy.</span></div></div>
+
+  <div class="ladder" role="table" aria-label="Escalation ladder">
+    <div class="rung r0" role="row"><b role="cell">L0&ndash;L1</b><span role="cell">A single observation, or one worth a second look. Nobody is told, and the conversation carries on normally.</span></div>
+    <div class="rung r2" role="row"><b role="cell">L2</b><span role="cell">A pattern over two or more days. The agent asks her directly and suggests something she can do herself.</span></div>
+    <div class="rung r3" role="row"><b role="cell">L3&ndash;L4</b><span role="cell">The pattern needs a person. At L3 the agent asks her permission first; at L4 it tells her it is calling.</span></div>
+    <div class="rung r5" role="row"><b role="cell">L5</b><span role="cell">Life-threatening. The only level with no consent step, and it is scoped as narrowly as possible.</span></div>
+  </div>
+
+  <div class="grid" style="margin-top:14px">
+    <div class="cell"><div class="n">2.5&ndash;3s</div><div class="l">pause allowed before it assumes she's finished speaking, tuned to her own speech</div></div>
+    <div class="cell cool"><div class="n">5 steps</div><div class="l">for repairing a misunderstanding, and it never says "I don't understand you"</div></div>
+    <div class="cell warm"><div class="n">0</div><div class="l">claims of feelings: an agent that never claimed to care has nothing to lose when it forgets</div></div>
+  </div>
+  <div class="actions"><a href="mailto:ar.anupamsarkar@gmail.com?subject=Saanjh%20design%20brief">Request the full design brief</a></div>
+</div></section>
+
+<section id="workflow"><div class="wrap">
+  <p class="sec-label">04 &middot; How I've rebuilt my own practice</p>
+  <p class="lede">This is the part that scales to a team. These tools are internal, so I show them in a live walk-through rather than a public link.</p>
+  <div class="wf" style="margin-top:16px">
+    <div class="item"><span class="status st-walk">Walk-through</span><h4>Parity &mdash; zero-defect handoff</h4><p>A handoff contract editor and validation console for IBM HMC design QA. Differences between design and build are caught against an agreed contract, not argued about in review.</p></div>
+    <div class="item"><span class="status st-walk">Walk-through</span><h4>Figma &harr; code, both ways</h4><p>Figma connected to Claude Code through MCP, so design and code stay in sync in both directions instead of drifting after handoff.</p></div>
+    <div class="item"><span class="status st-walk">Walk-through</span><h4>Figma plugins</h4><p>Carbon Content Recommender and Design Spec Exporter, tested and debugged in real Figma files.</p></div>
+    <div class="item"><span class="status st-walk">Walk-through</span><h4>A library of AI specialists</h4><p>Reusable skills for research synthesis, case-study narrative, data visualisation, diagrams and UX metric baselines. They're systems a team can reuse, not one-off prompts.</p></div>
+    <div class="item"><span class="status st-code">In progress</span><h4>A course for designers</h4><p>Teaches an AI-native workflow across the whole product lifecycle, built from how I learned and applied it myself.</p></div>
+    <div class="item"><span class="status st-code">Framework</span><h4>Intent-First UX</h4><p>My framework for interfaces that resolve to the most likely outcome first: Sense &rarr; Morph &rarr; Confirm &rarr; Escape. This portfolio's ask box runs on it.</p></div>
+  </div>
+</div></section>
+
+<section id="pov"><div class="wrap">
+  <p class="sec-label">05 &middot; Where I draw the line</p>
+  <div class="pov">
+    <div class="p"><span class="nm">01</span><span><b>Synthetic users predict; they don't replace.</b> The Lab tells you where to point real research. It never stands in for it.</span></div>
+    <div class="p"><span class="nm">02</span><span><b>No invented numbers.</b> If a target isn't known yet, I leave the gap visible and set it with the team.</span></div>
+    <div class="p"><span class="nm">03</span><span><b>An agent should never claim feelings it doesn't have.</b> Honesty is what keeps the relationship intact when the system gets something wrong.</span></div>
+    <div class="p"><span class="nm">04</span><span><b>Consent before disclosure.</b> An AI system that reports about people must tell them first.</span></div>
+    <div class="p"><span class="nm">05</span><span><b>Label what's real.</b> Live, code, concept or walk-through, on every item on this page.</span></div>
+  </div>
+</div></section>
+
+<section id="index"><div class="wrap">
+  <p class="sec-label">06 &middot; Evidence index</p>
+  <div class="index-wrap"><table class="idx">
+    <thead><tr><th>Evidence</th><th>Status</th><th>Open</th></tr></thead>
+    <tbody>
+      <tr><td>UX KPI Testing Lab</td><td><span class="status st-live">Live</span></td><td><a href="uxkpi-lab.html">Demo</a> &middot; <a href="https://github.com/antararoychowdhury13-beep/UX-KPI-tool">Code</a></td></tr>
+      <tr><td>Buddy, proactive AI assistant</td><td><span class="status st-live">Live</span></td><td><a href="demos/buddy/index.html">Demo</a> &middot; <a href="https://github.com/antararoychowdhury13-beep/Buddy-app">Code</a></td></tr>
+      <tr><td>Ask my portfolio (text + voice)</td><td><span class="status st-live">Live</span></td><td><a href="index.html?mode=agent#agent">Open</a> &middot; <a href="https://github.com/antararoychowdhury13-beep/New-portfolio">Code</a></td></tr>
+      <tr><td>DFD devotional app</td><td><span class="status st-live">Live</span></td><td><a href="https://antararoychowdhury13-beep.github.io/DFDV2/">Open</a></td></tr>
+      <tr><td>Saanjh elder-care voice agent</td><td><span class="status st-concept">Concept</span></td><td><a href="#saanjh">Summary</a> &middot; full brief on request</td></tr>
+      <tr><td>Parity, Figma&harr;code, plugins, AI skills</td><td><span class="status st-walk">Walk-through</span></td><td><a href="mailto:ar.anupamsarkar@gmail.com?subject=AI%20workflow%20walk-through">Book a walk-through</a></td></tr>
+      <tr><td>Leadership case studies</td><td><span class="status st-live">Live</span></td><td><a href="index.html#work">All work</a></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note" style="margin-top:26px">
+    <div class="nl"><span class="live"></span>Hiring for an AI-first team?</div>
+    <p>I'm looking for a <b>design manager or lead role</b> where the team's default way of working is AI-native. I'm happy to walk through any of this live &mdash; including the internal tools I can't link publicly.</p>
+  </div>
+  <div class="actions">
+    <a class="primary" href="mailto:ar.anupamsarkar@gmail.com?subject=AI%20design%20leadership%20role">Get in touch</a>
+    <a href="index.html#work">Leadership case studies</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="colophon"><span>&copy; 2026 ANUPAM SARKAR &middot; BENGALURU</span><span>PRODUCT DESIGN MANAGER</span></div>
+</div></footer>
+<script>
+(function(){var b=document.getElementById('themeBtn');function sync(){b.setAttribute('aria-checked',document.documentElement.classList.contains('light'));}
+b.onclick=function(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark');sync();};sync();})();
+</script>
+</body>
+</html>

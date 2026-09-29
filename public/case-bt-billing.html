@@ -568,6 +568,20 @@
   /* struck-through "killed" labels on light surfaces need a darker ink */
   .sticky .killed, .card-table .killed, .scribble-box .killed { color: var(--card-ink2); }
 </style>
+<style id="mobile-fit">
+@media (max-width:600px){
+  .role-strip{grid-template-columns:1fr !important}
+  .sticky{max-width:100%;min-width:0;transform:none !important}
+  .sticky-wall{justify-content:flex-start}
+  .card-table,.scrawl-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{max-width:100%}
+  img,svg,video{max-width:100%;height:auto}
+  [style*="min-width"]{min-width:0 !important}
+  [style*="repeat(4, 1fr)"],[style*="repeat(3, 1fr)"]{grid-template-columns:1fr 1fr !important}
+  .card-table table{table-layout:fixed;width:100%;word-break:break-word}
+  .card-table th,.card-table td{padding-left:6px !important;padding-right:6px !important}
+}
+</style>
 </head>
 <body>
 

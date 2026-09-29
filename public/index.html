@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <script>if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light");</script>
-<script>if(localStorage.getItem("mode")==="agent")document.documentElement.classList.add("agentic");</script>
+<script>try{var _m=new URLSearchParams(location.search).get("mode");if(_m==="agent"||_m==="portfolio")localStorage.setItem("mode",_m);}catch(e){}if(localStorage.getItem("mode")==="agent")document.documentElement.classList.add("agentic");</script>
 <style>
 :root{
   --ink:#07070A; --ink-2:#0E0E13; --ink-3:#16161D; --ink-4:#1E1E27;
@@ -369,7 +369,7 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
 <nav aria-label="Primary navigation"><div class="nav-in">
   <a class="brand" href="#top"><span class="dot"></span>Anupam Sarkar</a>
   <div class="nav-links" id="navLinks">
-    <a href="#work" class="nav-pf">Selected work</a><a href="#leadership" class="nav-pf">Leadership</a><a href="#agent" class="nav-ag">Ask my portfolio</a><a href="career-journey.html">Experience</a><a href="#contact">Contact</a>
+    <a href="#work" class="nav-pf">Selected work</a><a href="#leadership" class="nav-pf">Leadership</a><a href="#agent" class="nav-ag">Ask my portfolio</a><a href="ai-work.html">AI work</a><a href="career-journey.html">Experience</a><a href="#contact">Contact</a>
   </div>
   <div class="nav-right">
     <span class="nav-status" role="status">● OPEN TO DESIGN LEADERSHIP ROLES</span>
@@ -392,6 +392,7 @@ html.light .field-list button:hover,html.light .field-list button[aria-pressed="
   </div>
   <div class="hero-actions reveal">
     <a class="primary" href="#work">View selected work</a>
+    <a href="ai-work.html">My AI work</a>
     <a href="#leadership">How I lead</a>
     <!-- TODO: swap href back to anupam-sarkar-resume.pdf once the real file is supplied -->
     <a href="mailto:ar.anupamsarkar@gmail.com?subject=Resume%20request">Request résumé</a>
@@ -593,6 +594,9 @@ syncThemeBtn();
 
 /* ===== Agent console ===== */
 const CASELIB={
+  'ai-work':{cli:'AI work · overview',t:'What I design and build with AI — live demos, concepts and workflow.',m:'4 live demos',href:'ai-work.html',btn:'See AI work'},
+  'uxkpi-lab':{cli:'Live demo · synthetic testing',t:'Synthetic usability testing with measured, not guessed, results.',m:'60 simulated sessions',href:'uxkpi-lab.html',btn:'Try the lab'},
+  'buddy':{cli:'Live demo · proactive AI',t:'Buddy — an assistant that earns the right to interrupt.',m:'4 trust tiers',href:'demos/buddy/index.html',btn:'Open Buddy'},
   'ibm-power':{cli:'IBM · Power Systems',t:'Unified four squads around one design language.',m:'20% less UI drift',href:'case-ibm-power.html'},
   'smart-mining':{cli:'IBM · PowerVC',t:'Turned every system alert into an actionable severity system.',m:'72+ screens · H1 2026',href:'case-smart-mining.html'},
   'nextwork':{cli:'Siemens · #NextWork',t:'Built the operating system around the methodology.',m:'72% adoption',href:'case-nextwork.html'},
@@ -659,6 +663,17 @@ const INTENTS={
     body:()=>`<div class="a-statement">Architecture → IIT design → TCS → John Deere → Siemens → BT → <em>IBM.</em></div>
       <p class="a-note">Each industry switch built a durable capability the next role compounded — from shipping volume at TCS to decision design at Siemens to people leadership and governance at IBM.</p>
       ${caseCards(['career-journey'])}`},
+  ai:{label:'What have you built with AI?',tag:'AI-NATIVE WORK',
+    line:'resolving → AI products, live demos and workflow…',
+    body:()=>`<div class="a-statement">I design with AI as the <em>material</em> — and I build the prototypes myself.</div>
+      <div class="a-grid">
+        <div class="a-cell"><div class="n">Live</div><div class="l">UX KPI Testing Lab · synthetic usability testing with measured results</div></div>
+        <div class="a-cell cool"><div class="n">Live</div><div class="l">Buddy · proactive assistant with a four-tier trust engine</div></div>
+        <div class="a-cell warm"><div class="n">Concept</div><div class="l">Saanjh · elder-care voice agent with consent-first escalation</div></div>
+        <div class="a-cell green"><div class="n">Workflow</div><div class="l">Figma ↔ code via MCP · Parity handoff QA · custom AI skills</div></div>
+      </div>
+      <p class="a-note">Every item is labelled live, code or concept. Synthetic results are framed as predictions to verify with real users — never as a replacement for them.</p>
+      ${caseCards(['ai-work','uxkpi-lab','buddy'])}`},
   ifu:{label:'What is Intent-First UX?',tag:'ORIGINAL FRAMEWORK',
     line:'resolving → original framework you are currently inside…',
     body:()=>`<div class="a-statement">Every UI framework starts <em>after</em> intent. Intent-First UX starts before it.</div>
@@ -669,8 +684,9 @@ const INTENTS={
     body:()=>`<p class="a-note">Try asking about team leadership, measurable impact, difficult decisions, design systems or career progression — or open a case study directly.</p>
       ${caseCards(['ibm-power','smart-mining','bart'])}`}
 };
-const ORDER=['leadershipScope','impact','decision','systems','arc','ifu'];
+const ORDER=['ai','leadershipScope','impact','decision','systems','arc','ifu'];
 const KW={
+  ai:[' ai ',' ai?',' ai.','ai-','artificial','llm','gpt','claude','agentic','agent ','agents','synthetic','generative','genai','machine learning','buddy','saanjh','voice agent','prompt'],
   leadershipScope:['lead','leader','manage','manager','team','report','mentor','coach','people','organization','organizational','scope','altitude'],
   impact:['impact','metric','number','result','outcome','roi','data','measure','proof','yield'],
   decision:['decision','hard','trade','trade-off','tradeoff','tough','difficult','kill','pivot','choice','call','override'],
@@ -687,6 +703,7 @@ ORDER.forEach(k=>{const b=document.createElement('button');b.className='chip';b.
 function route(q){
   q=(q||'').toLowerCase().trim();
   if(!q)return 'fallback';
+  q=' '+q+' ';
   for(const k of ORDER){if(KW[k].some(w=>q.includes(w)))return k;}
   return 'fallback';
 }
