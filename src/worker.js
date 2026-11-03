@@ -12,7 +12,19 @@
  *   OLLAMA_BASE_URL  var    — optional, e.g. "https://ollama.example.com:11434"
  *   OLLAMA_MODEL     var    — optional, defaults to "llama3.2"
  *   OLLAMA_API_KEY   secret — optional, sent as a Bearer token if set
+ *
+ * Also serves the Testing Lab's perception layer on /api/vision, /api/flow
+ * and /api/vision/selftest. Those run on the Workers AI `AI` binding and need
+ * no key or secret at all.
  */
+
+import {
+  SCHEMA,
+  VISION_MODELS,
+  DEFAULT_MODEL,
+  perceiveScreen,
+  buildFlowGraph,
+} from "./vision.js";
 
 const SYSTEM_PROMPT = `You are the portfolio agent for Anupam Sarkar — an intent-first portfolio where visitors ask questions and you resolve them to evidence. Speak with confidence, warmth and precision, at the altitude a hiring VP would expect. Refer to Anupam by name or as "he".
 
@@ -144,8 +156,114 @@ function json(obj, status = 200) {
   });
 }
 
+/* ---------------- perception (/api/vision, /api/flow) ---------------- */
+
+/** Base64 payload ceiling — roughly 6 MB of encoded image. */
+const MAX_IMAGE_B64 = 8_000_000;
+
+async function handleVision(request, env, ctx) {
+  if (request.method !== "POST") return json({ error: "POST only" }, 405);
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "invalid JSON body" }, 400);
+  }
+  const image = typeof body.image === "string" ? body.image : "";
+  if (!image) return json({ error: "body.image must be a base64 string or data URI" }, 400);
+  if (image.length > MAX_IMAGE_B64)
+    return json({ error: `image too large (${image.length} chars, limit ${MAX_IMAGE_B64})` }, 413);
+
+  const model = typeof body.model === "string" && VISION_MODELS[body.model] ? body.model : DEFAULT_MODEL;
+  try {
+    const out = await perceiveScreen(env, ctx, {
+      image,
+      mime: typeof body.mime === "string" ? body.mime : "image/png",
+      model,
+      noCache: body.noCache === true,
+    });
+    return json(out);
+  } catch (e) {
+    // A perception failure is reported as a failure. It is never silently
+    // swapped for canned output — the caller has to know the numbers that
+    // follow were not derived from the pixels.
+    return json(
+      {
+        schema: SCHEMA,
+        inventory: null,
+        provenance: {
+          status: "failed",
+          reason: String(e?.message || e).slice(0, 400),
+          pixels_read: false,
+          provider: "cloudflare-workers-ai",
+          model: VISION_MODELS[model]?.id || model,
+          attempts: e?.attempts || null,
+        },
+      },
+      502
+    );
+  }
+}
+
+async function handleFlow(request) {
+  if (request.method !== "POST") return json({ error: "POST only" }, 405);
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "invalid JSON body" }, 400);
+  }
+  const screens = Array.isArray(body.screens) ? body.screens.slice(0, 40) : null;
+  if (!screens?.length) return json({ error: "body.screens must be a non-empty array" }, 400);
+  return json(buildFlowGraph(screens));
+}
+
+/**
+ * Probe every candidate model against a known fixture and report what each
+ * one actually read. Used to pick the model and to prove the wiring works;
+ * the fixture's ground truth is in public/fixtures/perception-test.png.
+ */
+async function handleSelftest(request, env, ctx) {
+  const url = new URL(request.url);
+  const want = url.searchParams.get("model");
+  const keys = want && want !== "all" ? want.split(",").filter((k) => VISION_MODELS[k]) : Object.keys(VISION_MODELS);
+  if (!keys.length) return json({ error: "no known model selected" }, 400);
+
+  const asset = await env.ASSETS.fetch(new URL("/fixtures/perception-test.png", url.origin));
+  if (!asset.ok) return json({ error: "fixture image missing" }, 500);
+  const bytes = new Uint8Array(await asset.arrayBuffer());
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  const b64 = btoa(bin);
+
+  const results = {};
+  for (const key of keys) {
+    const t0 = Date.now();
+    try {
+      const out = await perceiveScreen(env, ctx, { image: b64, mime: "image/png", model: key, noCache: true });
+      results[key] = {
+        ok: out.provenance.status === "live",
+        status: out.provenance.status,
+        model: out.provenance.model,
+        shape: out.provenance.request_shape,
+        ms: Date.now() - t0,
+        usage: out.provenance.usage,
+        elements_found: out.provenance.elements_found,
+        screen_purpose: out.inventory?.screen_purpose,
+        primary_action: out.inventory?.primary_action,
+        headings: out.inventory?.headings,
+        labels: (out.inventory?.elements || []).map((e) => `${e.role}:${e.label}`),
+        observations: out.inventory?.observations,
+      };
+    } catch (e) {
+      results[key] = { ok: false, error: String(e?.message || e).slice(0, 300), attempts: e?.attempts || null, ms: Date.now() - t0 };
+    }
+  }
+  return json({ fixture: "/fixtures/perception-test.png", ai_binding: !!env.AI, results });
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/api/chat") {
       if (request.method !== "POST") return json({ error: "POST only" }, 405);
@@ -182,6 +300,9 @@ export default {
       }
       return json({ error: "no AI provider available", detail: errors }, 503);
     }
+    if (url.pathname === "/api/vision") return handleVision(request, env, ctx);
+    if (url.pathname === "/api/vision/selftest") return handleSelftest(request, env, ctx);
+    if (url.pathname === "/api/flow") return handleFlow(request);
     return env.ASSETS.fetch(request);
   },
 };

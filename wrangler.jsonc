@@ -10,5 +10,12 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS"
+  },
+  // Workers AI — powers the Testing Lab's perception layer (/api/vision).
+  // No key or secret: the binding authenticates itself. Usage draws on the
+  // account's free daily Neuron allocation, which is why a screen is read
+  // once and cached by image hash rather than once per simulated participant.
+  "ai": {
+    "binding": "AI"
   }
 }
