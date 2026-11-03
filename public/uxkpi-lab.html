@@ -59,7 +59,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .tb-t{font-size:13px;font-weight:700;color:var(--t1);flex:1;letter-spacing:-.2px}
 .tb-cr{font-size:11px;color:var(--t3);display:flex;align-items:center;gap:4px}
 .tb-cr b{color:var(--t2);font-weight:600}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--rad);border:1px solid var(--b2);background:transparent;color:var(--t2);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .1s;white-space:nowrap;letter-spacing:-.1px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;min-height:34px;border-radius:var(--rad);border:1px solid var(--b2);background:transparent;color:var(--t2);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .1s;white-space:nowrap;letter-spacing:-.1px}
 .btn:hover{background:rgba(255,255,255,.04);border-color:var(--b3);color:var(--t1)}
 .btn.primary{background:var(--c);color:#0b0d12;border-color:transparent;font-weight:700}
 .btn.primary:hover{background:#74aaff}
@@ -555,6 +555,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .libp-attrs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
 .libp-foot{display:flex;gap:6px;margin-top:9px}
 
+/* ===== PROVENANCE ===== */
+.prov{background:var(--s2);border:1px solid var(--b1);border-radius:var(--radl);padding:12px 14px;margin:0 0 14px}
+.prov-t{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.prov-t i{font-size:12px;color:var(--c)}
+.prov-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px}
+@media(max-width:760px){.prov-grid{grid-template-columns:1fr}}
+.prov-row{display:grid;grid-template-columns:120px 1fr;gap:10px;font-size:10.5px;color:var(--t2);line-height:1.5}
+.prov-row b{color:var(--t3);font-weight:600}
+.prov-row u{color:var(--a);text-decoration:none;border-bottom:1px dotted var(--a)}
+.prov-row .mono{font-family:'JetBrains Mono',monospace;color:var(--t1)}
+.pj-del{position:absolute;top:10px;right:10px;font-size:13px;color:var(--t3);cursor:pointer}
+.pj-del:hover{color:var(--r)}
+
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
@@ -720,13 +733,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div class="model-panel">
         <div class="mp-header">
           <div>
-            <div class="mp-title"><i class="ti ti-cpu"></i>Model per evaluation step — click any to change</div>
+            <div class="mp-title"><i class="ti ti-cpu"></i>Model routing — design reference <span class="chip ch-amber" style="margin-left:6px">NOT EXECUTED IN THIS BUILD</span></div>
           </div>
           <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace">KPIs = <span style="color:var(--g)">measured</span> from simulated sessions, <span style="color:var(--c)">never model-rated</span></div>
         </div>
         <div class="mp-body">
           <div class="model-grid" id="model-grid">
             <!-- populated by JS -->
+          </div>
+          <div class="formula-bar" style="border-color:rgba(245,158,11,.3)">
+            <div class="fb-label" style="color:var(--a)">No model is called in this build</div>
+            The simulation runs locally in your browser. These assignments describe the production
+            pipeline; changing them does not change any number below.
           </div>
           <div class="formula-bar">
             <div class="fb-label">How the KPIs are computed</div>
@@ -738,7 +756,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       </div>
 
       <!-- 03 TESTING METHODS -->
-      <div class="sec-label">03 — Testing Methods <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">Select up to 3 · <span style="color:var(--g)">SIMULATED</span> = measured from synthetic-user sessions · <span style="color:var(--p)">INSPECTION</span> = opinion-based expert review add-on</span></div>
+      <div class="sec-label">03 — Testing Methods <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">Select up to 3 · <span style="color:var(--g)">SIMULATED</span> = read out of the simulated sessions · <span style="color:var(--p)">INSPECTION</span> = requires a vision model, <b>not evaluated in this build</b></span></div>
       <div class="method-filter">
         <button class="mft active" onclick="filterM('all',this)">All 20</button>
         <button class="mft" onclick="filterM('heuristic',this)">Heuristic</button>
@@ -767,14 +785,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
       <!-- 05 CUSTOM TESTS -->
       <div class="sec-label">05 — Custom Tests <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">add your own criteria</span></div>
-      <div id="ct-list">
-        <div class="ct-row">
-          <div class="ct-icon"><i class="ti ti-checklist"></i></div>
-          <div class="ct-info"><div class="ct-n">Brand consistency check</div><div class="ct-d">Evaluate whether design language matches IBM Carbon Design System guidelines</div></div>
-          <div class="ct-model">claude-sonnet-4</div>
-          <i class="ti ti-trash ct-del" onclick="this.closest('.ct-row').remove()"></i>
-        </div>
-      </div>
+      <div id="ct-list"></div>
       <div class="ct-add" onclick="openModal()">
         <i class="ti ti-plus" style="font-size:15px;color:var(--t3)"></i>
         <span>Add custom test criteria</span>
@@ -793,10 +804,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         </div>
         <div class="rp-stats">
           <div class="rps"><div class="rps-v" id="rp-m">1</div><div class="rps-l">Methods</div></div>
-          <div class="rps"><div class="rps-v" id="rp-p">25</div><div class="rps-l">Participants</div></div>
+          <div class="rps"><div class="rps-v" id="rp-p">5</div><div class="rps-l">Personas</div></div>
           <div class="rps"><div class="rps-v" id="rp-f">1</div><div class="rps-l">Flows</div></div>
           <div class="rps"><div class="rps-v" id="rp-c">~25</div><div class="rps-l">Sessions</div></div>
         </div>
+        <div id="rp-math" style="font-size:10px;color:var(--t2);font-family:'JetBrains Mono',monospace;margin:-6px 0 10px"></div>
         <div class="rp-chips" id="rp-chips"></div>
         <div style="font-size:9.5px;color:var(--t3);margin:-6px 0 12px">Your panel from the Persona Builder — each persona expands into its own simulated participant panel with individually varied behaviour.</div>
         <div class="ai-bar">
@@ -1159,6 +1171,7 @@ function toggleM(id){
   const cat = activeF?.textContent.toLowerCase();
   filterM(cat?.includes('all')?'all':cat||'all', activeF);
   updateRunStats();
+  if(typeof stateChanged==="function")try{stateChanged()}catch{}
 }
 
 function renderMethodDetail(id){
@@ -1293,7 +1306,8 @@ function hashSeed(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.cha
 const clamp01=x=>Math.min(1,Math.max(0,x));
 const pct=x=>Math.round(x*100)+"%";
 const pp=x=>(x>0?"+":"")+Math.round(x*100)+" pp";
-const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 
 /* ================================================================
    02 — UPLOAD SCREENS
@@ -1340,7 +1354,6 @@ function addFiles(side,files){
 function loadSampleFlow(){
   appState.screens.before=SAMPLE_FLOW.before.map((l,i)=>({label:l,seq:i+1,img:null}));
   appState.screens.after=SAMPLE_FLOW.after.map((l,i)=>({label:l,seq:i+1,img:null}));
-  appState.sample=true;
   renderShots("before");renderShots("after");uploadChanged();
 }
 function uploadChanged(){
@@ -1375,8 +1388,15 @@ function runAnalysis(){
   };
   tick();
 }
+/* The sample flow is recognised by comparing the CURRENT screens against it —
+   never by a remembered flag, which could outlive the screens that set it. */
+function isSampleFlow(){
+  const b=appState.screens.before.map(s=>s.label).join("|");
+  const a=appState.screens.after.map(s=>s.label).join("|");
+  return b===SAMPLE_FLOW.before.join("|") && a===SAMPLE_FLOW.after.join("|");
+}
 function deriveKeyChanges(){
-  if(appState.sample)return SAMPLE_FLOW.keyChanges;
+  if(isSampleFlow())return SAMPLE_FLOW.keyChanges;
   const before=new Set(appState.screens.before.map(s=>s.label.toLowerCase()));
   const changes=[];
   appState.screens.after.forEach(s=>{
@@ -1555,6 +1575,21 @@ function wilson(k,n,z=1.96){
 }
 const med=xs=>{if(!xs.length)return 0;const s=[...xs].sort((a,b)=>a-b);const m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
 
+const ENGINE_VERSION="synthux-sim/2.0";
+/* Canonical fingerprint of everything that can legitimately change a result.
+   Identical inputs reproduce identical numbers; any real change moves them. */
+function studyFingerprint(){
+  const per=+(document.getElementById("rp-n-slider")?.value||12);
+  return hashSeed([
+    ENGINE_VERSION,
+    "before:"+appState.screens.before.map(s=>s.seq+":"+s.label).join(","),
+    "after:"+appState.screens.after.map(s=>s.seq+":"+s.label).join(","),
+    "changes:"+appState.analysis.keyChanges.map(k=>k.tag+":"+k.text).join("|"),
+    "personas:"+appState.personas.map(p=>[p.name,p.age,p.tech,p.exp,p.a11y].join("/")).join(","),
+    "participants:"+per,"mode:"+flowMode,
+  ].join("||"));
+}
+function fingerprintHex(){return studyFingerprint().toString(16).padStart(8,"0")}
 function runVariant(variant,perPersona,seedBase){
   const keyChanges=variant.changes;
   const labels=(variant.flow==="after"?appState.screens.after:appState.screens.before).map(s=>s.label);
@@ -1562,7 +1597,7 @@ function runVariant(variant,perPersona,seedBase){
   const personaStats=[];const allSessions=[];
   appState.personas.forEach(p=>{
     const b=deriveBehaviour(p);
-    const rng=new RNG(hashSeed(p.id+"|"+variant.key+"|"+seedBase));
+    const rng=new RNG(hashSeed(seedBase+"|"+p.id+"|"+variant.key));
     const sessions=[];
     for(let i=0;i<perPersona;i++)sessions.push(simulateSession(rng,b,hz,labels));
     sessions.forEach(s=>allSessions.push({...s,personaId:p.id}));
@@ -1647,7 +1682,9 @@ function updateRunStats(){
   document.getElementById("rp-p").textContent=appState.personas.length;
   document.getElementById("rp-m").textContent=selectedMethods.size||1;
   document.getElementById("rp-f").textContent=flowModes[flowMode]||1;
-  document.getElementById("rp-c").textContent="~"+(per*appState.personas.length*(flowModes[flowMode]||1));
+  document.getElementById("rp-c").textContent=per*appState.personas.length*(flowModes[flowMode]||1);
+  const pt=document.getElementById("rp-math");
+  if(pt)pt.textContent=`${appState.personas.length} personas × ${per} participants each × ${flowModes[flowMode]||1} flow${(flowModes[flowMode]||1)>1?"s":""} = ${per*appState.personas.length*(flowModes[flowMode]||1)} sessions`;
   document.getElementById("rp-chips").innerHTML=appState.personas.map(p=>
     `<div class="rpc"><div class="rpc-av" style="background:var(--cg);color:var(--c)">${esc(p.name.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase())}</div>${esc(p.name)}&nbsp;<small>· tech ${p.tech}/10 · ${p.exp}y domain</small></div>`).join("")
     ||`<div style="font-size:10px;color:var(--a)">No personas yet — build your panel in step 3 first.</div>`;
@@ -1678,7 +1715,7 @@ function startRun(){
   let i=0;
   function next(){
     if(i>=seq.length){
-      const seedBase=7+runCount*13;runCount++;
+      const seedBase=studyFingerprint();runCount++;
       STUDY=variants.map((v,idx)=>({...v,res:runVariant(v,per,seedBase+idx*101)}));
       activeVariant=0;
       bumpTotals();
@@ -1699,6 +1736,27 @@ function startRun(){
 }
 
 /* ---------- KPI MATRIX ---------- */
+function provenanceHTML(){
+  const per=+(document.getElementById("rp-n-slider")?.value||12);
+  const nameOf=id=>(METHODS.find(m=>m.id===id)||{}).title||id;
+  const sim=[...selectedMethods].filter(m=>SIMULATED_METHODS.has(m)).map(nameOf);
+  const insp=[...selectedMethods].filter(m=>!SIMULATED_METHODS.has(m)).map(nameOf);
+  const tags=[...new Set(appState.analysis.keyChanges.map(k=>k.tag))];
+  const steps=Math.max(3,Math.min(8,appState.screens.before.length||5));
+  const row=(k,v)=>`<div class="prov-row"><b>${k}</b><span>${v}</span></div>`;
+  return `<div class="prov">
+    <div class="prov-t"><i class="ti ti-receipt"></i>Run provenance — exactly what produced these numbers</div>
+    <div class="prov-grid">
+      ${row("Screens read", `${appState.screens.before.length} before · ${appState.screens.after.length} after — <u>pixel content not inspected</u>`)}
+      ${row("Flow length used", `${steps}-step optimal path, taken from your before-flow screen count`)}
+      ${row("Change evidence", tags.length?tags.join(" &middot; "):"none recorded")}
+      ${row("Panel", `${appState.personas.length} personas × ${per} participants = ${appState.personas.length*per} per flow`)}
+      ${row("Models called", "none — the simulation runs locally in your browser")}
+      ${row("Methods applied", (sim.length?sim.join(", "):"base simulation")+(insp.length?` <span style="color:var(--a)">· not evaluated: ${insp.join(", ")}</span>`:""))}
+      ${row("Input fingerprint", `<span class="mono">${fingerprintHex()}</span> — identical inputs reproduce these numbers exactly`)}
+      ${row("Engine / calibration", `<span class="mono">${ENGINE_VERSION}</span> · uncalibrated against human studies`)}
+    </div></div>`;
+}
 function outcomeBar(res){
   const order=[["SUCCESS","seg-success","Completed"],["PARTIAL","seg-partial","Partial"],["FAILURE","seg-failed","Silent failure"],["ABANDONED","seg-abandoned","Gave up"]];
   const segs=order.filter(([k])=>res.counts[k]>0).map(([k,cls])=>`<div class="sb-seg ${cls}" style="flex:${res.counts[k]} 0 0"></div>`).join("");
@@ -1715,9 +1773,9 @@ function renderKPI(){
     const r=v.res;const delta=i===0?null:r.rate-base.rate;
     return `<div class="vcard${STUDY.length>1&&i===bestIdx?" best":""}">
       <div class="v-label">${esc(v.label)}${STUDY.length>1&&i===bestIdx?' <span style="color:var(--g)">★ best</span>':""}</div>
-      <div class="v-hero-row"><span class="v-hero">${pct(r.rate)}</span><span class="v-hero-sub">task success</span>
+      <div class="v-hero-row"><span class="v-hero">${pct(r.rate)}</span><span class="v-hero-sub">simulated task success</span>
         ${delta!==null?`<span class="delta ${delta>0.001?"up":delta<-0.001?"down":"flat"}">${pp(delta)}</span>`:""}</div>
-      <div class="v-ci">95% CI ${pct(r.ci[0])}–${pct(r.ci[1])} · n=${r.n}</div>
+      <div class="v-ci">95% simulation interval ${pct(r.ci[0])}–${pct(r.ci[1])} · n=${r.n}</div>
       ${outcomeBar(r)}
       <div class="v-stats"><span>Median actions <b>${r.median}</b></span><span>Optimal <b>${r.optimal}</b></span>
         <span>Backtracked <b>${pct(r.backtrackRate)}</b></span><span>Abandoned <b>${pct(r.abandonRate)}</b></span></div>
@@ -1738,8 +1796,9 @@ function renderKPI(){
     return `<tr><td>${esc(p.name)}<div style="font-size:9px;color:var(--t3);font-weight:400">${esc(p.occupation||"—")} · tech ${p.tech}/10 · panel n=${c0?c0.n:0}</div></td>${cells}${d}
       <td>${c0?c0.medianActions:"—"}</td><td>${c0?pct(c0.backtrackRate):"—"}</td></tr>`;}).join("");
   document.getElementById("kpi-content").innerHTML=`
-    <div class="note-bar"><i class="ti ti-alert-triangle"></i><div><b>Synthetic study — model-predicted behaviour, not real users.</b> Every number below is measured from ${STUDY.reduce((a,v)=>a+v.res.n,0)} simulated sessions built from YOUR uploaded flow and YOUR persona panel (uncalibrated estimates).</div></div>
-    <div class="sec-label">Measured KPIs — ${esc(document.getElementById("su-name").value)}</div>
+    <div class="note-bar"><i class="ti ti-alert-triangle"></i><div><b>Synthetic simulation — not a usability study.</b> These are scenario estimates counted from ${STUDY.reduce((a,v)=>a+v.res.n,0)} simulated sessions. Your screens were <b>not visually inspected</b>: the simulation uses your flow's structure (screen count, labels, documented changes) and your persona panel. Intervals describe variation inside the simulation — they are not confidence about real users.</div></div>
+    ${provenanceHTML()}
+    <div class="sec-label">Simulated KPIs — ${esc(document.getElementById("su-name").value)}</div>
     <div class="vgrid">${cards}</div>
     <div class="kpi-panel">
       <div class="kpi-panel-hd"><i class="ti ti-table"></i><span>Persona × KPI matrix</span><small>median actions &amp; backtracking from baseline flow</small></div>
@@ -1776,7 +1835,8 @@ function renderReport(){
       <span class="outb out-${c.majority==="success"?"SUCCESS":c.majority==="abandoned"?"ABANDONED":c.majority==="failure"?"FAILURE":"PARTIAL"}">${pct(c.rate)}</span>
     </button>`).join("");
   document.getElementById("report-content").innerHTML=`
-    <div class="note-bar"><i class="ti ti-alert-triangle"></i><div><b>Synthetic research report.</b> Findings ranked by measured severity; treat as predictions to verify with real users.</div></div>
+    <div class="note-bar"><i class="ti ti-alert-triangle"></i><div><b>Synthetic simulation report — not evidence from real users.</b> Findings are ranked by how often they occurred in the simulation. Screens were not visually inspected. Verify anything here with real participants before acting on it.</div></div>
+    ${provenanceHTML()}
     ${tabs}
     <div class="sec-label">Primary issues — ranked by measured severity</div>
     ${issues}
@@ -1813,14 +1873,25 @@ function showPanel(i,el){
 /* ---------- modal (custom tests) ---------- */
 function openModal(){document.getElementById("modal").classList.add("open")}
 function closeModal(){document.getElementById("modal").classList.remove("open")}
+function renderCustomTests(){
+  const list=appState.customTests||[];
+  document.getElementById("ct-list").innerHTML=list.map((c,i)=>`
+    <div class="ct-row">
+      <div class="ct-icon"><i class="ti ti-checklist"></i></div>
+      <div class="ct-info"><div class="ct-n">${esc(c.name)}</div><div class="ct-d">${esc(c.desc||"Custom evaluation")}</div></div>
+      <div class="ct-model">${esc(c.model)}</div>
+      <span class="chip ch-amber" title="Needs a vision model">NOT EVALUATED</span>
+      <i class="ti ti-trash ct-del" onclick="removeCT(${i})"></i>
+    </div>`).join("");
+}
+function removeCT(i){appState.customTests.splice(i,1);renderCustomTests();stateChanged()}
 function addCT(){
   const name=document.getElementById("ct-name").value.trim();
   const desc=document.getElementById("ct-desc").value.trim();
   const model=document.getElementById("ct-model").value;
   if(!name)return;
-  const r=document.createElement("div");r.className="ct-row";
-  r.innerHTML=`<div class="ct-icon"><i class="ti ti-checklist"></i></div><div class="ct-info"><div class="ct-n">${esc(name)}</div><div class="ct-d">${esc(desc)||"Custom evaluation"}</div></div><div class="ct-model">${model}</div><i class="ti ti-trash ct-del" onclick="this.closest('.ct-row').remove()"></i>`;
-  document.getElementById("ct-list").appendChild(r);
+  (appState.customTests=appState.customTests||[]).push({name,desc,model});
+  renderCustomTests();stateChanged();
   document.getElementById("ct-name").value="";document.getElementById("ct-desc").value="";
   closeModal();
 }
@@ -1892,6 +1963,8 @@ function syncActiveFromWorkspace(){
              after:appState.screens.after.map(s=>({label:s.label,seq:s.seq,img:null}))};
   p.analysis=appState.analysis;
   p.personas=appState.personas;
+  p.customTests=appState.customTests||[];
+  p.methods=[...selectedMethods];
   regSave();
 }
 function hydrateWorkspace(){
@@ -1902,9 +1975,14 @@ function hydrateWorkspace(){
   appState.screens={before:p.screens.before.map(s=>({...s})),after:p.screens.after.map(s=>({...s}))};
   appState.analysis=p.analysis;
   appState.personas=p.personas;
-  appState.sample=/PowerGrid|mandate/i.test((p.screens.before[3]||{}).label||"");
+  appState.customTests=p.customTests||[];
+  selectedMethods=new Set(p.methods||[]);
+  selectedMethod=selectedMethods.size?[...selectedMethods][0]:null;
   setFMQuiet(p.flowMode||"single");
   renderShots("before");renderShots("after");renderAnalysis();uploadChangedQuiet();renderPersonas();
+  renderCustomTests();renderMethods("all");
+  if(selectedMethod){renderMethodDetail(selectedMethod);renderStepGuide(selectedMethod)}
+  else{document.getElementById("method-detail").classList.remove("vis")}
   updateChrome();
 }
 function setFMQuiet(mode){
@@ -1962,7 +2040,23 @@ function stepChips(){
   const curIdx=STEPS_DEF.findIndex(s=>s.key===cur);
   return STEPS_DEF.map((s,i)=>`<span class="db-chip ${i<curIdx?"done":i===curIdx?"curr":""}">${s.label}</span>`).join("");
 }
-function projCard(p){
+function deleteProject(id,ev){
+  if(ev)ev.stopPropagation();
+  const p=REG.projects.find(x=>x.id===id); if(!p)return;
+  if(REG.projects.length<=1){alert("This is your only project — create another before deleting this one.");return}
+  if(!confirm(`Delete "${p.name}"?\n\nIts screens, analysis and persona panel are removed. This cannot be undone.`))return;
+  const wasActive=REG.activeId===id;
+  REG.projects=REG.projects.filter(x=>x.id!==id);
+  if(wasActive){
+    REG.activeId=REG.projects[0].id;STUDY=null;activeVariant=0;
+    document.getElementById("kpi-content").innerHTML='<div class="empty-state"><i class="ti ti-chart-bar"></i><div>No results yet in this project — run tests from the Testing Engine.</div></div>';
+    document.getElementById("report-content").innerHTML='<div class="empty-state"><i class="ti ti-file-analytics"></i><div>No report yet in this project — run tests first.</div></div>';
+  }
+  regSave();
+  if(wasActive)hydrateWorkspace();
+  renderProjects();updateChrome();renderStepnav();
+}
+function projCard(p,withDelete){
   const isActive=p.id===REG.activeId;
   const [st,cls]=projStatus(p,isActive);
   const t=totals();
@@ -1971,6 +2065,7 @@ function projCard(p){
     <div class="pj-m">${esc(p.industry)} · ${p.personas.length} personas${isActive?" · active":""}</div>
     <span class="chip ${cls}">${st}</span>
     ${isActive&&t.lastDelta!==null&&t.lastDelta>0?`<span class="chip ch-green">Δ ${pp(t.lastDelta)}</span>`:""}
+    ${withDelete?`<i class="ti ti-trash pj-del" title="Delete project" onclick="deleteProject('${p.id}',event)"></i>`:""}
   </div>`;
 }
 function renderDashboard(){
@@ -1996,7 +2091,7 @@ function renderDashboard(){
           <div class="db-stat"><div class="v">${activeCount}</div><div class="l">Active projects</div><div class="d">${REG.projects.length-activeCount} archived</div></div>
           <div class="db-stat"><div class="v">${t.sessions.toLocaleString()}</div><div class="l">Panels simulated</div><div class="d ${t.sessions?"up":""}">${t.sessions?"measured, this device":"—"}</div></div>
           <div class="db-stat"><div class="v" ${t.lastDelta>0?'style="color:var(--g)"':""}>${t.lastDelta===null?"—":pp(t.lastDelta)}</div><div class="l">Last UX delta</div><div class="d">${t.lastDelta===null?"run a Before vs After":"measured, latest run"}</div></div>
-          <div class="db-stat"><div class="v">62%</div><div class="l">Monthly quota</div><div class="db-meter"><div style="width:62%"></div></div></div>
+          <div class="db-stat"><div class="v">${t.runs}</div><div class="l">Runs on this device</div><div class="d">${t.runs?"simulation only":"—"}</div></div>
         </div>
         <div class="db-cont">
           <div class="db-cont-t">Continue where you left off</div>
@@ -2048,10 +2143,10 @@ function renderProjects(){
     <div class="sec-label">Projects — click a card to switch the active project</div>
     <div class="pj-grid">
       <div class="pj-card pj-new" onclick="newProject()"><i class="ti ti-plus"></i><span>New project</span></div>
-      ${REG.projects.filter(p=>!p.archived).map(projCard).join("")}
+      ${REG.projects.filter(p=>!p.archived).map(p=>projCard(p,true)).join("")}
     </div>
     <div class="sec-label">Archived</div>
-    <div class="pj-grid">${REG.projects.filter(p=>p.archived).map(projCard).join("")||'<div style="font-size:10.5px;color:var(--t3)">Nothing archived.</div>'}</div>
+    <div class="pj-grid">${REG.projects.filter(p=>p.archived).map(p=>projCard(p,true)).join("")||'<div style="font-size:10.5px;color:var(--t3)">Nothing archived.</div>'}</div>
     <div style="font-size:10px;color:var(--t3);margin-top:10px">Every project keeps its own screens, analysis, and persona panel. Run results live per session; re-run any project's tests after switching to it.</div>`;
 }
 const CL_KEY="uxkpi-custom-lib";
@@ -2171,6 +2266,7 @@ function gs(id){
 renderModelGrid();
 renderMethods("all");
 loadState();
+renderCustomTests();
 gs("dashboard");
 
 </script>
